@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yoursite.com/"/>
-  <updated>2017-07-20T03:41:02.566Z</updated>
+  <updated>2017-07-28T06:41:57.748Z</updated>
   <id>http://yoursite.com/</id>
   
   <author>
@@ -14,6 +14,163 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title></title>
+    <link href="http://yoursite.com/2017/07/28/Redis%E2%80%94Pipline/"/>
+    <id>http://yoursite.com/2017/07/28/Redis—Pipline/</id>
+    <published>2017-07-28T06:42:43.189Z</published>
+    <updated>2017-07-28T06:41:57.748Z</updated>
+    
+    <content type="html"><![CDATA[<p>#Redis管道技术简介</p>
+<hr>
+<p>Reids是一个cs模式的Tcp服务，类似于http的请求。 当客户端发送一个请求时，服务器处理之后会将结果通过响应报文返回给客户端 。  </p>
+<p>那么当需要发送多个请求时，难道每次都要等待请求响应，再发送下一个请求吗？</p>
+<p>当然不是，这里就可以采用Redis的管道技术。  </p>
+<p>举个例子，如果说jedis是：request response，request response，…；  </p>
+<p>&emsp;&emsp;&emsp;&emsp;&emsp;那么pipeline则是：request request… response response的方式。  </p>
+<p>下面，就简单测试一下使用管道的效果。</p>
+<hr>
+<h1 id="单条插入与批量插入"><a href="#单条插入与批量插入" class="headerlink" title="单条插入与批量插入"></a>单条插入与批量插入</h1><p>这里采用逐条和批量的方式往Redis中写入一些数据。<br>先从Mysql中查出需要的数据，这里大概是300条左右，数据量并不大，但是简单做个测试应该没问题。<br><strong>单条插入—— Jedis：</strong></p>
+<pre><code>Jedis jedis = jedisPool.getResource();
+long start = System.currentTimeMillis();
+List&lt;VehicleInfo&gt; vehicleInfos  = vehicleInfoMapper.selectByParam(param);
+for (VehicleInfo vehicleInfo : vehicleInfos) {        
+    //遍历每个vehicleInfo
+    TVehicleRealReportMsg real = new TVehicleRealReportMsg();
+    Map&lt;String, String&gt; keysmap = new HashMap&lt;String, String&gt;();
+    keysmap.put(&quot;vehicleStatus&quot;, real.getVehicleStatus() + &quot;&quot;);
+    keysmap.put(&quot;chargeStatus&quot;, real.getChargeStatus() + &quot;&quot;);
+    keysmap.put(&quot;longitude&quot;, &quot;9&quot;);
+    keysmap.put(&quot;latitude&quot;, &quot;9&quot;);
+    List&lt;Long&gt; list1 = new ArrayList&lt;Long&gt;();
+    Long l = 1000L;
+    Long l2 = 22222L;
+    list1.add(l);
+    list1.add(l2);
+    real.setEngineFaultsList(list1);
+    keysmap.put(&quot;engineFaultsList&quot;, JSON.toJSONString(list1));
+    //单条插入
+    jedis.hmset(vehicleInfo.getVehicleSeq()+&quot;&quot;, keysmap);
+}    
+jedis.close();          
+long end = System.currentTimeMillis(); System.out.println(&quot;耗时：&quot;+(end-start) +&quot;ms&quot;);  
+</code></pre><p>结果：467ms  </p>
+<p><img src="http://osuskkx7k.bkt.clouddn.com/%E5%8D%95%E6%9D%A1%E6%8F%92%E5%85%A5.PNG" alt="">  </p>
+<p><strong>批量插入—— Pipeline：</strong> </p>
+<pre><code>Jedis jedis = jedisPool.getResource();
+Pipeline pip = jedis.pipelined();
+long start = System.currentTimeMillis();
+List&lt;VehicleInfo&gt; vehicleInfos  = vehicleInfoMapper.selectByParam(param);
+for (VehicleInfo vehicleInfo : vehicleInfos) {        
+    //遍历每个vehicleInfo
+    TVehicleRealReportMsg real = new TVehicleRealReportMsg();
+    Map&lt;String, String&gt; keysmap = new HashMap&lt;String, String&gt;();
+    keysmap.put(&quot;vehicleStatus&quot;, real.getVehicleStatus() + &quot;&quot;);
+    keysmap.put(&quot;chargeStatus&quot;, real.getChargeStatus() + &quot;&quot;);
+    keysmap.put(&quot;longitude&quot;, &quot;9&quot;);
+    keysmap.put(&quot;latitude&quot;, &quot;9&quot;);
+    List&lt;Long&gt; list1 = new ArrayList&lt;Long&gt;();
+    Long l = 1000L;
+    Long l2 = 22222L;
+    list1.add(l);
+    list1.add(l2);
+    real.setEngineFaultsList(list1);
+    keysmap.put(&quot;engineFaultsList&quot;, JSON.toJSONString(list1));
+    //批量插入
+    pip.hmset(vehicleInfo.getVehicleSeq()+&quot;&quot;, keysmap);
+}
+pip.sync();//同步
+jedis.close();        
+long end = System.currentTimeMillis();
+System.out.println(&quot;耗时：&quot;+(end-start) +&quot;ms&quot;);  
+</code></pre><p>结果：175ms  </p>
+<p><img src="http://osuskkx7k.bkt.clouddn.com/%E6%89%B9%E9%87%8F%E6%8F%92%E5%85%A5.PNG" alt="">  </p>
+<p>可以看到使用管道之后的时间为，相比于单条插入的总时间大大减少，性能更优。</p>
+<hr>
+<h1 id="单条读取和批量读取"><a href="#单条读取和批量读取" class="headerlink" title="单条读取和批量读取"></a>单条读取和批量读取</h1><p><strong>单条读取—— Jedis：</strong>  </p>
+<pre><code>Jedis jedis = jedisPool.getResource();
+long start = System.currentTimeMillis();
+//1.采用redis单条读取
+List&lt;VehicleInfo&gt; vehicleInfos = vehicleInfoMapper.selectByParam(param);
+List&lt;Coordinate&gt; list = new ArrayList&lt;Coordinate&gt;();
+for(VehicleInfo key: vehicleInfos){
+    String hashkey = key.getVehicleSeq()+&quot;&quot;;
+    if(jedis.exists(hashkey+&quot;&quot;)){                            
+    Coordinate coord = new Coordinate();
+    coord.setVehicleSeq(key.getVehicleSeq());
+    coord.setOrgId(key.getOrgId());    
+    coord.setVehiclemodelseq(key.getVehiclemodelseq());    
+    coord.setVin(jedis.hget(hashkey, &quot;vin&quot;));
+    coord.setLongitude(Long.valueOf(jedis.hget(hashkey, &quot;longitude&quot;)));
+    coord.setLatitude(Long.valueOf(jedis.hget(hashkey, &quot;latitude&quot;)));         
+    list.add(coord);
+    }
+}    
+jedis.close();
+long end = System.currentTimeMillis();
+System.out.println(&quot;耗时：&quot;+(end-start)+&quot; ms&quot;);
+return list;  
+</code></pre><p>结果： 第一次为1032ms，之后稳定在800~900ms<br> <img src="http://osuskkx7k.bkt.clouddn.com/%E5%8D%95%E4%BD%93%E8%AF%BB.PNG" alt="">  </p>
+<p><strong>批量读取—— Pipeline</strong>： </p>
+<pre><code>Jedis jedis = jedisPool.getResource();
+Pipeline pip = jedis.pipelined();
+long start = System.currentTimeMillis();
+//2.采用redis管道读取
+List&lt;VehicleInfo&gt; vehicleInfos = vehicleInfoMapper.selectByParam(param);
+List&lt;Coordinate&gt; list = new ArrayList&lt;Coordinate&gt;();
+Map&lt;String,Object&gt; map = new HashMap&lt;String, Object&gt;();//map用来暂存属性
+Map&lt;String,List&lt;Response&lt;String&gt;&gt;&gt; responses  = new HashMap&lt;String, List&lt;Response&lt;String&gt;&gt;&gt;(vehicleInfos.size());
+for(VehicleInfo info: vehicleInfos){
+    List&lt;Response&lt;String&gt;&gt; resls = new ArrayList&lt;Response&lt;String&gt;&gt;();
+    resls.add(pip.hget(info.getVehicleSeq()+&quot;&quot;,&quot;longitude&quot;));
+    resls.add(pip.hget(info.getVehicleSeq()+&quot;&quot;,&quot;latitude&quot;));
+    responses.put(info.getVehicleSeq() + &quot;&quot;, resls);//得到了一辆车所有的实时数据--300辆车
+    map.put(info.getVehicleSeq()+&quot;orgId&quot;, info.getOrgId());
+    map.put(info.getVehicleSeq()+&quot;vin&quot;, info.getVin());
+    map.put(info.getVehicleSeq()+&quot;vehiclemodelseq&quot;, info.getVehiclemodelseq());
+}
+pip.sync(); 
+for(String k:responses.keySet()){
+    Coordinate coord = new Coordinate();
+    coord.setLongitude(Long.valueOf(responses.get(k).get(0).get()));//是get，不是toString
+    coord.setLatitude(Long.valueOf(responses.get(k).get(1).get()));
+    coord.setVehicleSeq(Long.valueOf(k));
+    coord.setOrgId((String) map.get(k+&quot;orgId&quot;));
+    coord.setVin((String) map.get(k+&quot;vin&quot;));
+    coord.setVehiclemodelseq((Long) map.get(k+&quot;vehiclemodelseq&quot;));
+    list.add(coord);
+}
+jedis.close();
+long end = System.currentTimeMillis();
+System.out.println(&quot;耗时：&quot;+(end-start)+&quot; ms&quot;);
+return list;  
+</code></pre><p>结果： 第一次为200ms，之后维持在30ms左右<br> <img src="http://osuskkx7k.bkt.clouddn.com/%E6%89%B9%E9%87%8F%E8%AF%BB.PNG" alt="">  </p>
+<p>总时间大概是单条读取总时间的1/5甚至更低，可以看出管道大大提升了效率，具有更好的性能。  </p>
+<font size="3">注：使用管道所获取的值的类型是Response<string\>,因此需要转为String，如下代码片段： </string\></font> 
+
+<pre><code>Map&lt;String,List&lt;Response&lt;String&gt;&gt;&gt; responses  = new HashMap&lt;String, List&lt;Response&lt;String&gt;&gt;&gt;  (vehicleInfos.size());  
+
+//转String
+responses.get(k).get(0).get();  
+</code></pre><hr>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><ul>
+<li><font size="3">这里仅仅测试了300条数据的操作，已经取得了相对明显的效果。  </font></li>
+<li>对于大量数据的操作，使用Redis管道可以大大提升性能和效率。</li>
+</ul>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;#Redis管道技术简介&lt;/p&gt;
+&lt;hr&gt;
+&lt;p&gt;Reids是一个cs模式的Tcp服务，类似于http的请求。 当客户端发送一个请求时，服务器处理之后会将结果通过响应报文返回给客户端 。  &lt;/p&gt;
+&lt;p&gt;那么当需要发送多个请求时，难道每次都要等待请求响应，再发送下一个请求
+    
+    </summary>
+    
+    
+  </entry>
   
   <entry>
     <title>You</title>
