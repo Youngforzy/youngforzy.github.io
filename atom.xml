@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yoursite.com/"/>
-  <updated>2017-07-28T06:56:49.212Z</updated>
+  <updated>2017-07-28T08:17:54.850Z</updated>
   <id>http://yoursite.com/</id>
   
   <author>
@@ -20,7 +20,7 @@
     <link href="http://yoursite.com/2017/07/28/Redis%E2%80%94Pipline/"/>
     <id>http://yoursite.com/2017/07/28/Redis—Pipline/</id>
     <published>2017-07-28T06:55:55.000Z</published>
-    <updated>2017-07-28T06:56:49.212Z</updated>
+    <updated>2017-07-28T08:17:54.850Z</updated>
     
     <content type="html"><![CDATA[<h1 id="Redis管道技术简介"><a href="#Redis管道技术简介" class="headerlink" title="Redis管道技术简介"></a>Redis管道技术简介</h1><hr>
 <p>Reids是一个cs模式的Tcp服务，类似于http的请求。 当客户端发送一个请求时，服务器处理之后会将结果通过响应报文返回给客户端 。  </p>
@@ -171,7 +171,7 @@ responses.get(k).get(0).get();
     
       <category term="Redis" scheme="http://yoursite.com/tags/Redis/"/>
     
-      <category term="Pipline" scheme="http://yoursite.com/tags/Pipline/"/>
+      <category term="Pipeline" scheme="http://yoursite.com/tags/Pipeline/"/>
     
       <category term="批量，缓存" scheme="http://yoursite.com/tags/%E6%89%B9%E9%87%8F%EF%BC%8C%E7%BC%93%E5%AD%98/"/>
     
