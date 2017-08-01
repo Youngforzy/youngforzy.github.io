@@ -104,16 +104,16 @@
 
 
 
-<meta name="description" content="我的地图                      Insert title here                       // 基于准备好的dom，初始化echarts实例         var myChart = echarts.init(document.getElementById(&apos;main&apos;));         var myChart1">
+<meta name="description" content="我的地图                      Insert title here                          var myChart = echarts.init(document.getElementById(&apos;new&apos;));                  var option = {             title: {">
 <meta property="og:type" content="website">
 <meta property="og:title" content="ZY&#39;s Blog">
 <meta property="og:url" content="http://yoursite.com/love/NewFile.html">
 <meta property="og:site_name" content="ZY&#39;s Blog">
-<meta property="og:description" content="我的地图                      Insert title here                       // 基于准备好的dom，初始化echarts实例         var myChart = echarts.init(document.getElementById(&apos;main&apos;));         var myChart1">
-<meta property="og:updated_time" content="2017-08-01T06:45:15.253Z">
+<meta property="og:description" content="我的地图                      Insert title here                          var myChart = echarts.init(document.getElementById(&apos;new&apos;));                  var option = {             title: {">
+<meta property="og:updated_time" content="2017-08-01T08:17:36.553Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="ZY&#39;s Blog">
-<meta name="twitter:description" content="我的地图                      Insert title here                       // 基于准备好的dom，初始化echarts实例         var myChart = echarts.init(document.getElementById(&apos;main&apos;));         var myChart1">
+<meta name="twitter:description" content="我的地图                      Insert title here                          var myChart = echarts.init(document.getElementById(&apos;new&apos;));                  var option = {             title: {">
 
 
 
@@ -321,13 +321,11 @@
 <title>Insert title here</title>
 </head>
 <body>
-<div id="main" style="width: 600px;height:400px;"></div>
-    <div id="main1" style="width: 500px;height:300px;"></div>
+<div id="new" style="width: 600px;height:400px;"></div>
      <script type="text/javascript">
-        // 基于准备好的dom，初始化echarts实例
-        var myChart = echarts.init(document.getElementById('main'));
-        var myChart1 = echarts.init(document.getElementById('main1'));
-        // 指定图表的配置项和数据
+       
+        var myChart = echarts.init(document.getElementById('new'));
+        
         var option = {
             title: {
                 text: 'ECharts 入门示例'
@@ -356,27 +354,7 @@
         };
 
         // 使用刚指定的配置项和数据显示图表。
-        myChart.setOption(option);
-        myChart1.setOption({
-            series : [
-                {
-                    name: '访问来源',
-                    type: 'pie',
-                    radius: '55%',
-                    data:[
-                        {value:235, name:'视频广告'},
-                        {value:274, name:'联盟广告'},
-                        {value:310, name:'邮件营销'},
-                        {value:335, name:'直接访问'},
-                        {value:400, name:'搜索引擎'}
-                    ]
-                }
-            ]
-        })
-        myChart.on('click', function (params) {
-    // 控制台打印数据的名称
-        	 window.open('https://www.baidu.com/s?wd=' + encodeURIComponent(params.name));
-});
+        myChart.setOption(option);   
     </script>
 </body>
 </html>
