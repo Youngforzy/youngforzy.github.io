@@ -104,16 +104,16 @@
 
 
 
-<meta name="description" content="不负勇往">
+<meta name="description" content="我的地图                      Insert title here                       // 基于准备好的dom，初始化echarts实例         var myChart = echarts.init(document.getElementById(&apos;main&apos;));         var myChart1">
 <meta property="og:type" content="website">
-<meta property="og:title" content="categories">
-<meta property="og:url" content="http://yoursite.com/categories/index.html">
+<meta property="og:title" content="ZY&#39;s Blog">
+<meta property="og:url" content="http://yoursite.com/love/NewFile.html">
 <meta property="og:site_name" content="ZY&#39;s Blog">
-<meta property="og:description" content="不负勇往">
-<meta property="og:updated_time" content="2017-07-10T08:57:42.134Z">
+<meta property="og:description" content="我的地图                      Insert title here                       // 基于准备好的dom，初始化echarts实例         var myChart = echarts.init(document.getElementById(&apos;main&apos;));         var myChart1">
+<meta property="og:updated_time" content="2017-08-01T06:45:15.253Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="categories">
-<meta name="twitter:description" content="不负勇往">
+<meta name="twitter:title" content="ZY&#39;s Blog">
+<meta name="twitter:description" content="我的地图                      Insert title here                       // 基于准备好的dom，初始化echarts实例         var myChart = echarts.init(document.getElementById(&apos;main&apos;));         var myChart1">
 
 
 
@@ -141,13 +141,13 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/categories/"/>
+  <link rel="canonical" href="http://yoursite.com/love/NewFile.html"/>
 
 
 
 
 
-  <title>categories | ZY's Blog</title>
+  <title> | ZY's Blog</title>
   
 
 
@@ -298,7 +298,7 @@
   <div id="posts" class="posts-expand">
   <header class="post-header">
 
-	<h1 class="post-title" itemprop="name headline">categories</h1>
+	<h1 class="post-title" itemprop="name headline"></h1>
 
 
 
@@ -306,14 +306,80 @@
 
     
     
-      <div class="category-all-page">
-        <div class="category-all-title">
-            目前共计 2 个分类
-        </div>
-        <div class="category-all">
-          <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/技术/">技术</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/芭乐/">芭乐</a><span class="category-list-count">1</span></li></ul>
-        </div>
-      </div>
+      <!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="keywords" content="百度地图,百度地图API，百度地图自定义工具，百度地图所见即所得工具">
+    <meta name="description" content="百度地图API自定义地图，帮助用户在可视化操作下生成百度地图">
+    <title>我的地图</title>
+    <!--引用百度地图API-->
+    <script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=voU9oDIBfkERO87O6RRVZgWLAt8zt4xv"></script>
+     <!-- 引入 ECharts 文件 -->
+    <script src="echarts.js"></script>
+<title>Insert title here</title>
+</head>
+<body>
+<div id="main" style="width: 600px;height:400px;"></div>
+    <div id="main1" style="width: 500px;height:300px;"></div>
+     <script type="text/javascript">
+        // 基于准备好的dom，初始化echarts实例
+        var myChart = echarts.init(document.getElementById('main'));
+        var myChart1 = echarts.init(document.getElementById('main1'));
+        // 指定图表的配置项和数据
+        var option = {
+            title: {
+                text: 'ECharts 入门示例'
+            },
+            tooltip: {},
+            legend: {
+                data:['销量','统计','11']
+            },
+            xAxis: {
+                data: ["衬衫","羊毛衫","雪纺衫","裤子","高跟鞋","袜子"]
+            },
+            yAxis: {},
+            series: [{
+                name: '销量',
+                type: 'bar',
+                data: [5, 20, 36, 10, 10, 20]
+            },{
+                name: '统计',
+                type: 'bar',
+                data: [5, 20, 36, 10, 10, 20]
+            },{
+                name: '11',
+                type: 'line',
+                data: [5, 20, 36, 10, 10, 20]
+            }]
+        };
+
+        // 使用刚指定的配置项和数据显示图表。
+        myChart.setOption(option);
+        myChart1.setOption({
+            series : [
+                {
+                    name: '访问来源',
+                    type: 'pie',
+                    radius: '55%',
+                    data:[
+                        {value:235, name:'视频广告'},
+                        {value:274, name:'联盟广告'},
+                        {value:310, name:'邮件营销'},
+                        {value:335, name:'直接访问'},
+                        {value:400, name:'搜索引擎'}
+                    ]
+                }
+            ]
+        })
+        myChart.on('click', function (params) {
+    // 控制台打印数据的名称
+        	 window.open('https://www.baidu.com/s?wd=' + encodeURIComponent(params.name));
+});
+    </script>
+</body>
+</html>
     
   </div>
 
