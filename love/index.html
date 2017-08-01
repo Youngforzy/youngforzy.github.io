@@ -104,17 +104,17 @@
 
 
 
-<meta name="description" content="一路上有你。">
+<meta name="description" content="一路上有你。       // 基于准备好的dom，初始化echarts实例  var myChart = echarts.init(document.getElementById(&apos;main&apos;)); var myChart1 = echarts.init(document.getElementById(&apos;main1&apos;)); // 指定图表的配置项和数据 var option = { title:">
 <meta property="og:type" content="website">
 <meta property="og:title" content="love">
 <meta property="og:url" content="http://yoursite.com/love/index.html">
 <meta property="og:site_name" content="ZY&#39;s Blog">
-<meta property="og:description" content="一路上有你。">
+<meta property="og:description" content="一路上有你。       // 基于准备好的dom，初始化echarts实例  var myChart = echarts.init(document.getElementById(&apos;main&apos;)); var myChart1 = echarts.init(document.getElementById(&apos;main1&apos;)); // 指定图表的配置项和数据 var option = { title:">
 <meta property="og:image" content="http://osuskkx7k.bkt.clouddn.com/%E8%B7%9D%E7%A6%BB.jpg?imageView2/1/w/300/h/530">
-<meta property="og:updated_time" content="2017-07-20T03:41:06.795Z">
+<meta property="og:updated_time" content="2017-08-01T07:52:26.908Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="love">
-<meta name="twitter:description" content="一路上有你。">
+<meta name="twitter:description" content="一路上有你。       // 基于准备好的dom，初始化echarts实例  var myChart = echarts.init(document.getElementById(&apos;main&apos;)); var myChart1 = echarts.init(document.getElementById(&apos;main1&apos;)); // 指定图表的配置项和数据 var option = { title:">
 <meta name="twitter:image" content="http://osuskkx7k.bkt.clouddn.com/%E8%B7%9D%E7%A6%BB.jpg?imageView2/1/w/300/h/530">
 
 
@@ -309,6 +309,47 @@
     
     
       <p>一路上有你。<br><img src="http://osuskkx7k.bkt.clouddn.com/%E8%B7%9D%E7%A6%BB.jpg?imageView2/1/w/300/h/530" alt="WithYou"></p>
+<script src="echarts.js"></script>
+<div id="main" style="width: 600px;height:400px;"></div>
+
+
+<script type="text/javascript">
+
+// 基于准备好的dom，初始化echarts实例
+ var myChart = echarts.init(document.getElementById('main'));
+var myChart1 = echarts.init(document.getElementById('main1'));
+// 指定图表的配置项和数据
+var option = {
+title: {
+text: 'ECharts 入门示例'
+},
+tooltip: {},
+legend: {
+data:['销量','统计','11']
+},
+xAxis: {
+data: ["衬衫","羊毛衫","雪纺衫","裤子","高跟鞋","袜子"]
+},
+yAxis: {},
+series: [{
+name: '销量',
+type: 'bar',
+data: [5, 20, 36, 10, 10, 20]
+},{
+name: '统计',
+type: 'bar',
+data: [5, 20, 36, 10, 10, 20]
+},{
+name: '11',
+type: 'line',
+data: [5, 20, 36, 10, 10, 20]
+}]
+};
+  myChart.setOption(option);
+});
+content
+
+</script>
 
     
   </div>
