@@ -104,18 +104,16 @@
 
 
 
-<meta name="description" content="关于我  &amp;ensp;&amp;ensp;&amp;ensp;&amp;ensp; 可能，可能我还算不上是一个菜鸟，但我会变成菜鸟，变成小鸟，变成雏鹰，变成……   &amp;ensp;&amp;ensp;&amp;ensp;&amp;ensp; 因为我知道，天空，才是我的归宿。   鸿爪踏雪泥  &amp;ensp;&amp;ensp;&amp;ensp; &amp;ensp;还是来得及对重遇的人说   &amp;ensp;&amp;ensp;&amp;ensp;原来你也在这里     *From SHU">
+<meta name="description" content="我的地图                      Insert title here                          var myChart = echarts.init(document.getElementById(&apos;new&apos;));                  var option = {             title: {">
 <meta property="og:type" content="website">
 <meta property="og:title" content="ZY&#39;s Blog">
-<meta property="og:url" content="http://yoursite.com/about/index.html">
+<meta property="og:url" content="http://yoursite.com/love/myfile.html">
 <meta property="og:site_name" content="ZY&#39;s Blog">
-<meta property="og:description" content="关于我  &amp;ensp;&amp;ensp;&amp;ensp;&amp;ensp; 可能，可能我还算不上是一个菜鸟，但我会变成菜鸟，变成小鸟，变成雏鹰，变成……   &amp;ensp;&amp;ensp;&amp;ensp;&amp;ensp; 因为我知道，天空，才是我的归宿。   鸿爪踏雪泥  &amp;ensp;&amp;ensp;&amp;ensp; &amp;ensp;还是来得及对重遇的人说   &amp;ensp;&amp;ensp;&amp;ensp;原来你也在这里     *From SHU">
-<meta property="og:image" content="http://osuskkx7k.bkt.clouddn.com/1.jpg">
-<meta property="og:updated_time" content="2017-07-10T10:54:11.467Z">
+<meta property="og:description" content="我的地图                      Insert title here                          var myChart = echarts.init(document.getElementById(&apos;new&apos;));                  var option = {             title: {">
+<meta property="og:updated_time" content="2017-08-01T08:17:36.553Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="ZY&#39;s Blog">
-<meta name="twitter:description" content="关于我  &amp;ensp;&amp;ensp;&amp;ensp;&amp;ensp; 可能，可能我还算不上是一个菜鸟，但我会变成菜鸟，变成小鸟，变成雏鹰，变成……   &amp;ensp;&amp;ensp;&amp;ensp;&amp;ensp; 因为我知道，天空，才是我的归宿。   鸿爪踏雪泥  &amp;ensp;&amp;ensp;&amp;ensp; &amp;ensp;还是来得及对重遇的人说   &amp;ensp;&amp;ensp;&amp;ensp;原来你也在这里     *From SHU">
-<meta name="twitter:image" content="http://osuskkx7k.bkt.clouddn.com/1.jpg">
+<meta name="twitter:description" content="我的地图                      Insert title here                          var myChart = echarts.init(document.getElementById(&apos;new&apos;));                  var option = {             title: {">
 
 
 
@@ -143,7 +141,7 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/about/"/>
+  <link rel="canonical" href="http://yoursite.com/love/myfile.html"/>
 
 
 
@@ -308,11 +306,58 @@
 
     
     
-      <h2 id="关于我"><a href="#关于我" class="headerlink" title="关于我"></a>关于我</h2><p>  &ensp;&ensp;&ensp;&ensp; 可能，可能我还算不上是一个菜鸟，但我会变成菜鸟，变成小鸟，变成雏鹰，变成……</p>
-<p>  &ensp;&ensp;&ensp;&ensp; 因为我知道，天空，才是我的归宿。</p>
-<p>  <img src="http://osuskkx7k.bkt.clouddn.com/1.jpg" alt="be yourself"><br><strong>鸿爪踏雪泥  &ensp;&ensp;&ensp; &ensp;还是来得及</strong><br><strong>对重遇的人说   &ensp;&ensp;&ensp;原来你也在这里</strong>  </p>
-<h2 id=""><a href="#" class="headerlink" title="  *"></a>  <em>*</em></h2><p>From SHU<br>QQ：352804515<br>Email：zy_lebron@163.com<br><em>不负勇往</em>。</p>
+      <!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="keywords" content="百度地图,百度地图API，百度地图自定义工具，百度地图所见即所得工具">
+    <meta name="description" content="百度地图API自定义地图，帮助用户在可视化操作下生成百度地图">
+    <title>我的地图</title>
+    <!--引用百度地图API-->
+    <script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=voU9oDIBfkERO87O6RRVZgWLAt8zt4xv"></script>
+     <!-- 引入 ECharts 文件 -->
+    <script src="echarts.js"></script>
+<title>Insert title here</title>
+</head>
+<body>
+<div id="new" style="width: 600px;height:400px;"></div>
+     <script type="text/javascript">
+       
+        var myChart = echarts.init(document.getElementById('new'));
+        
+        var option = {
+            title: {
+                text: 'ECharts 入门示例'
+            },
+            tooltip: {},
+            legend: {
+                data:['销量','统计','11']
+            },
+            xAxis: {
+                data: ["衬衫","羊毛衫","雪纺衫","裤子","高跟鞋","袜子"]
+            },
+            yAxis: {},
+            series: [{
+                name: '销量',
+                type: 'bar',
+                data: [5, 20, 36, 10, 10, 20]
+            },{
+                name: '统计',
+                type: 'bar',
+                data: [5, 20, 36, 10, 10, 20]
+            },{
+                name: '11',
+                type: 'line',
+                data: [5, 20, 36, 10, 10, 20]
+            }]
+        };
 
+        // 使用刚指定的配置项和数据显示图表。
+        myChart.setOption(option);   
+    </script>
+</body>
+</html>
     
   </div>
 
@@ -345,17 +390,8 @@
       
 
       
-        <ul class="sidebar-nav motion-element">
-          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
-            文章目录
-          </li>
-          <li class="sidebar-nav-overview" data-target="site-overview">
-            站点概览
-          </li>
-        </ul>
-      
 
-      <section class="site-overview sidebar-panel">
+      <section class="site-overview sidebar-panel sidebar-panel-active">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
           <img class="site-author-image" itemprop="image"
                src="http://osuskkx7k.bkt.clouddn.com/mmexport1500086929549%282%29.jpg"
@@ -484,22 +520,6 @@ src="//music.163.com/outchain/player?type=2&id=30967791&auto=1&height=66"></ifra
 
       </section>
 
-      
-      <!--noindex-->
-        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
-          <div class="post-toc">
-
-            
-              
-            
-
-            
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#关于我"><span class="nav-number">1.</span> <span class="nav-text">关于我</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#"><span class="nav-number">2.</span> <span class="nav-text">  *</span></a></li></ol></div>
-            
-
-          </div>
-        </section>
-      <!--/noindex-->
       
 
       
