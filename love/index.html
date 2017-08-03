@@ -105,17 +105,17 @@
 
 
 
-<meta name="description" content="一路上有你。   Hellos World!    var txt=document.getElementById(&quot;intro&quot;).innerHTML; document.write(txt);  var myChart = echarts.init(document.getElementById(&apos;echat&apos;)); var option = { title: { text: &apos;ECharts">
+<meta name="description" content="一路上有你。   Hellos World!    var txt=document.getElementById(&quot;intro&quot;).innerHTML; document.write(txt);   var myChart = echarts.init(document.getElementById(&apos;main1&apos;));  var option = { title: {    text: &apos;EC">
 <meta property="og:type" content="website">
 <meta property="og:title" content="love">
 <meta property="og:url" content="http://yoursite.com/love/index.html">
 <meta property="og:site_name" content="ZY&#39;s Blog">
-<meta property="og:description" content="一路上有你。   Hellos World!    var txt=document.getElementById(&quot;intro&quot;).innerHTML; document.write(txt);  var myChart = echarts.init(document.getElementById(&apos;echat&apos;)); var option = { title: { text: &apos;ECharts">
+<meta property="og:description" content="一路上有你。   Hellos World!    var txt=document.getElementById(&quot;intro&quot;).innerHTML; document.write(txt);   var myChart = echarts.init(document.getElementById(&apos;main1&apos;));  var option = { title: {    text: &apos;EC">
 <meta property="og:image" content="http://osuskkx7k.bkt.clouddn.com/%E8%B7%9D%E7%A6%BB.jpg?imageView2/1/w/300/h/530">
-<meta property="og:updated_time" content="2017-08-03T02:52:47.228Z">
+<meta property="og:updated_time" content="2017-08-03T03:05:20.909Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="love">
-<meta name="twitter:description" content="一路上有你。   Hellos World!    var txt=document.getElementById(&quot;intro&quot;).innerHTML; document.write(txt);  var myChart = echarts.init(document.getElementById(&apos;echat&apos;)); var option = { title: { text: &apos;ECharts">
+<meta name="twitter:description" content="一路上有你。   Hellos World!    var txt=document.getElementById(&quot;intro&quot;).innerHTML; document.write(txt);   var myChart = echarts.init(document.getElementById(&apos;main1&apos;));  var option = { title: {    text: &apos;EC">
 <meta name="twitter:image" content="http://osuskkx7k.bkt.clouddn.com/%E8%B7%9D%E7%A6%BB.jpg?imageView2/1/w/300/h/530">
 
 
@@ -314,28 +314,30 @@
 
 <div id="intro">Hellos World!</div>
 
-<script type="text/javascript" src="/js/src/echarts.js"></script>
+<script type="text/javascript" src="echarts.js"></script>
 <script>
 var txt=document.getElementById("intro").innerHTML;
 document.write(txt);
+</script>
+<script>
+var myChart = echarts.init(document.getElementById('main1'));
 
-var myChart = echarts.init(document.getElementById('echat'));
 var option = {
 title: {
-text: 'ECharts 入门示例'
+   text: 'ECharts 入门示例'
 },
 tooltip: {},
 legend: {
-data:['销量','统计','11']
+   data:['销量','统计','11']
 },
 xAxis: {
-data: ["衬衫","羊毛衫","雪纺衫","裤子","高跟鞋","袜子"]
+   data: ["衬衫","羊毛衫","雪纺衫","裤子","高跟鞋","袜子"]
 },
 yAxis: {},
 series: [{
-name: '销量',
-type: 'bar',
-data: [5, 20, 36, 10, 10, 20]
+   name: '销量',
+  type: 'bar',
+   data: [5, 20, 36, 10, 10, 20]
 },{
 name: '统计',
 type: 'bar',
@@ -346,8 +348,8 @@ type: 'line',
 data: [5, 20, 36, 10, 10, 20]
 }]
 };
-  myChart.setOption(option);
-});
+
+myChart.setOption(option);
 </script>
     
   </div>
