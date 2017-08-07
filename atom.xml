@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yoursite.com/"/>
-  <updated>2017-08-07T08:22:12.709Z</updated>
+  <updated>2017-08-07T08:45:31.899Z</updated>
   <id>http://yoursite.com/</id>
   
   <author>
@@ -20,7 +20,7 @@
     <link href="http://yoursite.com/2017/08/07/Hexo%E5%8F%91%E5%B8%83%E5%8D%9A%E5%AE%A2%E7%9A%84MarkDown%E6%96%87%E4%BB%B6%E4%B8%AD%E5%BC%95%E5%85%A5JS%E4%BB%A3%E7%A0%81/"/>
     <id>http://yoursite.com/2017/08/07/Hexo发布博客的MarkDown文件中引入JS代码/</id>
     <published>2017-08-07T07:05:05.000Z</published>
-    <updated>2017-08-07T08:22:12.709Z</updated>
+    <updated>2017-08-07T08:45:31.899Z</updated>
     
     <content type="html"><![CDATA[<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>上周困扰了两天的问题终于得到解决，于是就打算写点东西，也当作一次记录。</p>
 <p>从题目可以看出，问题就是——<strong>如何在Hexo发布博客的Md文件中引入JS代码</strong>，来实现你想要的特效。<br>之所以会提出这个问题，是源于一个简单的想法，单纯地想在某一篇博客中引入echarts（一个纯 Javascript 的图表库）特效，实质上就是引入它的JS代码。</p>
@@ -49,8 +49,8 @@
 <p>特效如下图所示：</p>
 <p><img src="http://osuskkx7k.bkt.clouddn.com/%E7%89%B9%E6%95%882.PNG" alt="WithYou"></p>
 <p>欢迎访问博客页面查看效果：<a href="https://youngforzy.github.io/2017/08/07/index/#more" target="_blank" rel="external">Youngforzy</a></p>
-<h1 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h1><p><font size="4">这里其实有个问题，就是特效虽然展现出来，但是在网页端还是无法实现地图的缩放，而在手机端和ipad中都可以进行地图的缩放，目前这个问题还未能得到解决，待日后解决再补充。</font></p>
-<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>以上就是在MarkDown中插入js代码的过程。</p>
+<h2 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h2><p><font size="4">这里其实有个问题，就是特效虽然展现出来，但是在网页端还是无法实现地图的缩放，而在手机端和ipad中都可以进行地图的缩放，目前这个问题还未能得到解决，待日后解决再补充。</font></p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>以上就是在MarkDown中插入js代码的过程。</p>
 ]]></content>
     
     <summary type="html">
