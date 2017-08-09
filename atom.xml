@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yoursite.com/"/>
-  <updated>2017-08-09T09:59:51.004Z</updated>
+  <updated>2017-08-09T10:03:38.935Z</updated>
   <id>http://yoursite.com/</id>
   
   <author>
@@ -16,11 +16,11 @@
   <generator uri="http://hexo.io/">Hexo</generator>
   
   <entry>
-    <title></title>
-    <link href="http://yoursite.com/2017/08/09/Mysql%E4%B8%AD%E6%9F%A5%E8%AF%A2%E6%9F%90%E4%B8%AA%E6%95%B0%E6%8D%AE%E5%BA%93%E4%B8%AD%E6%89%80%E6%9C%89%E8%A1%A8%E7%9A%84%E5%AD%97%E6%AE%B5%E4%BF%A1%E6%81%AF%20(1)/"/>
-    <id>http://yoursite.com/2017/08/09/Mysql中查询某个数据库中所有表的字段信息 (1)/</id>
-    <published>2017-08-09T10:03:53.501Z</published>
-    <updated>2017-08-09T09:59:51.004Z</updated>
+    <title>Mysql中查询某个数据库中所有表的字段信息</title>
+    <link href="http://yoursite.com/2017/08/09/Mysql%E4%B8%AD%E6%9F%A5%E8%AF%A2%E6%9F%90%E4%B8%AA%E6%95%B0%E6%8D%AE%E5%BA%93%E4%B8%AD%E6%89%80%E6%9C%89%E8%A1%A8%E7%9A%84%E5%AD%97%E6%AE%B5%E4%BF%A1%E6%81%AF/"/>
+    <id>http://yoursite.com/2017/08/09/Mysql中查询某个数据库中所有表的字段信息/</id>
+    <published>2017-08-09T09:55:55.000Z</published>
+    <updated>2017-08-09T10:03:38.935Z</updated>
     
     <content type="html"><![CDATA[<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>有时候，需要在数据库中查询一些字段的具体信息，而这些字段又存在于不同的表中，那么我们如何来查询呢？</p>
 <p>在每一个数据库链接的information_schema数据库中，存在这样一张表——COLUMNS，它记录了这个数据库中所有表的字段信息。</p>
@@ -49,6 +49,12 @@
     
     </summary>
     
+      <category term="技术" scheme="http://yoursite.com/categories/%E6%8A%80%E6%9C%AF/"/>
+    
+    
+      <category term="Mysql" scheme="http://yoursite.com/tags/Mysql/"/>
+    
+      <category term="数据库" scheme="http://yoursite.com/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/"/>
     
   </entry>
   
