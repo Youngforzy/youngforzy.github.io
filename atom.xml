@@ -1,0 +1,564 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>ZY&#39;s Blog</title>
+  <subtitle>Young for you.</subtitle>
+  <link href="/atom.xml" rel="self"/>
+  
+  <link href="http://yoursite.com/"/>
+  <updated>2017-10-09T16:08:31.273Z</updated>
+  <id>http://yoursite.com/</id>
+  
+  <author>
+    <name>Z Yong</name>
+    
+  </author>
+  
+  <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>Hello World</title>
+    <link href="http://yoursite.com/2017/10/10/hello-world%20-%20%E5%89%AF%E6%9C%AC/"/>
+    <id>http://yoursite.com/2017/10/10/hello-world - 副本/</id>
+    <published>2017-10-09T16:12:04.155Z</published>
+    <updated>2017-10-09T16:08:31.273Z</updated>
+    
+    <content type="html"><![CDATA[<p>Welcome to <a href="https://hexo.io/" target="_blank" rel="external">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/" target="_blank" rel="external">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html" target="_blank" rel="external">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues" target="_blank" rel="external">GitHub</a>.</p>
+<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo new <span class="string">"My New Post"</span></div></pre></td></tr></table></figure>
+<p>More info: <a href="https://hexo.io/docs/writing.html" target="_blank" rel="external">Writing</a></p>
+<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo server</div></pre></td></tr></table></figure>
+<p>More info: <a href="https://hexo.io/docs/server.html" target="_blank" rel="external">Server</a></p>
+<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo generate</div></pre></td></tr></table></figure>
+<p>More info: <a href="https://hexo.io/docs/generating.html" target="_blank" rel="external">Generating</a></p>
+<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo deploy</div></pre></td></tr></table></figure>
+<p>More info: <a href="https://hexo.io/docs/deployment.html" target="_blank" rel="external">Deployment</a></p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;Welcome to &lt;a href=&quot;https://hexo.io/&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;Hexo&lt;/a&gt;! This is your very first post. Check &lt;a href=&quot;https://hexo.
+    
+    </summary>
+    
+    
+  </entry>
+  
+  <entry>
+    <title>Hello World</title>
+    <link href="http://yoursite.com/2017/10/10/hello-world/"/>
+    <id>http://yoursite.com/2017/10/10/hello-world/</id>
+    <published>2017-10-09T16:08:31.273Z</published>
+    <updated>2017-10-09T16:08:31.273Z</updated>
+    
+    <content type="html"><![CDATA[<p>Welcome to <a href="https://hexo.io/" target="_blank" rel="external">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/" target="_blank" rel="external">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html" target="_blank" rel="external">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues" target="_blank" rel="external">GitHub</a>.</p>
+<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo new <span class="string">"My New Post"</span></div></pre></td></tr></table></figure>
+<p>More info: <a href="https://hexo.io/docs/writing.html" target="_blank" rel="external">Writing</a></p>
+<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo server</div></pre></td></tr></table></figure>
+<p>More info: <a href="https://hexo.io/docs/server.html" target="_blank" rel="external">Server</a></p>
+<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo generate</div></pre></td></tr></table></figure>
+<p>More info: <a href="https://hexo.io/docs/generating.html" target="_blank" rel="external">Generating</a></p>
+<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo deploy</div></pre></td></tr></table></figure>
+<p>More info: <a href="https://hexo.io/docs/deployment.html" target="_blank" rel="external">Deployment</a></p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;Welcome to &lt;a href=&quot;https://hexo.io/&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;Hexo&lt;/a&gt;! This is your very first post. Check &lt;a href=&quot;https://hexo.
+    
+    </summary>
+    
+    
+  </entry>
+  
+  <entry>
+    <title>Mysql中查询某个数据库中所有表的字段信息</title>
+    <link href="http://yoursite.com/2017/08/09/Mysql%E4%B8%AD%E6%9F%A5%E8%AF%A2%E6%9F%90%E4%B8%AA%E6%95%B0%E6%8D%AE%E5%BA%93%E4%B8%AD%E6%89%80%E6%9C%89%E8%A1%A8%E7%9A%84%E5%AD%97%E6%AE%B5%E4%BF%A1%E6%81%AF/"/>
+    <id>http://yoursite.com/2017/08/09/Mysql中查询某个数据库中所有表的字段信息/</id>
+    <published>2017-08-09T09:55:55.000Z</published>
+    <updated>2017-10-09T16:08:31.273Z</updated>
+    
+    <content type="html"><![CDATA[<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>有时候，需要在数据库中查询一些字段的具体信息，而这些字段又存在于不同的表中，那么我们如何来查询呢？</p>
+<p>在每一个数据库链接的information_schema数据库中，存在这样一张表——COLUMNS，它记录了这个数据库中所有表的字段信息。</p>
+<h2 id="查询某个特定类型的字段信息"><a href="#查询某个特定类型的字段信息" class="headerlink" title="查询某个特定类型的字段信息"></a>查询某个特定类型的字段信息</h2><p>如下：查询字段类型为decimal的字段信息<br>Sql语句：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">SELECT</div><div class="line">	TABLE_NAME,</div><div class="line">	column_name,</div><div class="line">	DATA_TYPE,</div><div class="line">	column_comment</div><div class="line">FROM</div><div class="line">	information_schema. COLUMNS</div><div class="line">WHERE</div><div class="line">	TABLE_SCHEMA = &apos;evshare&apos;</div><div class="line">AND DATA_TYPE = &apos;decimal&apos;;</div></pre></td></tr></table></figure>
+<p>其中</p>
+<ul>
+<li>TABLE_SCHEMA 为数据库的名称（所属的数据库）</li>
+<li>TABLE_NAME 为表的名称</li>
+<li>DATA_TYPE 为字段的数据类型</li>
+<li>column_name  为字段名</li>
+<li>column_comment 为字段注释<br>在Where的条件语句中，可以加入限制条件。<br>结果如下：</li>
+</ul>
+<p><img src="http://osuskkx7k.bkt.clouddn.com/clipboard1.png" alt="1"> </p>
+<h2 id="查询注释乱码的字段信息"><a href="#查询注释乱码的字段信息" class="headerlink" title="查询注释乱码的字段信息"></a>查询注释乱码的字段信息</h2><p>如果需要查询数据库中所有乱码的字段信息，那么可以对以上的Sql稍稍改进：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">SELECT</div><div class="line">	TABLE_NAME,</div><div class="line">	column_name,</div><div class="line">	DATA_TYPE,</div><div class="line">	column_comment</div><div class="line">FROM</div><div class="line">	information_schema. COLUMNS</div><div class="line">WHERE</div><div class="line">	TABLE_SCHEMA = &apos;evshare&apos;</div><div class="line">AND column_comment LIKE &apos;%?%&apos;;</div></pre></td></tr></table></figure>
+<p>结果如下：可以看到这个evshare数据库中，所有表的乱码字段都已显示</p>
+<p><img src="http://osuskkx7k.bkt.clouddn.com/clipboard3.png" alt="1"> </p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p><font size="4">以上，就是在Mysql中如何查询某个数据库中所有表的字段信息的过程。</font></p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h2 id=&quot;前言&quot;&gt;&lt;a href=&quot;#前言&quot; class=&quot;headerlink&quot; title=&quot;前言&quot;&gt;&lt;/a&gt;前言&lt;/h2&gt;&lt;p&gt;有时候，需要在数据库中查询一些字段的具体信息，而这些字段又存在于不同的表中，那么我们如何来查询呢？&lt;/p&gt;
+&lt;p&gt;在每一个数据库链接的inf
+    
+    </summary>
+    
+      <category term="技术" scheme="http://yoursite.com/categories/%E6%8A%80%E6%9C%AF/"/>
+    
+    
+      <category term="Mysql" scheme="http://yoursite.com/tags/Mysql/"/>
+    
+      <category term="数据库" scheme="http://yoursite.com/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>在Hexo发布博客的MarkDown文件中引入JS代码</title>
+    <link href="http://yoursite.com/2017/08/07/Hexo%E5%8F%91%E5%B8%83%E5%8D%9A%E5%AE%A2%E7%9A%84MarkDown%E6%96%87%E4%BB%B6%E4%B8%AD%E5%BC%95%E5%85%A5JS%E4%BB%A3%E7%A0%81/"/>
+    <id>http://yoursite.com/2017/08/07/Hexo发布博客的MarkDown文件中引入JS代码/</id>
+    <published>2017-08-07T07:05:05.000Z</published>
+    <updated>2017-10-09T16:08:31.273Z</updated>
+    
+    <content type="html"><![CDATA[<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>上周困扰了两天的问题终于得到解决，于是就打算写点东西，也当作一次记录。</p>
+<p>从题目可以看出，问题就是——<strong>如何在Hexo发布博客的Md文件中引入JS代码</strong>，来实现你想要的特效。<br>之所以会提出这个问题，是源于一个简单的想法，单纯地想在某一篇博客中引入echarts（一个纯 Javascript 的图表库）特效，实质上就是引入它的JS代码。</p>
+<p>那么就详细讲解一下引入echarts来实现特效的过程。</p>
+<h2 id="下载"><a href="#下载" class="headerlink" title="下载"></a>下载</h2><p>首先，在<a href="http://echarts.baidu.com/download.html" target="_blank" rel="external">echarts下载页面</a> 中下载相应的版本，我这里下载的是完整版（echarts.min.js）。<br>文件下载完成后，将其放入下图所示文件夹当中<br><img src="http://osuskkx7k.bkt.clouddn.com/js%E5%AD%98%E5%82%A8.PNG" alt="WithYou"></p>
+<p>我的博客使用的是next主题，打开themes文件夹中的next文件夹，再依次打开source、js、src文件夹，就可以看到许多js文件，将echarts.min.js放入即可。</p>
+<h2 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h2><p>在文件引入后（src就是指向刚刚存入js文件的目录），那么你就可以在你的博客中引用这个js文件来达到特定的效果。<br>引用的方式很简单，只需一行代码：</p>
+<p><code>&lt;script type=&quot;text/javascript&quot; src=&quot;/js/src/echarts.min.js&quot;&gt;&lt;/script&gt;</code></p>
+<p>在引用js文件后，那么你只要在md文件中添加相应的js代码片段即可，这里贴出我使用的js代码片段</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">&lt;script&gt;</div><div class="line">var bmapChart=echarts.init(document.getElementById(&quot;map-wrap&quot;));var data=[&#123;name:&quot;上海&quot;,value:299&#125;,&#123;name:&quot;厦门&quot;,value:245&#125;,&#123;name:&quot;丰城&quot;,value:120&#125;,&#123;name:&quot;南昌&quot;,value:160&#125;,&#123;name:&quot;张家界&quot;,value:128&#125;,&#123;name:&quot;长沙&quot;,value:75&#125;,&#123;name:&quot;杭州&quot;,value:90&#125;,&#123;name:&quot;福州&quot;,value:90&#125;,&#123;name:&quot;深圳&quot;,value:90&#125;,&#123;name:&quot;武汉&quot;,value:73&#125;];var geoCoordMap=&#123;&quot;厦门&quot;:[118.105,24.443],&quot;上海&quot;:[121.399,31.321],&quot;丰城&quot;:[115.801,28.201],&quot;南昌&quot;:[115.856,28.691],&quot;张家界&quot;:[110.489,29.118],&quot;福州&quot;:[119.3,26.08],&quot;长沙&quot;:[113,28.21],&quot;杭州&quot;:[120.16,30.28],&quot;深圳&quot;:[114.06,22.55],&quot;武汉&quot;:[114.31,30.52]&#125;;var convertData=function(data)&#123;var res=[];for(var i=0;i&lt;data.length;i++)&#123;var geoCoord=geoCoordMap[data[i].name];if(geoCoord)&#123;res.push(&#123;name:data[i].name,value:geoCoord.concat(data[i].value)&#125;)&#125;&#125;return res&#125;;option=&#123;title:&#123;text:&quot;我们的足迹 - Our footprints&quot;,subtext:&quot;一步一个脚印，让时光见证&quot;,sublink:&quot;#&quot;,left:&quot;center&quot;&#125;,tooltip:&#123;trigger:&quot;item&quot;&#125;,bmap:&#123;center:[106.320439,32.58783],zoom:5,roam:true,mapStyle:&#123;styleJson:[&#123;&quot;featureType&quot;:&quot;water&quot;,&quot;elementType&quot;:&quot;all&quot;,&quot;stylers&quot;:&#123;&quot;color&quot;:&quot;#d1d1d1&quot;&#125;&#125;,&#123;&quot;featureType&quot;:&quot;land&quot;,&quot;elementType&quot;:&quot;all&quot;,&quot;stylers&quot;:&#123;&quot;color&quot;:&quot;#f3f3f3&quot;&#125;&#125;,&#123;&quot;featureType&quot;:&quot;railway&quot;,&quot;elementType&quot;:&quot;all&quot;,&quot;stylers&quot;:&#123;&quot;visibility&quot;:&quot;off&quot;&#125;&#125;,&#123;&quot;featureType&quot;:&quot;highway&quot;,&quot;elementType&quot;:&quot;all&quot;,&quot;stylers&quot;:&#123;&quot;color&quot;:&quot;#fdfdfd&quot;&#125;&#125;,&#123;&quot;featureType&quot;:&quot;highway&quot;,&quot;elementType&quot;:&quot;labels&quot;,&quot;stylers&quot;:&#123;&quot;visibility&quot;:&quot;off&quot;&#125;&#125;,&#123;&quot;featureType&quot;:&quot;arterial&quot;,&quot;elementType&quot;:&quot;geometry&quot;,&quot;stylers&quot;:&#123;&quot;color&quot;:&quot;#fefefe&quot;&#125;&#125;,&#123;&quot;featureType&quot;:&quot;arterial&quot;,&quot;elementType&quot;:&quot;geometry.fill&quot;,&quot;stylers&quot;:&#123;&quot;color&quot;:&quot;#fefefe&quot;&#125;&#125;,&#123;&quot;featureType&quot;:&quot;poi&quot;,&quot;elementType&quot;:&quot;all&quot;,&quot;stylers&quot;:&#123;&quot;visibility&quot;:&quot;off&quot;&#125;&#125;,&#123;&quot;featureType&quot;:&quot;green&quot;,&quot;elementType&quot;:&quot;all&quot;,&quot;stylers&quot;:&#123;&quot;visibility&quot;:&quot;off&quot;&#125;&#125;,&#123;&quot;featureType&quot;:&quot;subway&quot;,&quot;elementType&quot;:&quot;all&quot;,&quot;stylers&quot;:&#123;&quot;visibility&quot;:&quot;off&quot;&#125;&#125;,&#123;&quot;featureType&quot;:&quot;manmade&quot;,&quot;elementType&quot;:&quot;all&quot;,&quot;stylers&quot;:&#123;&quot;color&quot;:&quot;#d1d1d1&quot;&#125;&#125;,&#123;&quot;featureType&quot;:&quot;local&quot;,&quot;elementType&quot;:&quot;all&quot;,&quot;stylers&quot;:&#123;&quot;color&quot;:&quot;#d1d1d1&quot;&#125;&#125;,&#123;&quot;featureType&quot;:&quot;arterial&quot;,&quot;elementType&quot;:&quot;labels&quot;,&quot;stylers&quot;:&#123;&quot;visibility&quot;:&quot;off&quot;&#125;&#125;,&#123;&quot;featureType&quot;:&quot;boundary&quot;,&quot;elementType&quot;:&quot;all&quot;,&quot;stylers&quot;:&#123;&quot;color&quot;:&quot;#fefefe&quot;&#125;&#125;,&#123;&quot;featureType&quot;:&quot;building&quot;,&quot;elementType&quot;:&quot;all&quot;,&quot;stylers&quot;:&#123;&quot;color&quot;:&quot;#d1d1d1&quot;&#125;&#125;,&#123;&quot;featureType&quot;:&quot;label&quot;,&quot;elementType&quot;:&quot;labels.text.fill&quot;,&quot;stylers&quot;:&#123;&quot;color&quot;:&quot;#999999&quot;&#125;&#125;]&#125;&#125;,series:[&#123;name:&quot;footmark&quot;,type:&quot;scatter&quot;,coordinateSystem:&quot;bmap&quot;,data:convertData(data),symbolSize:function(val)&#123;return val[2]/10&#125;,label:&#123;normal:&#123;formatter:&quot;&#123;b&#125;&quot;,position:&quot;right&quot;,show:false&#125;,emphasis:&#123;show:true&#125;&#125;,itemStyle:&#123;normal:&#123;color:&quot;#60C0DD&quot;&#125;&#125;&#125;,&#123;name:&quot;I miss you&quot;,type:&quot;effectScatter&quot;,coordinateSystem:&quot;bmap&quot;,data:convertData(data.sort(function(a,b)&#123;return b.value-a.value&#125;).slice(0,2)),symbolSize:function(val)&#123;return val[2]/10&#125;,showEffectOn:&quot;render&quot;,rippleEffect:&#123;brushType:&quot;stroke&quot;&#125;,hoverAnimation:true,label:&#123;normal:&#123;formatter:&quot;&#123;b&#125;&quot;,position:&quot;right&quot;,show:true&#125;&#125;,itemStyle:&#123;normal:&#123;color:&quot;purple&quot;,shadowBlur:10,shadowColor:&quot;#333&quot;&#125;&#125;,zlevel:1&#125;]&#125;;bmapChart.setOption(option);</div><div class="line">&lt;/script&gt;</div></pre></td></tr></table></figure>
+<p> 文章末尾有博客链接。<br> 在这个页面中所展现的特效中还引入了其他的js文件，如china.js、api.js、bmap.js等，例如api.js是百度地图的js代码，当然你可以引入任何你想要引用的js文件。  </p>
+<h2 id="详细"><a href="#详细" class="headerlink" title="详细"></a>详细</h2><p>至于bmap.js文件可以在<a href="https://github.com/ecomfe/echarts/tree/master/extension/bmap" target="_blank" rel="external">github</a>下载，下载之后打开echarts-master文件夹，找到extension中的bamp.js,如下图所示:<br><img src="http://osuskkx7k.bkt.clouddn.com/1.PNG" alt="WithYou"></p>
+<p>ECharts使用参考（其中有china.js的介绍）：</p>
+<ul>
+<li><a href="http://efe.baidu.com/blog/echarts-map-tutorial/" target="_blank" rel="external">ECharts 实现地图散点图（上）</a></li>
+<li><a href="http://efe.baidu.com/blog/echarts-map-tutorial-2/" target="_blank" rel="external">ECharts 实现地图散点图（下）</a></li>
+</ul>
+<p>这里要注意一个问题，就是引入bmap.js后，地图并不显示，想要使用百度地图，还要去<a href="http://lbsyun.baidu.com/index.php?title=jspopular" target="_blank" rel="external">百度地图开放平台</a>申请一个密钥，申请成功后在页面中引入，但是经过多次尝试，直接在md文件中引入并不起作用，如下：</p>
+<p><code>&lt;script src=&quot;http://api.map.baidu.com/api?v=2.0&amp;ak=？（你的密钥）&quot;&gt;&lt;/script&gt;</code></p>
+<p>   由此想到在script标签中嵌入了网页链接，md可能不能识别（只是猜测），于是想着将这个链接所指向的js转为文件引入试试。直接点击链接，跳转到如下页面：</p>
+<p><img src="http://osuskkx7k.bkt.clouddn.com/%E7%99%BE%E5%BA%A61.PNG" alt="WithYou"></p>
+<p>可以看到标记处同样为一个链接，再次从浏览器打开，出现如下：  </p>
+<p><img src="http://osuskkx7k.bkt.clouddn.com/%E7%99%BE%E5%BA%A62.PNG" alt="WithYou"></p>
+<p>在你眼前呈现的是全屏的js代码，这就是我们所需要的js文件，即百度地图的js代码，将它全选保存为js文件，这里命名为api.js。<br>然后在md中引入它即可使用，这样我们就能取得和百度地图类似的效果。</p>
+<p>下面贴出完整的文章代码，即md文件：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">&lt;div id=&quot;map-wrap&quot; style=&quot;height: 500px;width:800px;&quot;&gt;&lt;/div&gt;</div><div class="line"></div><div class="line">    &lt;script type=&quot;text/javascript&quot; src=&quot;/js/src/echarts.min.js&quot;&gt;&lt;/script&gt;</div><div class="line">    &lt;script src=&quot;/js/src/china.js&quot;&gt;&lt;/script&gt;</div><div class="line">    &lt;script src=&quot;/js/src/api.js&quot;&gt;&lt;/script&gt;</div><div class="line">    &lt;script src=&quot;/js/src/bmap.js&quot;&gt;&lt;/script&gt;</div><div class="line">    </div><div class="line">&lt;script&gt;</div><div class="line">var bmapChart=echarts.init(document.getElementById(&quot;map-wrap&quot;));var data=[&#123;name:&quot;上海&quot;,value:299&#125;,&#123;name:&quot;厦门&quot;,value:245&#125;,&#123;name:&quot;丰城&quot;,value:120&#125;,&#123;name:&quot;南昌&quot;,value:160&#125;,&#123;name:&quot;张家界&quot;,value:128&#125;,&#123;name:&quot;长沙&quot;,value:75&#125;,&#123;name:&quot;杭州&quot;,value:90&#125;,&#123;name:&quot;福州&quot;,value:90&#125;,&#123;name:&quot;深圳&quot;,value:90&#125;,&#123;name:&quot;武汉&quot;,value:73&#125;];var geoCoordMap=&#123;&quot;厦门&quot;:[118.105,24.443],&quot;上海&quot;:[121.399,31.321],&quot;丰城&quot;:[115.801,28.201],&quot;南昌&quot;:[115.856,28.691],&quot;张家界&quot;:[110.489,29.118],&quot;福州&quot;:[119.3,26.08],&quot;长沙&quot;:[113,28.21],&quot;杭州&quot;:[120.16,30.28],&quot;深圳&quot;:[114.06,22.55],&quot;武汉&quot;:[114.31,30.52]&#125;;var convertData=function(data)&#123;var res=[];for(var i=0;i&lt;data.length;i++)&#123;var geoCoord=geoCoordMap[data[i].name];if(geoCoord)&#123;res.push(&#123;name:data[i].name,value:geoCoord.concat(data[i].value)&#125;)&#125;&#125;return res&#125;;option=&#123;title:&#123;text:&quot;我们的足迹 - Our footprints&quot;,subtext:&quot;一步一个脚印，让时光见证&quot;,sublink:&quot;#&quot;,left:&quot;center&quot;&#125;,tooltip:&#123;trigger:&quot;item&quot;&#125;,bmap:&#123;center:[106.320439,32.58783],zoom:5,roam:true,mapStyle:&#123;styleJson:[&#123;&quot;featureType&quot;:&quot;water&quot;,&quot;elementType&quot;:&quot;all&quot;,&quot;stylers&quot;:&#123;&quot;color&quot;:&quot;#d1d1d1&quot;&#125;&#125;,&#123;&quot;featureType&quot;:&quot;land&quot;,&quot;elementType&quot;:&quot;all&quot;,&quot;stylers&quot;:&#123;&quot;color&quot;:&quot;#f3f3f3&quot;&#125;&#125;,&#123;&quot;featureType&quot;:&quot;railway&quot;,&quot;elementType&quot;:&quot;all&quot;,&quot;stylers&quot;:&#123;&quot;visibility&quot;:&quot;off&quot;&#125;&#125;,&#123;&quot;featureType&quot;:&quot;highway&quot;,&quot;elementType&quot;:&quot;all&quot;,&quot;stylers&quot;:&#123;&quot;color&quot;:&quot;#fdfdfd&quot;&#125;&#125;,&#123;&quot;featureType&quot;:&quot;highway&quot;,&quot;elementType&quot;:&quot;labels&quot;,&quot;stylers&quot;:&#123;&quot;visibility&quot;:&quot;off&quot;&#125;&#125;,&#123;&quot;featureType&quot;:&quot;arterial&quot;,&quot;elementType&quot;:&quot;geometry&quot;,&quot;stylers&quot;:&#123;&quot;color&quot;:&quot;#fefefe&quot;&#125;&#125;,&#123;&quot;featureType&quot;:&quot;arterial&quot;,&quot;elementType&quot;:&quot;geometry.fill&quot;,&quot;stylers&quot;:&#123;&quot;color&quot;:&quot;#fefefe&quot;&#125;&#125;,&#123;&quot;featureType&quot;:&quot;poi&quot;,&quot;elementType&quot;:&quot;all&quot;,&quot;stylers&quot;:&#123;&quot;visibility&quot;:&quot;off&quot;&#125;&#125;,&#123;&quot;featureType&quot;:&quot;green&quot;,&quot;elementType&quot;:&quot;all&quot;,&quot;stylers&quot;:&#123;&quot;visibility&quot;:&quot;off&quot;&#125;&#125;,&#123;&quot;featureType&quot;:&quot;subway&quot;,&quot;elementType&quot;:&quot;all&quot;,&quot;stylers&quot;:&#123;&quot;visibility&quot;:&quot;off&quot;&#125;&#125;,&#123;&quot;featureType&quot;:&quot;manmade&quot;,&quot;elementType&quot;:&quot;all&quot;,&quot;stylers&quot;:&#123;&quot;color&quot;:&quot;#d1d1d1&quot;&#125;&#125;,&#123;&quot;featureType&quot;:&quot;local&quot;,&quot;elementType&quot;:&quot;all&quot;,&quot;stylers&quot;:&#123;&quot;color&quot;:&quot;#d1d1d1&quot;&#125;&#125;,&#123;&quot;featureType&quot;:&quot;arterial&quot;,&quot;elementType&quot;:&quot;labels&quot;,&quot;stylers&quot;:&#123;&quot;visibility&quot;:&quot;off&quot;&#125;&#125;,&#123;&quot;featureType&quot;:&quot;boundary&quot;,&quot;elementType&quot;:&quot;all&quot;,&quot;stylers&quot;:&#123;&quot;color&quot;:&quot;#fefefe&quot;&#125;&#125;,&#123;&quot;featureType&quot;:&quot;building&quot;,&quot;elementType&quot;:&quot;all&quot;,&quot;stylers&quot;:&#123;&quot;color&quot;:&quot;#d1d1d1&quot;&#125;&#125;,&#123;&quot;featureType&quot;:&quot;label&quot;,&quot;elementType&quot;:&quot;labels.text.fill&quot;,&quot;stylers&quot;:&#123;&quot;color&quot;:&quot;#999999&quot;&#125;&#125;]&#125;&#125;,series:[&#123;name:&quot;footmark&quot;,type:&quot;scatter&quot;,coordinateSystem:&quot;bmap&quot;,data:convertData(data),symbolSize:function(val)&#123;return val[2]/10&#125;,label:&#123;normal:&#123;formatter:&quot;&#123;b&#125;&quot;,position:&quot;right&quot;,show:false&#125;,emphasis:&#123;show:true&#125;&#125;,itemStyle:&#123;normal:&#123;color:&quot;#60C0DD&quot;&#125;&#125;&#125;,&#123;name:&quot;I miss you&quot;,type:&quot;effectScatter&quot;,coordinateSystem:&quot;bmap&quot;,data:convertData(data.sort(function(a,b)&#123;return b.value-a.value&#125;).slice(0,2)),symbolSize:function(val)&#123;return val[2]/10&#125;,showEffectOn:&quot;render&quot;,rippleEffect:&#123;brushType:&quot;stroke&quot;&#125;,hoverAnimation:true,label:&#123;normal:&#123;formatter:&quot;&#123;b&#125;&quot;,position:&quot;right&quot;,show:true&#125;&#125;,itemStyle:&#123;normal:&#123;color:&quot;purple&quot;,shadowBlur:10,shadowColor:&quot;#333&quot;&#125;&#125;,zlevel:1&#125;]&#125;;bmapChart.setOption(option);</div><div class="line">    &lt;/script&gt;</div></pre></td></tr></table></figure></p>
+<p>特效如下图所示：</p>
+<p><img src="http://osuskkx7k.bkt.clouddn.com/%E7%89%B9%E6%95%882.PNG" alt="WithYou"></p>
+<p>欢迎访问博客页面查看效果：<a href="https://youngforzy.github.io/2017/08/07/index/#more" target="_blank" rel="external">Youngforzy</a></p>
+<h2 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h2><p><font size="4">这里其实有个问题，就是特效虽然展现出来，但是在网页端还是无法实现地图的缩放，而在手机端和ipad中都可以进行地图的缩放，目前这个问题还未能得到解决，待日后解决再补充。</font></p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>以上就是在MarkDown中插入js代码的过程。</p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h2 id=&quot;前言&quot;&gt;&lt;a href=&quot;#前言&quot; class=&quot;headerlink&quot; title=&quot;前言&quot;&gt;&lt;/a&gt;前言&lt;/h2&gt;&lt;p&gt;上周困扰了两天的问题终于得到解决，于是就打算写点东西，也当作一次记录。&lt;/p&gt;
+&lt;p&gt;从题目可以看出，问题就是——&lt;strong&gt;如何在He
+    
+    </summary>
+    
+      <category term="技术" scheme="http://yoursite.com/categories/%E6%8A%80%E6%9C%AF/"/>
+    
+    
+      <category term="Hexo" scheme="http://yoursite.com/tags/Hexo/"/>
+    
+      <category term="MarkDown" scheme="http://yoursite.com/tags/MarkDown/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>JS特效</title>
+    <link href="http://yoursite.com/2017/08/07/JS%E7%89%B9%E6%95%88/"/>
+    <id>http://yoursite.com/2017/08/07/JS特效/</id>
+    <published>2017-08-07T05:15:25.000Z</published>
+    <updated>2017-10-09T16:08:31.273Z</updated>
+    
+    <content type="html"><![CDATA[<div id="map-wrap" style="height: 500px;width:800px;"></div>
+
+<script type="text/javascript" src="/js/src/echarts.min.js"></script>
+<script src="/js/src/china.js"></script>
+<script src="/js/src/api.js"></script>
+<script src="/js/src/bmap.js"></script>
+
+<script>
+var bmapChart=echarts.init(document.getElementById("map-wrap"));var data=[{name:"上海",value:299},{name:"厦门",value:245},{name:"丰城",value:120},{name:"南昌",value:160},{name:"张家界",value:128},{name:"长沙",value:75},{name:"杭州",value:90},{name:"福州",value:90},{name:"深圳",value:90},{name:"武汉",value:73}];var geoCoordMap={"厦门":[118.105,24.443],"上海":[121.399,31.321],"丰城":[115.801,28.201],"南昌":[115.856,28.691],"张家界":[110.489,29.118],"福州":[119.3,26.08],"长沙":[113,28.21],"杭州":[120.16,30.28],"深圳":[114.06,22.55],"武汉":[114.31,30.52]};var convertData=function(data){var res=[];for(var i=0;i<data.length;i++){var geoCoord=geoCoordMap[data[i].name];if(geoCoord){res.push({name:data[i].name,value:geoCoord.concat(data[i].value)})}}return res};option={title:{text:"我们的足迹 - Our footprints",subtext:"一步一个脚印，让时光见证",sublink:"#",left:"center"},tooltip:{trigger:"item"},bmap:{center:[106.320439,32.58783],zoom:5,roam:true,mapStyle:{styleJson:[{"featureType":"water","elementType":"all","stylers":{"color":"#d1d1d1"}},{"featureType":"land","elementType":"all","stylers":{"color":"#f3f3f3"}},{"featureType":"railway","elementType":"all","stylers":{"visibility":"off"}},{"featureType":"highway","elementType":"all","stylers":{"color":"#fdfdfd"}},{"featureType":"highway","elementType":"labels","stylers":{"visibility":"off"}},{"featureType":"arterial","elementType":"geometry","stylers":{"color":"#fefefe"}},{"featureType":"arterial","elementType":"geometry.fill","stylers":{"color":"#fefefe"}},{"featureType":"poi","elementType":"all","stylers":{"visibility":"off"}},{"featureType":"green","elementType":"all","stylers":{"visibility":"off"}},{"featureType":"subway","elementType":"all","stylers":{"visibility":"off"}},{"featureType":"manmade","elementType":"all","stylers":{"color":"#d1d1d1"}},{"featureType":"local","elementType":"all","stylers":{"color":"#d1d1d1"}},{"featureType":"arterial","elementType":"labels","stylers":{"visibility":"off"}},{"featureType":"boundary","elementType":"all","stylers":{"color":"#fefefe"}},{"featureType":"building","elementType":"all","stylers":{"color":"#d1d1d1"}},{"featureType":"label","elementType":"labels.text.fill","stylers":{"color":"#999999"}}]}},series:[{name:"footmark",type:"scatter",coordinateSystem:"bmap",data:convertData(data),symbolSize:function(val){return val[2]/10},label:{normal:{formatter:"{b}",position:"right",show:false},emphasis:{show:true}},itemStyle:{normal:{color:"#60C0DD"}}},{name:"I miss you",type:"effectScatter",coordinateSystem:"bmap",data:convertData(data.sort(function(a,b){return b.value-a.value}).slice(0,2)),symbolSize:function(val){return val[2]/10},showEffectOn:"render",rippleEffect:{brushType:"stroke"},hoverAnimation:true,label:{normal:{formatter:"{b}",position:"right",show:true}},itemStyle:{normal:{color:"purple",shadowBlur:10,shadowColor:"#333"}},zlevel:1}]};bmapChart.setOption(option);
+</script>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;div id=&quot;map-wrap&quot; style=&quot;height: 500px;width:800px;&quot;&gt;&lt;/div&gt;
+
+&lt;script type=&quot;text/javascript&quot; src=&quot;/js/src/echarts.min.js&quot;&gt;&lt;/script&gt;
+&lt;script 
+    
+    </summary>
+    
+      <category term="技术" scheme="http://yoursite.com/categories/%E6%8A%80%E6%9C%AF/"/>
+    
+    
+  </entry>
+  
+  <entry>
+    <title>使用Redis的管道（Pipeline）进行批量操作</title>
+    <link href="http://yoursite.com/2017/07/28/Redis%E2%80%94Pipline/"/>
+    <id>http://yoursite.com/2017/07/28/Redis—Pipline/</id>
+    <published>2017-07-28T06:55:55.000Z</published>
+    <updated>2017-10-09T16:08:31.273Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="Redis管道技术简介"><a href="#Redis管道技术简介" class="headerlink" title="Redis管道技术简介"></a>Redis管道技术简介</h1><hr>
+<p>Reids是一个cs模式的Tcp服务，类似于http的请求。 当客户端发送一个请求时，服务器处理之后会将结果通过响应报文返回给客户端 。  </p>
+<p>那么当需要发送多个请求时，难道每次都要等待请求响应，再发送下一个请求吗？</p>
+<p>当然不是，这里就可以采用Redis的管道技术。  </p>
+<p>举个例子，如果说jedis是：request response，request response，…；  </p>
+<p>&emsp;&emsp;&emsp;&emsp;&emsp;那么pipeline则是：request request… response response的方式。  </p>
+<p>下面，就简单测试一下使用管道的效果。</p>
+<hr>
+<h1 id="单条插入与批量插入"><a href="#单条插入与批量插入" class="headerlink" title="单条插入与批量插入"></a>单条插入与批量插入</h1><p>这里采用逐条和批量的方式往Redis中写入一些数据。<br>先从Mysql中查出需要的数据，这里大概是300条左右，数据量并不大，但是简单做个测试应该没问题。<br><strong>单条插入—— Jedis：</strong></p>
+<pre><code>Jedis jedis = jedisPool.getResource();
+long start = System.currentTimeMillis();
+List&lt;VehicleInfo&gt; vehicleInfos  = vehicleInfoMapper.selectByParam(param);
+for (VehicleInfo vehicleInfo : vehicleInfos) {        
+    //遍历每个vehicleInfo
+    TVehicleRealReportMsg real = new TVehicleRealReportMsg();
+    Map&lt;String, String&gt; keysmap = new HashMap&lt;String, String&gt;();
+    keysmap.put(&quot;vehicleStatus&quot;, real.getVehicleStatus() + &quot;&quot;);
+    keysmap.put(&quot;chargeStatus&quot;, real.getChargeStatus() + &quot;&quot;);
+    keysmap.put(&quot;longitude&quot;, &quot;9&quot;);
+    keysmap.put(&quot;latitude&quot;, &quot;9&quot;);
+    List&lt;Long&gt; list1 = new ArrayList&lt;Long&gt;();
+    Long l = 1000L;
+    Long l2 = 22222L;
+    list1.add(l);
+    list1.add(l2);
+    real.setEngineFaultsList(list1);
+    keysmap.put(&quot;engineFaultsList&quot;, JSON.toJSONString(list1));
+    //单条插入
+    jedis.hmset(vehicleInfo.getVehicleSeq()+&quot;&quot;, keysmap);
+}    
+jedis.close();          
+long end = System.currentTimeMillis(); System.out.println(&quot;耗时：&quot;+(end-start) +&quot;ms&quot;);  
+</code></pre><p>结果：467ms  </p>
+<p><img src="http://osuskkx7k.bkt.clouddn.com/%E5%8D%95%E6%9D%A1%E6%8F%92%E5%85%A5.PNG" alt="1">  </p>
+<p><strong>批量插入—— Pipeline：</strong> </p>
+<pre><code>Jedis jedis = jedisPool.getResource();
+Pipeline pip = jedis.pipelined();
+long start = System.currentTimeMillis();
+List&lt;VehicleInfo&gt; vehicleInfos  = vehicleInfoMapper.selectByParam(param);
+for (VehicleInfo vehicleInfo : vehicleInfos) {        
+    //遍历每个vehicleInfo
+    TVehicleRealReportMsg real = new TVehicleRealReportMsg();
+    Map&lt;String, String&gt; keysmap = new HashMap&lt;String, String&gt;();
+    keysmap.put(&quot;vehicleStatus&quot;, real.getVehicleStatus() + &quot;&quot;);
+    keysmap.put(&quot;chargeStatus&quot;, real.getChargeStatus() + &quot;&quot;);
+    keysmap.put(&quot;longitude&quot;, &quot;9&quot;);
+    keysmap.put(&quot;latitude&quot;, &quot;9&quot;);
+    List&lt;Long&gt; list1 = new ArrayList&lt;Long&gt;();
+    Long l = 1000L;
+    Long l2 = 22222L;
+    list1.add(l);
+    list1.add(l2);
+    real.setEngineFaultsList(list1);
+    keysmap.put(&quot;engineFaultsList&quot;, JSON.toJSONString(list1));
+    //批量插入
+    pip.hmset(vehicleInfo.getVehicleSeq()+&quot;&quot;, keysmap);
+}
+pip.sync();//同步
+jedis.close();        
+long end = System.currentTimeMillis();
+System.out.println(&quot;耗时：&quot;+(end-start) +&quot;ms&quot;);  
+</code></pre><p>结果：175ms  </p>
+<p><img src="http://osuskkx7k.bkt.clouddn.com/%E6%89%B9%E9%87%8F%E6%8F%92%E5%85%A5.PNG" alt="2">  </p>
+<p>可以看到使用管道之后的时间为，相比于单条插入的总时间大大减少，性能更优。</p>
+<hr>
+<h1 id="单条读取和批量读取"><a href="#单条读取和批量读取" class="headerlink" title="单条读取和批量读取"></a>单条读取和批量读取</h1><p><strong>单条读取—— Jedis：</strong>  </p>
+<pre><code>Jedis jedis = jedisPool.getResource();
+long start = System.currentTimeMillis();
+//1.采用redis单条读取
+List&lt;VehicleInfo&gt; vehicleInfos = vehicleInfoMapper.selectByParam(param);
+List&lt;Coordinate&gt; list = new ArrayList&lt;Coordinate&gt;();
+for(VehicleInfo key: vehicleInfos){
+    String hashkey = key.getVehicleSeq()+&quot;&quot;;
+    if(jedis.exists(hashkey+&quot;&quot;)){                            
+    Coordinate coord = new Coordinate();
+    coord.setVehicleSeq(key.getVehicleSeq());
+    coord.setOrgId(key.getOrgId());    
+    coord.setVehiclemodelseq(key.getVehiclemodelseq());    
+    coord.setVin(jedis.hget(hashkey, &quot;vin&quot;));
+    coord.setLongitude(Long.valueOf(jedis.hget(hashkey, &quot;longitude&quot;)));
+    coord.setLatitude(Long.valueOf(jedis.hget(hashkey, &quot;latitude&quot;)));         
+    list.add(coord);
+    }
+}    
+jedis.close();
+long end = System.currentTimeMillis();
+System.out.println(&quot;耗时：&quot;+(end-start)+&quot; ms&quot;);
+return list;  
+</code></pre><p>结果： 第一次为1032ms，之后稳定在800~900ms<br> <img src="http://osuskkx7k.bkt.clouddn.com/%E5%8D%95%E4%BD%93%E8%AF%BB.PNG" alt="3">  </p>
+<p><strong>批量读取—— Pipeline</strong>： </p>
+<pre><code>Jedis jedis = jedisPool.getResource();
+Pipeline pip = jedis.pipelined();
+long start = System.currentTimeMillis();
+//2.采用redis管道读取
+List&lt;VehicleInfo&gt; vehicleInfos = vehicleInfoMapper.selectByParam(param);
+List&lt;Coordinate&gt; list = new ArrayList&lt;Coordinate&gt;();
+Map&lt;String,Object&gt; map = new HashMap&lt;String, Object&gt;();//map用来暂存属性
+Map&lt;String,List&lt;Response&lt;String&gt;&gt;&gt; responses  = new HashMap&lt;String, List&lt;Response&lt;String&gt;&gt;&gt;(vehicleInfos.size());
+for(VehicleInfo info: vehicleInfos){
+    List&lt;Response&lt;String&gt;&gt; resls = new ArrayList&lt;Response&lt;String&gt;&gt;();
+    resls.add(pip.hget(info.getVehicleSeq()+&quot;&quot;,&quot;longitude&quot;));
+    resls.add(pip.hget(info.getVehicleSeq()+&quot;&quot;,&quot;latitude&quot;));
+    responses.put(info.getVehicleSeq() + &quot;&quot;, resls);//得到了一辆车所有的实时数据--300辆车
+    map.put(info.getVehicleSeq()+&quot;orgId&quot;, info.getOrgId());
+    map.put(info.getVehicleSeq()+&quot;vin&quot;, info.getVin());
+    map.put(info.getVehicleSeq()+&quot;vehiclemodelseq&quot;, info.getVehiclemodelseq());
+}
+pip.sync(); 
+for(String k:responses.keySet()){
+    Coordinate coord = new Coordinate();
+    coord.setLongitude(Long.valueOf(responses.get(k).get(0).get()));//是get，不是toString
+    coord.setLatitude(Long.valueOf(responses.get(k).get(1).get()));
+    coord.setVehicleSeq(Long.valueOf(k));
+    coord.setOrgId((String) map.get(k+&quot;orgId&quot;));
+    coord.setVin((String) map.get(k+&quot;vin&quot;));
+    coord.setVehiclemodelseq((Long) map.get(k+&quot;vehiclemodelseq&quot;));
+    list.add(coord);
+}
+jedis.close();
+long end = System.currentTimeMillis();
+System.out.println(&quot;耗时：&quot;+(end-start)+&quot; ms&quot;);
+return list;  
+</code></pre><p>结果： 第一次为200ms，之后维持在30ms左右<br> <img src="http://osuskkx7k.bkt.clouddn.com/%E6%89%B9%E9%87%8F%E8%AF%BB.PNG" alt="4">  </p>
+<p>总时间大概是单条读取总时间的1/5甚至更低，可以看出管道大大提升了效率，具有更好的性能。  </p>
+<font size="3">注：使用管道所获取的值的类型是Response<string\>,因此需要转为String，如下代码片段： </string\></font> 
+
+<pre><code>Map&lt;String,List&lt;Response&lt;String&gt;&gt;&gt; responses  = new HashMap&lt;String, List&lt;Response&lt;String&gt;&gt;&gt;  (vehicleInfos.size());  
+
+//转String
+responses.get(k).get(0).get();  
+</code></pre><hr>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><ul>
+<li><font size="3">这里仅仅测试了300条数据的操作，已经取得了相对明显的效果。  </font></li>
+<li>对于大量数据的操作，使用Redis管道可以大大提升性能和效率。</li>
+</ul>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h1 id=&quot;Redis管道技术简介&quot;&gt;&lt;a href=&quot;#Redis管道技术简介&quot; class=&quot;headerlink&quot; title=&quot;Redis管道技术简介&quot;&gt;&lt;/a&gt;Redis管道技术简介&lt;/h1&gt;&lt;hr&gt;
+&lt;p&gt;Reids是一个cs模式的Tcp服务，类似于http的请求
+    
+    </summary>
+    
+      <category term="技术" scheme="http://yoursite.com/categories/%E6%8A%80%E6%9C%AF/"/>
+    
+    
+      <category term="Redis" scheme="http://yoursite.com/tags/Redis/"/>
+    
+      <category term="Pipeline" scheme="http://yoursite.com/tags/Pipeline/"/>
+    
+      <category term="批量，缓存" scheme="http://yoursite.com/tags/%E6%89%B9%E9%87%8F%EF%BC%8C%E7%BC%93%E5%AD%98/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>You</title>
+    <link href="http://yoursite.com/2017/07/20/our01/"/>
+    <id>http://yoursite.com/2017/07/20/our01/</id>
+    <published>2017-07-19T16:00:00.000Z</published>
+    <updated>2017-10-09T16:08:31.273Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h1>]]></content>
+    
+    <summary type="html">
+    
+      &lt;h1 id=&quot;概述&quot;&gt;&lt;a href=&quot;#概述&quot; class=&quot;headerlink&quot; title=&quot;概述&quot;&gt;&lt;/a&gt;概述&lt;/h1&gt;
+    
+    </summary>
+    
+      <category term="芭乐" scheme="http://yoursite.com/categories/%E8%8A%AD%E4%B9%90/"/>
+    
+    
+      <category term="Soul" scheme="http://yoursite.com/tags/Soul/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Thrift——入门Demo（Java）</title>
+    <link href="http://yoursite.com/2017/07/18/Thrift/"/>
+    <id>http://yoursite.com/2017/07/18/Thrift/</id>
+    <published>2017-07-18T09:07:07.000Z</published>
+    <updated>2017-10-09T16:08:31.273Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h1><hr>
+<p>Thrift最初由Facebook研发，主要用于各个服务之间的RPC通信。</p>
+<p>Thrift是一个典型的CS（客户端/服务端）结构，客户端和服务端可以使用不同的语言开发。<br>那么它是如何实现使用不同的语言开发呢？<br>答案：一种关联客户端和服务端的中间语言。</p>
+<p>这种语言就是IDL（Interface Description Language）。将这个IDL作为输入文件，编译器就可以生成代码（支持多种），即RPC客户端和服务器通信的无缝跨编程语言。</p>
+<h1 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h1><hr>
+<p>下载官方链接：<a href="http://thrift.apache.org/download" target="_blank" rel="external">http://thrift.apache.org/download</a><br>将下载好的thrift-0.10.0 .exe文件命名为thrift .exe，放在D盘下的一个Thtift文件夹中，<br>为了更方便使用命令，将目录加入到系统Path路径下：</p>
+<p><img src="http://osuskkx7k.bkt.clouddn.com/path.png" alt="image"></p>
+<p>在cmd中输入：thrift -version ，查看是否安装配置成功</p>
+<p><img src="http://osuskkx7k.bkt.clouddn.com/%E7%89%88%E6%9C%AC1.png" alt="image"></p>
+<p>出现版本号，安装成功。</p>
+<h2 id="定义thrift——IDL文件"><a href="#定义thrift——IDL文件" class="headerlink" title="定义thrift——IDL文件"></a>定义thrift——IDL文件</h2><hr>
+<p>IDL文件有许多数据类型</p>
+<ul>
+<li>结构体类型： struct：定义公共的对象，类似于 C 语 言中的结构体定义，在 Java 中是一个 JavaBean</li>
+<li>容器类型：<br>&emsp;&emsp;&emsp;&emsp;&emsp; list：对应 Java 的 ArrayList<br>&emsp;&emsp;&emsp;&emsp;&emsp; set：对应 Java 的 HashSet<br>&emsp;&emsp;&emsp;&emsp;&emsp; map：对应 Java 的 HashMap</li>
+<li>异常类型： exception：对应 Java 的 Exception</li>
+<li>服务类型： service：对应服务的类  </li>
+</ul>
+<p>这里仅仅定义一个服务。<br>thrift定义服务相当于Java中创建Interface，创建的service通过代码生成命令生成客户端和服务端的框架代码。<br>定义形式如下（helloworld.thrift，注意后缀！）：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">namespace java com.test</div><div class="line"></div><div class="line">service HelloWorldService&#123;</div><div class="line"></div><div class="line">    string sayHello(1:string name)</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>——namespace 相当于Java中的package。</p>
+<p>在 cmd中 输入命令：  thrift -gen java helloworld.thrift</p>
+<p><img src="http://osuskkx7k.bkt.clouddn.com/%E5%91%BD%E4%BB%A41.PNG" alt="image"></p>
+<p>可以看到生成了一个名为gen-java的文件夹，其中就是生成的代码，打开后可以看到层级目录下有：</p>
+<p><img src="http://osuskkx7k.bkt.clouddn.com/%E4%BB%A3%E7%A0%81%E7%94%9F%E6%88%90.png" alt="image"></p>
+<p>代码片段：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line">/**</div><div class="line"> * Autogenerated by Thrift Compiler (0.10.0)</div><div class="line"> *</div><div class="line"> * DO NOT EDIT UNLESS YOU ARE SURE THAT YOU KNOW WHAT YOU ARE DOING</div><div class="line"> *  @generated</div><div class="line"> */</div><div class="line">package com.test;</div><div class="line"></div><div class="line">@SuppressWarnings(&#123;&quot;cast&quot;, &quot;rawtypes&quot;, &quot;serial&quot;, &quot;unchecked&quot;, &quot;unused&quot;&#125;)</div><div class="line">@javax.annotation.Generated(value = &quot;Autogenerated by Thrift Compiler (0.10.0)&quot;, date = &quot;2017-07-18&quot;)</div><div class="line">public class HelloWorldService &#123;</div><div class="line"></div><div class="line">  public interface Iface &#123;</div><div class="line"></div><div class="line">    public java.lang.String sayHello(java.lang.String name) throws org.apache.thrift.TException;</div><div class="line"></div><div class="line">  &#125;</div></pre></td></tr></table></figure></p>
+<h1 id="创建项目"><a href="#创建项目" class="headerlink" title="创建项目"></a>创建项目</h1><hr>
+<p>创建一个Maven工程，引入依赖，可在Maven依赖中看到引入的相关Jar包</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">&lt;dependency&gt;</div><div class="line">      &lt;groupId&gt;org.apache.thrift&lt;/groupId&gt;</div><div class="line">      &lt;artifactId&gt;libthrift&lt;/artifactId&gt;</div><div class="line">      &lt;version&gt;0.10.0&lt;/version&gt;</div><div class="line">&lt;/dependency&gt;</div></pre></td></tr></table></figure>
+<h1 id="服务端实现与启动"><a href="#服务端实现与启动" class="headerlink" title="服务端实现与启动"></a>服务端实现与启动</h1><hr>
+<p>服务端相关操作的步骤如下：</p>
+<ul>
+<li>实现服务处理接口Impl</li>
+<li>创建TProcessor</li>
+<li>创建TServerTransport</li>
+<li>创建TProtocol</li>
+<li>创建TServer</li>
+<li>启动Server  </li>
+</ul>
+<font size="4">服务端实现</font>
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">package com.test;</div><div class="line"></div><div class="line">import org.apache.thrift.TException;</div><div class="line"></div><div class="line">public class HelloWorldImpl implements HelloWorldService.Iface&#123;</div><div class="line">	</div><div class="line">	public HelloWorldImpl()&#123;	</div><div class="line">	&#125;</div><div class="line">	</div><div class="line">	public String sayHello(String name) throws TException &#123;</div><div class="line">		</div><div class="line">		return &quot;Hi,&quot; +name + &quot; welcome !&quot;;</div><div class="line">	&#125;</div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<font size="4">服务端启动</font>
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div></pre></td><td class="code"><pre><div class="line">package com.test;</div><div class="line"></div><div class="line">import org.apache.thrift.TProcessor;</div><div class="line">import org.apache.thrift.protocol.TBinaryProtocol;</div><div class="line">import org.apache.thrift.server.TServer;</div><div class="line">import org.apache.thrift.server.TSimpleServer;</div><div class="line">import org.apache.thrift.transport.TServerSocket;</div><div class="line"></div><div class="line">public class HelloServer &#123;</div><div class="line">	</div><div class="line">	public static final int SERVER_PORT = 8090;</div><div class="line">	</div><div class="line">	public void startServer()&#123;	</div><div class="line">		System.out.println(&quot;Server is Runing......&quot;);</div><div class="line">		</div><div class="line">		TProcessor tprocessor = new HelloWorldService.Processor(new HelloWorldImpl());	</div><div class="line">		//简单的单线程服务模型，一般用于测试</div><div class="line">		try &#123;</div><div class="line">			TServerSocket serverTransport = new TServerSocket(SERVER_PORT);</div><div class="line">			TServer.Args tArgs = new TServer.Args(serverTransport);</div><div class="line">			tArgs.processor(tprocessor);</div><div class="line">			tArgs.protocolFactory(new TBinaryProtocol.Factory());</div><div class="line">			TServer server = new TSimpleServer(tArgs);</div><div class="line">			server.serve();</div><div class="line">			</div><div class="line">		&#125; catch (Exception e) &#123;</div><div class="line">			System.out.println(&quot;Server start error！&quot;);</div><div class="line">			e.printStackTrace();</div><div class="line">		&#125;</div><div class="line">	&#125;</div><div class="line">	public static void main(String[] args) &#123;</div><div class="line">		HelloServer server = new HelloServer();</div><div class="line">		server.startServer();</div><div class="line">	&#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>运行上面的启动类，控制台输出：Server is Runing……</p>
+<p><img src="http://osuskkx7k.bkt.clouddn.com/%E6%9C%8D%E5%8A%A1%E5%90%AF%E5%8A%A8.png" alt="image"></p>
+<h1 id="客户端启动"><a href="#客户端启动" class="headerlink" title="客户端启动"></a>客户端启动</h1><hr>
+<font size="4">客户端步骤：</font>
+
+<ul>
+<li>创建Transport</li>
+<li>创建TProtocol</li>
+<li>基于TTransport和TProtocol创建 Client</li>
+<li>调用Client的相应方法</li>
+</ul>
+<font size="4">客户端启动</font>
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div></pre></td><td class="code"><pre><div class="line">package com.test;</div><div class="line"></div><div class="line">import org.apache.thrift.protocol.TBinaryProtocol;</div><div class="line">import org.apache.thrift.protocol.TProtocol;</div><div class="line">import org.apache.thrift.transport.TSocket;</div><div class="line">import org.apache.thrift.transport.TTransport;</div><div class="line"></div><div class="line">public class HelloClient &#123;</div><div class="line">	</div><div class="line">	public static final String SERVER_IP = &quot;localhost&quot;;</div><div class="line">	public static final int SERVER_PORT = 8090;</div><div class="line">	public static final int TIMEOUT = 30000;</div><div class="line">	</div><div class="line">	public void startClient(String userName)&#123;</div><div class="line">		TTransport transport = null;</div><div class="line">		try &#123;</div><div class="line">			transport = new TSocket(SERVER_IP,SERVER_PORT,TIMEOUT);</div><div class="line">			//协议要和服务端一致</div><div class="line">			TProtocol protocol  = new TBinaryProtocol(transport);</div><div class="line">			</div><div class="line">			HelloWorldService.Client client = new HelloWorldService.Client(protocol);</div><div class="line">			transport.open();</div><div class="line">			</div><div class="line">			String result = client.sayHello(userName);		</div><div class="line">			System.out.println(&quot;Thrift client result is:&quot;+result);</div><div class="line">			</div><div class="line">		&#125; catch (Exception e) &#123;</div><div class="line">			System.out.println(&quot;client is error!&quot;);</div><div class="line">		&#125;finally&#123;</div><div class="line">			if(null != transport)&#123;</div><div class="line">				transport.close();</div><div class="line">			&#125;</div><div class="line">		&#125;	</div><div class="line">	&#125;</div><div class="line">	public static void main(String[] args) &#123;</div><div class="line">		HelloClient client = new HelloClient();</div><div class="line">		client.startClient(&quot;Z Yong&quot;);</div><div class="line">	&#125;	</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<font size="4">控制台输出：  Thrift client result is:  Hi,Z Yong welcome !<br></font>
+
+<p><img src="http://osuskkx7k.bkt.clouddn.com/%E8%BE%93%E5%87%BA2.PNG" alt="image"></p>
+<font size="5"><strong>客户端成功收到了服务端返回的请求结果，通信完成</strong>。</font>
+
+
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h1 id=&quot;概述&quot;&gt;&lt;a href=&quot;#概述&quot; class=&quot;headerlink&quot; title=&quot;概述&quot;&gt;&lt;/a&gt;概述&lt;/h1&gt;&lt;hr&gt;
+&lt;p&gt;Thrift最初由Facebook研发，主要用于各个服务之间的RPC通信。&lt;/p&gt;
+&lt;p&gt;Thrift是一个典型的CS（客户端/服
+    
+    </summary>
+    
+      <category term="技术" scheme="http://yoursite.com/categories/%E6%8A%80%E6%9C%AF/"/>
+    
+    
+      <category term="Thrift" scheme="http://yoursite.com/tags/Thrift/"/>
+    
+      <category term="RPC" scheme="http://yoursite.com/tags/RPC/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Mysql批量操作之更新及插入</title>
+    <link href="http://yoursite.com/2017/07/12/mysql%E6%89%B9%E9%87%8F%E6%9B%B4%E6%96%B0/"/>
+    <id>http://yoursite.com/2017/07/12/mysql批量更新/</id>
+    <published>2017-07-12T07:12:12.000Z</published>
+    <updated>2017-10-09T16:08:31.273Z</updated>
+    
+    <content type="html"><![CDATA[<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>   这个问题困扰了整整一天。<br>   当遇到多条记录需要插入或者更新的时候，往往会使用批量操作来提高效率，提高性能。然而在使用过程中确是出现了各种问题，真的是有些坑只有趟过才知道！！<br>   好了，话不多说，进入正题。<br>   注：数据库Mysql     持久层框架 Mybatis</p>
+<h2 id="批量更新"><a href="#批量更新" class="headerlink" title="批量更新"></a>批量更新</h2><p>需求如下代码：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">Map&lt;String,Object&gt; ucmap = new HashMap&lt;String, Object&gt;();</div><div class="line">		ucmap.put(&quot;updateUser&quot;,&quot;zyong&quot;);</div><div class="line">		ucmap.put(&quot;updateTime&quot;, time);</div><div class="line">		ucmap.put(&quot;list&quot;, updateClist);</div><div class="line">		connectorInfoMapper.updateBatch(ucmap);</div></pre></td></tr></table></figure></p>
+<p>这里的需求是对设备的信息进行批量更新，利用Map来传参，Map中包含了一个List，这个List包含了需要更新的对象集合，也就是多条记录。<br>sql片段如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">&lt;update id=&quot;updateBatch&quot; parameterType=&quot;java.util.Map&quot;&gt;</div><div class="line">      &lt;foreach collection=&quot;list&quot; item=&quot;item&quot; index=&quot;index&quot; separator=&quot;;&quot;&gt;</div><div class="line"> update connector_info</div><div class="line">    set  </div><div class="line">      Connector_Type = #&#123;item.connectorType,jdbcType=INTEGER&#125;,</div><div class="line">      Voltage_Upper_Limits = #&#123;item.voltageUpperLimits,jdbcType=INTEGER&#125;,</div><div class="line">      Voltage_Lower_Limits = #&#123;item.voltageLowerLimits,jdbcType=INTEGER&#125;,</div><div class="line">      Current = #&#123;item.current,jdbcType=INTEGER&#125;,</div><div class="line">      Power = #&#123;item.power,jdbcType=DOUBLE&#125;,</div><div class="line">      National_Standard = #&#123;item.nationalStandard,jdbcType=INTEGER&#125;,</div><div class="line">      Update_User = #&#123;updateUser,jdbcType=VARCHAR&#125;,</div><div class="line">	  Update_Time = FROM_UNIXTIME(#&#123;updateTime,jdbcType=TIMESTAMP&#125;)   </div><div class="line">    where Connector_ID = #&#123;item.connectorId,jdbcType=VARCHAR&#125;</div><div class="line">    &lt;/foreach&gt;</div><div class="line"> &lt;/update&gt;</div></pre></td></tr></table></figure></p>
+<p>   可以看到，这里使用了foreach标签进行迭代，item代表着每一个元素，item.power等代表的就是每个元素的属性，而没有加上item的参数如updateUser、updateTime等则是存放在Map中的参数，从需求代码中能看得更加明显。</p>
+<p>当我检查了多遍后，感觉没问题之后，运行。<br>控制台的错误让我明白还是太年轻——报错了！！！仔细一看，是Sql语法错误，What？我把sql放入Navicat中美化，又检查了好几遍，这明明没有错啊！</p>
+<p>于是开启了百度，各种查：</p>
+<ul>
+<li>有的说把separator=”;”中的分号换成——separator=”UNION ALL”，测试，还是报同样的错误。</li>
+<li>将几个属于Map的字段删除再测试，依然报错  </li>
+</ul>
+<p>查了很多并没有什么实质性的进展，将多条数据改成一条数据进行更新，测试，竟然通过了！——原因很明显：批量操作的原因导致。<br>再百度，终于找到了答案：<br>并不是Sql的原因，而是数据库设置的原因————Mysql需要打开批量更新的设置。</p>
+<font size="5">在数据库JDBC链接中加入： <strong>&amp;allowMultiQueries=true</strong></font><br>如下：<br>jdbc.url=jdbc:mysql://139.224.35.81:3306/evshare?useUnicode=true&amp;characterEncoding=UTF-8&amp;allowMultiQueries=true<br><br><font size="5">在添加了这个“开关”之后，成功批量更新多条数据。</font>
+
+<h2 id="批量插入"><a href="#批量插入" class="headerlink" title="批量插入"></a>批量插入</h2><p>相比于批量更新，批量插入则没有类似的设置。<br>一个简单的示例Sql：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line">&lt;insert id=&quot;insertBatch&quot; parameterType=&quot;java.util.Map&quot;&gt;</div><div class="line">  insert into connector_info (Equipment_Seq, Connector_ID, </div><div class="line">      Connector_Type, Voltage_Upper_Limits, </div><div class="line">      Voltage_Lower_Limits, Current, Power, </div><div class="line">      National_Standard,Create_User,Create_Time,Update_Time)</div><div class="line">      values</div><div class="line">      &lt;foreach collection=&quot;list&quot; item=&quot;item&quot; index=&quot;index&quot; separator=&quot;,&quot;&gt;</div><div class="line">     (#&#123;item.equipmentSeq,jdbcType=BIGINT&#125;, #&#123;item.connectorId,jdbcType=VARCHAR&#125;, </div><div class="line">      #&#123;item.connectorType,jdbcType=INTEGER&#125;, #&#123;item.voltageUpperLimits,jdbcType=INTEGER&#125;, </div><div class="line">      #&#123;item.voltageLowerLimits,jdbcType=INTEGER&#125;, #&#123;item.current,jdbcType=INTEGER&#125;, #&#123;item.power,jdbcType=DOUBLE&#125;, </div><div class="line">      #&#123;item.nationalStandard,jdbcType=INTEGER&#125;,</div><div class="line">      #&#123;createUser,jdbcType=VARCHAR&#125;,</div><div class="line">      FROM_UNIXTIME(#&#123;createTime,jdbcType=TIMESTAMP&#125;),</div><div class="line">      FROM_UNIXTIME(#&#123;updateTime,jdbcType=TIMESTAMP&#125;))</div><div class="line">      &lt;/foreach&gt;</div><div class="line">  &lt;/insert&gt;</div></pre></td></tr></table></figure></p>
+<h2 id="总结："><a href="#总结：" class="headerlink" title="总结："></a>总结：</h2><ol>
+<li>有时候问题并不是出现在代码上，可以往系统环境和配置方面考虑。  </li>
+<li>对于批量更新Mysql需要设置，而Oracle则不需要设置，但sql可能要变化</li>
+</ol>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h2 id=&quot;前言&quot;&gt;&lt;a href=&quot;#前言&quot; class=&quot;headerlink&quot; title=&quot;前言&quot;&gt;&lt;/a&gt;前言&lt;/h2&gt;&lt;p&gt;   这个问题困扰了整整一天。&lt;br&gt;   当遇到多条记录需要插入或者更新的时候，往往会使用批量操作来提高效率，提高性能。然而在使用过程中确
+    
+    </summary>
+    
+      <category term="技术" scheme="http://yoursite.com/categories/%E6%8A%80%E6%9C%AF/"/>
+    
+    
+      <category term="Mysql" scheme="http://yoursite.com/tags/Mysql/"/>
+    
+      <category term="Mybatis" scheme="http://yoursite.com/tags/Mybatis/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Jersey—— 一个基于Rest风格的Web Service开发框架</title>
+    <link href="http://yoursite.com/2017/07/10/jersey2/"/>
+    <id>http://yoursite.com/2017/07/10/jersey2/</id>
+    <published>2017-07-10T13:54:27.000Z</published>
+    <updated>2017-10-09T16:08:31.273Z</updated>
+    
+    <content type="html"><![CDATA[<h2 id="一、什么是Jersey"><a href="#一、什么是Jersey" class="headerlink" title="一、什么是Jersey"></a>一、什么是Jersey</h2><p>   Jersey 是一个Java规范（JAX-RS）下的基于Rest风格的Web Service开发框架。</p>
+<p>   说的直白一点，主要应用于移动项目，用来给移动终端和服务端传递数据。</p>
+<p>   Rest则是一种目前主流的软件架构风格，它可以通过一套统一的接口为 Web，iOS和Android提供服务。因为有些平台不需要显式的前端，只需要一套提供服务的接口，于是就有了Rest风格的软件架构。</p>
+<h2 id="二、Jersey-Spring-Mybatis搭建一个简单的Web-Service"><a href="#二、Jersey-Spring-Mybatis搭建一个简单的Web-Service" class="headerlink" title="二、Jersey+Spring+Mybatis搭建一个简单的Web Service"></a>二、Jersey+Spring+Mybatis搭建一个简单的Web Service</h2><h4 id="1、在Eclipse下创建一个Maven工程"><a href="#1、在Eclipse下创建一个Maven工程" class="headerlink" title="1、在Eclipse下创建一个Maven工程"></a>1、在Eclipse下创建一个Maven工程</h4><p>工程目录结构如下图：</p>
+<p><img src="http://img.blog.csdn.net/20170710212939408?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvYmFieWxvdmVfQmFMZQ==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt="目录"><br>   上图中——com.zy包下存放业务代码<br>              ——resources文件夹下存放资源文件<br>              ——其它主要有Web.xml和Pom.xml文件</p>
+<h4 id="2、pom-xml"><a href="#2、pom-xml" class="headerlink" title="2、pom.xml"></a>2、pom.xml</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div><div class="line">93</div><div class="line">94</div><div class="line">95</div><div class="line">96</div><div class="line">97</div><div class="line">98</div><div class="line">99</div><div class="line">100</div><div class="line">101</div><div class="line">102</div><div class="line">103</div><div class="line">104</div><div class="line">105</div><div class="line">106</div><div class="line">107</div><div class="line">108</div><div class="line">109</div><div class="line">110</div><div class="line">111</div><div class="line">112</div><div class="line">113</div><div class="line">114</div><div class="line">115</div><div class="line">116</div><div class="line">117</div><div class="line">118</div><div class="line">119</div><div class="line">120</div><div class="line">121</div><div class="line">122</div><div class="line">123</div><div class="line">124</div><div class="line">125</div><div class="line">126</div><div class="line">127</div><div class="line">128</div><div class="line">129</div><div class="line">130</div><div class="line">131</div><div class="line">132</div><div class="line">133</div><div class="line">134</div><div class="line">135</div><div class="line">136</div><div class="line">137</div><div class="line">138</div><div class="line">139</div><div class="line">140</div><div class="line">141</div><div class="line">142</div><div class="line">143</div><div class="line">144</div><div class="line">145</div><div class="line">146</div><div class="line">147</div><div class="line">148</div><div class="line">149</div><div class="line">150</div><div class="line">151</div><div class="line">152</div><div class="line">153</div><div class="line">154</div><div class="line">155</div><div class="line">156</div><div class="line">157</div><div class="line">158</div><div class="line">159</div><div class="line">160</div><div class="line">161</div><div class="line">162</div><div class="line">163</div><div class="line">164</div><div class="line">165</div><div class="line">166</div><div class="line">167</div><div class="line">168</div><div class="line">169</div><div class="line">170</div><div class="line">171</div><div class="line">172</div><div class="line">173</div><div class="line">174</div><div class="line">175</div><div class="line">176</div><div class="line">177</div><div class="line">178</div></pre></td><td class="code"><pre><div class="line">&lt;project xmlns=&quot;http://maven.apache.org/POM/4.0.0&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;  </div><div class="line">  xsi:schemaLocation=&quot;http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd&quot;&gt;  </div><div class="line">  &lt;modelVersion&gt;4.0.0&lt;/modelVersion&gt;  </div><div class="line">  &lt;groupId&gt;com.zy&lt;/groupId&gt;  </div><div class="line">  &lt;artifactId&gt;jersey&lt;/artifactId&gt;  </div><div class="line">  &lt;packaging&gt;war&lt;/packaging&gt;  </div><div class="line">  &lt;version&gt;0.0.1-SNAPSHOT&lt;/version&gt;  </div><div class="line">  &lt;name&gt;jersey Maven Webapp&lt;/name&gt;  </div><div class="line">  &lt;url&gt;http://maven.apache.org&lt;/url&gt;  </div><div class="line">    </div><div class="line">  &lt;properties&gt;  </div><div class="line">        &lt;!-- 指明使用JDK8 --&gt;  </div><div class="line">        &lt;java-version&gt;1.8&lt;/java-version&gt;  </div><div class="line">        &lt;!-- 指明使用utf-8编码 --&gt;  </div><div class="line">        &lt;project.build.sourceEncoding&gt;UTF-8&lt;/project.build.sourceEncoding&gt;  </div><div class="line">        &lt;spring3.version&gt;4.2.6.RELEASE&lt;/spring3.version&gt;  </div><div class="line">        &lt;jersey.version&gt;2.22.2&lt;/jersey.version&gt;  </div><div class="line">    &lt;/properties&gt;  </div><div class="line">      </div><div class="line">      </div><div class="line">  &lt;dependencies&gt;  </div><div class="line">    &lt;dependency&gt;  </div><div class="line">      &lt;groupId&gt;junit&lt;/groupId&gt;  </div><div class="line">      &lt;artifactId&gt;junit&lt;/artifactId&gt;  </div><div class="line">      &lt;version&gt;3.8.1&lt;/version&gt;  </div><div class="line">      &lt;scope&gt;test&lt;/scope&gt;  </div><div class="line">    &lt;/dependency&gt;  </div><div class="line">    &lt;dependency&gt;  </div><div class="line">    &lt;groupId&gt;redis.clients&lt;/groupId&gt;  </div><div class="line">    &lt;artifactId&gt;jedis&lt;/artifactId&gt;  </div><div class="line">    &lt;version&gt;2.9.0&lt;/version&gt;  </div><div class="line">    &lt;/dependency&gt;  </div><div class="line">    &lt;!-- Jersey依赖 --&gt;  </div><div class="line">    &lt;dependency&gt;  </div><div class="line">            &lt;groupId&gt;org.glassfish.jersey.containers&lt;/groupId&gt;  </div><div class="line">            &lt;artifactId&gt;jersey-container-servlet&lt;/artifactId&gt;  </div><div class="line">            &lt;version&gt;$&#123;jersey.version&#125;&lt;/version&gt;  </div><div class="line">        &lt;/dependency&gt;  </div><div class="line">  </div><div class="line">        &lt;dependency&gt;  </div><div class="line">            &lt;groupId&gt;org.springframework&lt;/groupId&gt;  </div><div class="line">            &lt;artifactId&gt;spring-web&lt;/artifactId&gt;  </div><div class="line">            &lt;version&gt;$&#123;spring3.version&#125;&lt;/version&gt;  </div><div class="line">            &lt;scope&gt;compile&lt;/scope&gt;  </div><div class="line">        &lt;/dependency&gt;  </div><div class="line">  </div><div class="line">        &lt;dependency&gt;  </div><div class="line">            &lt;groupId&gt;org.glassfish.jersey.ext&lt;/groupId&gt;  </div><div class="line">            &lt;artifactId&gt;jersey-spring3&lt;/artifactId&gt;  </div><div class="line">            &lt;version&gt;$&#123;jersey.version&#125;&lt;/version&gt;  </div><div class="line">        &lt;/dependency&gt;  </div><div class="line">  </div><div class="line">        &lt;dependency&gt;  </div><div class="line">            &lt;groupId&gt;org.glassfish.jersey.media&lt;/groupId&gt;  </div><div class="line">            &lt;artifactId&gt;jersey-media-json-jackson&lt;/artifactId&gt;  </div><div class="line">            &lt;version&gt;$&#123;jersey.version&#125;&lt;/version&gt;  </div><div class="line">        &lt;/dependency&gt;  </div><div class="line">    &lt;!-- 加入mysql驱动依赖包 --&gt;  </div><div class="line">    &lt;dependency&gt;  </div><div class="line">            &lt;groupId&gt;mysql&lt;/groupId&gt;  </div><div class="line">            &lt;artifactId&gt;mysql-connector-java&lt;/artifactId&gt;  </div><div class="line">            &lt;version&gt;5.1.27&lt;/version&gt;  </div><div class="line">    &lt;/dependency&gt;  </div><div class="line">      </div><div class="line">    &lt;!-- 引入mybatis --&gt;  </div><div class="line">        &lt;dependency&gt;  </div><div class="line">            &lt;groupId&gt;org.mybatis&lt;/groupId&gt;  </div><div class="line">            &lt;artifactId&gt;mybatis-spring&lt;/artifactId&gt;  </div><div class="line">            &lt;version&gt;1.1.1&lt;/version&gt;  </div><div class="line">        &lt;/dependency&gt;  </div><div class="line">        &lt;dependency&gt;  </div><div class="line">            &lt;groupId&gt;org.mybatis&lt;/groupId&gt;  </div><div class="line">            &lt;artifactId&gt;mybatis&lt;/artifactId&gt;  </div><div class="line">            &lt;version&gt;3.2.8&lt;/version&gt;  </div><div class="line">        &lt;/dependency&gt;  </div><div class="line">    &lt;!-- 引入数据源 --&gt;  </div><div class="line">        &lt;dependency&gt;  </div><div class="line">            &lt;groupId&gt;com.alibaba&lt;/groupId&gt;  </div><div class="line">            &lt;artifactId&gt;druid&lt;/artifactId&gt;  </div><div class="line">            &lt;version&gt;1.0.1&lt;/version&gt;  </div><div class="line">        &lt;/dependency&gt;  </div><div class="line">        &lt;dependency&gt;  </div><div class="line">            &lt;groupId&gt;org.aspectj&lt;/groupId&gt;  </div><div class="line">            &lt;artifactId&gt;aspectjweaver&lt;/artifactId&gt;  </div><div class="line">            &lt;version&gt;1.7.4&lt;/version&gt;  </div><div class="line">        &lt;/dependency&gt;  </div><div class="line">        &lt;!-- 加入fastjson依赖包 --&gt;  </div><div class="line">        &lt;dependency&gt;  </div><div class="line">            &lt;groupId&gt;com.alibaba&lt;/groupId&gt;  </div><div class="line">            &lt;artifactId&gt;fastjson&lt;/artifactId&gt;  </div><div class="line">            &lt;version&gt;1.1.37&lt;/version&gt;  </div><div class="line">        &lt;/dependency&gt;  </div><div class="line">  </div><div class="line">        &lt;dependency&gt;  </div><div class="line">            &lt;groupId&gt;com.github.pagehelper&lt;/groupId&gt;  </div><div class="line">            &lt;artifactId&gt;pagehelper&lt;/artifactId&gt;  </div><div class="line">            &lt;version&gt;3.7.6&lt;/version&gt;  </div><div class="line">        &lt;/dependency&gt;  </div><div class="line">        &lt;dependency&gt;  </div><div class="line">            &lt;groupId&gt;cglib&lt;/groupId&gt;  </div><div class="line">            &lt;artifactId&gt;cglib&lt;/artifactId&gt;  </div><div class="line">            &lt;version&gt;2.2.2&lt;/version&gt;  </div><div class="line">        &lt;/dependency&gt;  </div><div class="line">        &lt;dependency&gt;  </div><div class="line">            &lt;groupId&gt;commons-io&lt;/groupId&gt;  </div><div class="line">            &lt;artifactId&gt;commons-io&lt;/artifactId&gt;  </div><div class="line">            &lt;version&gt;2.4&lt;/version&gt;  </div><div class="line">        &lt;/dependency&gt;  </div><div class="line">        &lt;dependency&gt;  </div><div class="line">            &lt;groupId&gt;org.glassfish.jersey.ext&lt;/groupId&gt;  </div><div class="line">            &lt;artifactId&gt;jersey-bean-validation&lt;/artifactId&gt;  </div><div class="line">            &lt;version&gt;2.22.2&lt;/version&gt;  </div><div class="line">            &lt;exclusions&gt;  </div><div class="line">                &lt;exclusion&gt;  </div><div class="line">                    &lt;groupId&gt;org.hibernate&lt;/groupId&gt;  </div><div class="line">                    &lt;artifactId&gt;hibernate-validator&lt;/artifactId&gt;  </div><div class="line">                &lt;/exclusion&gt;  </div><div class="line">            &lt;/exclusions&gt;  </div><div class="line">        &lt;/dependency&gt;  </div><div class="line">        &lt;dependency&gt;  </div><div class="line">            &lt;groupId&gt;commons-beanutils&lt;/groupId&gt;  </div><div class="line">            &lt;artifactId&gt;commons-beanutils&lt;/artifactId&gt;  </div><div class="line">            &lt;version&gt;1.7.0&lt;/version&gt;  </div><div class="line">        &lt;/dependency&gt;  </div><div class="line">          </div><div class="line">        &lt;dependency&gt;  </div><div class="line">            &lt;groupId&gt;org.slf4j&lt;/groupId&gt;  </div><div class="line">            &lt;artifactId&gt;slf4j-log4j12&lt;/artifactId&gt;  </div><div class="line">            &lt;version&gt;1.7.5&lt;/version&gt;  </div><div class="line">        &lt;/dependency&gt;  </div><div class="line">        &lt;!-- E起充解码包 --&gt;  </div><div class="line">        &lt;dependency&gt;  </div><div class="line">            &lt;groupId&gt;com.extracme.evready&lt;/groupId&gt;  </div><div class="line">            &lt;artifactId&gt;decode&lt;/artifactId&gt;  </div><div class="line">            &lt;version&gt;1.1.6&lt;/version&gt;  </div><div class="line">        &lt;/dependency&gt;  </div><div class="line">        &lt;dependency&gt;  </div><div class="line">            &lt;groupId&gt;com.extracme&lt;/groupId&gt;  </div><div class="line">            &lt;artifactId&gt;evreadyHelp&lt;/artifactId&gt;  </div><div class="line">            &lt;version&gt;0.0.1-SNAPSHOT&lt;/version&gt;  </div><div class="line">        &lt;/dependency&gt;  </div><div class="line">        &lt;!-- disconf注解插件 --&gt;  </div><div class="line">        &lt;dependency&gt;  </div><div class="line">            &lt;groupId&gt;com.baidu.disconf&lt;/groupId&gt;  </div><div class="line">            &lt;artifactId&gt;disconf-client&lt;/artifactId&gt;  </div><div class="line">            &lt;version&gt;2.6.36&lt;/version&gt;  </div><div class="line">        &lt;/dependency&gt;  </div><div class="line">        &lt;dependency&gt;  </div><div class="line">            &lt;groupId&gt;org.apache.httpcomponents&lt;/groupId&gt;  </div><div class="line">            &lt;artifactId&gt;httpclient&lt;/artifactId&gt;  </div><div class="line">            &lt;version&gt;4.5.2&lt;/version&gt;  </div><div class="line">        &lt;/dependency&gt;  </div><div class="line">  &lt;/dependencies&gt;  </div><div class="line">   </div><div class="line">  &lt;build&gt;  </div><div class="line">    &lt;finalName&gt;jersey&lt;/finalName&gt;  </div><div class="line">        &lt;plugins&gt;  </div><div class="line">            &lt;plugin&gt;  </div><div class="line">                &lt;groupId&gt;org.apache.maven.plugins&lt;/groupId&gt;  </div><div class="line">                &lt;artifactId&gt;maven-surefire-plugin&lt;/artifactId&gt;  </div><div class="line">                &lt;version&gt;2.18.1&lt;/version&gt;  </div><div class="line">                &lt;configuration&gt;  </div><div class="line">                    &lt;skipTests&gt;true&lt;/skipTests&gt;  </div><div class="line">                &lt;/configuration&gt;  </div><div class="line">            &lt;/plugin&gt;  </div><div class="line">            &lt;plugin&gt;  </div><div class="line">                &lt;groupId&gt;org.apache.maven.plugins&lt;/groupId&gt;  </div><div class="line">                &lt;artifactId&gt;maven-compiler-plugin&lt;/artifactId&gt;  </div><div class="line">                &lt;version&gt;2.3.2&lt;/version&gt;  </div><div class="line">                &lt;configuration&gt;  </div><div class="line">                    &lt;skipTests&gt;true&lt;/skipTests&gt;  </div><div class="line">                    &lt;source&gt;1.8&lt;/source&gt;  </div><div class="line">                    &lt;target&gt;1.8&lt;/target&gt;  </div><div class="line">                &lt;/configuration&gt;  </div><div class="line">            &lt;/plugin&gt;  </div><div class="line">        &lt;/plugins&gt;  </div><div class="line">  &lt;/build&gt;  </div><div class="line">&lt;/project&gt;</div></pre></td></tr></table></figure>
+<p>以上就是项目所依赖的jar包，其中有一些是项目需要的可以忽略，重点是Jersey和spring以及mybatis的依赖，上面有相关的注释。</p>
+<h4 id="3、web-xml"><a href="#3、web-xml" class="headerlink" title="3、web.xml"></a>3、web.xml</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div></pre></td><td class="code"><pre><div class="line">&lt;web-app&gt;  </div><div class="line">      </div><div class="line">    &lt;listener&gt;  </div><div class="line">        &lt;listener-class&gt;org.springframework.web.context.ContextLoaderListener&lt;/listener-class&gt;  </div><div class="line">    &lt;/listener&gt;  </div><div class="line">    &lt;listener&gt;  </div><div class="line">        &lt;listener-class&gt;org.springframework.web.context.request.RequestContextListener&lt;/listener-class&gt;  </div><div class="line">    &lt;/listener&gt;  </div><div class="line">    &lt;context-param&gt;  </div><div class="line">        &lt;param-name&gt;contextConfigLocation&lt;/param-name&gt;  </div><div class="line">        &lt;param-value&gt;classpath:spring.xml&lt;/param-value&gt;  </div><div class="line">    &lt;/context-param&gt;  </div><div class="line">    &lt;servlet&gt;  </div><div class="line">        &lt;servlet-name&gt;jersey&lt;/servlet-name&gt;  </div><div class="line">        &lt;servlet-class&gt;org.glassfish.jersey.servlet.ServletContainer&lt;/servlet-class&gt;  </div><div class="line">        &lt;init-param&gt;  </div><div class="line">            &lt;param-name&gt;javax.ws.rs.Application&lt;/param-name&gt;  </div><div class="line">            &lt;param-value&gt;com.zy.StartApplication&lt;/param-value&gt;  </div><div class="line">              </div><div class="line">        &lt;/init-param&gt;  </div><div class="line">        &lt;load-on-startup&gt;1&lt;/load-on-startup&gt;  </div><div class="line">    &lt;/servlet&gt;  </div><div class="line">    &lt;servlet-mapping&gt;  </div><div class="line">        &lt;servlet-name&gt;jersey&lt;/servlet-name&gt;  </div><div class="line">        &lt;url-pattern&gt;/*&lt;/url-pattern&gt;  </div><div class="line">    &lt;/servlet-mapping&gt;  </div><div class="line">&lt;/web-app&gt;</div></pre></td></tr></table></figure>
+<p>以上是web.xml的配置。<br>——listener定义了Spring框架中的Bean随着Web容器启动而被创建。<br>——context-param定义了Spring.xml的位置。<br>——servlet定义了org.glassfish.jersey.servlet.ServletContainer，相当于对客户端的请求（/*）进行了拦截，同时还有一个启动参数，它是Application类的实现，需要我们自己定义，利用它来注册资源，实现如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">public class StartApplication extends ResourceConfig &#123;  </div><div class="line">  </div><div class="line">    /**  </div><div class="line">     * Register JAX-RS application components.  </div><div class="line">     */  </div><div class="line">    public StartApplication() &#123;  </div><div class="line">        //register(AuthRequestFilter.class);  </div><div class="line">        packages(&quot;com.zy.resource&quot;);  </div><div class="line">      </div><div class="line">    &#125;  </div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h4 id="4、spring-mybatis-xml和mybatis-config-xml以及spring-xml"><a href="#4、spring-mybatis-xml和mybatis-config-xml以及spring-xml" class="headerlink" title="4、spring-mybatis.xml和mybatis-config.xml以及spring.xml"></a>4、spring-mybatis.xml和mybatis-config.xml以及spring.xml</h4><p>Spring-mybatis.xml如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div><div class="line">93</div><div class="line">94</div><div class="line">95</div></pre></td><td class="code"><pre><div class="line">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;  </div><div class="line">&lt;beans xmlns=&quot;http://www.springframework.org/schema/beans&quot;  </div><div class="line">    xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xmlns:aop=&quot;http://www.springframework.org/schema/aop&quot;  </div><div class="line">    xmlns:c=&quot;http://www.springframework.org/schema/c&quot; xmlns:cache=&quot;http://www.springframework.org/schema/cache&quot;  </div><div class="line">    xmlns:context=&quot;http://www.springframework.org/schema/context&quot;  </div><div class="line">    xmlns:jdbc=&quot;http://www.springframework.org/schema/jdbc&quot; xmlns:jee=&quot;http://www.springframework.org/schema/jee&quot;  </div><div class="line">    xmlns:lang=&quot;http://www.springframework.org/schema/lang&quot; xmlns:mvc=&quot;http://www.springframework.org/schema/mvc&quot;  </div><div class="line">    xmlns:p=&quot;http://www.springframework.org/schema/p&quot; xmlns:task=&quot;http://www.springframework.org/schema/task&quot;  </div><div class="line">    xmlns:tx=&quot;http://www.springframework.org/schema/tx&quot; xmlns:util=&quot;http://www.springframework.org/schema/util&quot;  </div><div class="line">    xsi:schemaLocation=&quot;http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd  </div><div class="line">        http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd  </div><div class="line">        http://www.springframework.org/schema/cache http://www.springframework.org/schema/cache/spring-cache.xsd  </div><div class="line">        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd  </div><div class="line">        http://www.springframework.org/schema/jdbc http://www.springframework.org/schema/jdbc/spring-jdbc.xsd  </div><div class="line">        http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee.xsd  </div><div class="line">        http://www.springframework.org/schema/lang http://www.springframework.org/schema/lang/spring-lang.xsd  </div><div class="line">        http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd  </div><div class="line">        http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task.xsd  </div><div class="line">        http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd  </div><div class="line">        http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd&quot;&gt;  </div><div class="line">          </div><div class="line">      </div><div class="line">          </div><div class="line">          </div><div class="line">    &lt;!-- 配置测试环境数据源 --&gt;  </div><div class="line">    &lt;bean name=&quot;test-dataSource&quot; class=&quot;com.alibaba.druid.pool.DruidDataSource&quot;  </div><div class="line">        init-method=&quot;init&quot; destroy-method=&quot;close&quot;&gt;  </div><div class="line">        &lt;property name=&quot;driverClassName&quot; value=&quot;com.mysql.jdbc.Driver&quot; /&gt;  </div><div class="line">        &lt;property name=&quot;url&quot; value=&quot;jdbc:mysql://localhost:3306/jersey-test?useUnicode=true&amp;characterEncoding=UTF-8&quot; /&gt;  </div><div class="line">        &lt;property name=&quot;username&quot; value=&quot;root&quot; /&gt;  </div><div class="line">        &lt;property name=&quot;password&quot; value=&quot;&quot; /&gt;  </div><div class="line">  </div><div class="line">        &lt;!-- 初始化连接大小 --&gt;  </div><div class="line">        &lt;property name=&quot;initialSize&quot; value=&quot;0&quot; /&gt;  </div><div class="line">        &lt;!-- 连接池最大使用连接数量 --&gt;  </div><div class="line">        &lt;property name=&quot;maxActive&quot; value=&quot;20&quot; /&gt;  </div><div class="line">        &lt;!-- 连接池最小空闲 --&gt;  </div><div class="line">        &lt;property name=&quot;minIdle&quot; value=&quot;0&quot; /&gt;  </div><div class="line">        &lt;!-- 获取连接最大等待时间 --&gt;  </div><div class="line">        &lt;property name=&quot;maxWait&quot; value=&quot;60000&quot; /&gt;  </div><div class="line">  </div><div class="line">        &lt;property name=&quot;testOnBorrow&quot; value=&quot;false&quot; /&gt;  </div><div class="line">        &lt;property name=&quot;testOnReturn&quot; value=&quot;false&quot; /&gt;  </div><div class="line">        &lt;property name=&quot;testWhileIdle&quot; value=&quot;true&quot; /&gt;  </div><div class="line">  </div><div class="line">        &lt;!-- 配置间隔多久才进行一次检测，检测需要关闭的空闲连接，单位是毫秒 --&gt;  </div><div class="line">        &lt;property name=&quot;timeBetweenEvictionRunsMillis&quot; value=&quot;60000&quot; /&gt;  </div><div class="line">        &lt;!-- 配置一个连接在池中最小生存的时间，单位是毫秒 --&gt;  </div><div class="line">        &lt;property name=&quot;minEvictableIdleTimeMillis&quot; value=&quot;25200000&quot; /&gt;  </div><div class="line">  </div><div class="line">        &lt;!-- 打开removeAbandoned功能 --&gt;  </div><div class="line">        &lt;property name=&quot;removeAbandoned&quot; value=&quot;true&quot; /&gt;  </div><div class="line">        &lt;!-- 1800秒，也就是30分钟 --&gt;  </div><div class="line">        &lt;property name=&quot;removeAbandonedTimeout&quot; value=&quot;1800&quot; /&gt;  </div><div class="line">        &lt;!-- 关闭abanded连接时输出错误日志 --&gt;  </div><div class="line">        &lt;property name=&quot;logAbandoned&quot; value=&quot;true&quot; /&gt;  </div><div class="line">  </div><div class="line">        &lt;!-- 监控数据库 --&gt;  </div><div class="line">        &lt;!-- &lt;property name=&quot;filters&quot; value=&quot;mergeStat&quot; /&gt; --&gt;  </div><div class="line">        &lt;property name=&quot;filters&quot; value=&quot;stat&quot; /&gt;  </div><div class="line">    &lt;/bean&gt;  </div><div class="line">      </div><div class="line">          </div><div class="line">          </div><div class="line">    &lt;!--根据dataSource和configLocation创建一个sqlSessionFactory --&gt;  </div><div class="line">    &lt;bean id=&quot;sqlSessionFactory&quot; class=&quot;org.mybatis.spring.SqlSessionFactoryBean&quot;&gt;  </div><div class="line">        &lt;property name=&quot;dataSource&quot; ref=&quot;test-dataSource&quot; /&gt;  </div><div class="line">        &lt;property name=&quot;configLocation&quot; value=&quot;classpath:mybatis-config.xml&quot;&gt;&lt;/property&gt;  </div><div class="line">    &lt;/bean&gt;  </div><div class="line">    &lt;bean id=&quot;sqlSession&quot; class=&quot;org.mybatis.spring.SqlSessionTemplate&quot;  </div><div class="line">        scope=&quot;prototype&quot;&gt;  </div><div class="line">        &lt;constructor-arg index=&quot;0&quot; ref=&quot;sqlSessionFactory&quot; /&gt;  </div><div class="line">    &lt;/bean&gt;  </div><div class="line">     &lt;!-- 配置事务管理器 --&gt;  </div><div class="line">    &lt;bean name=&quot;transactionManager&quot;  </div><div class="line">        class=&quot;org.springframework.jdbc.datasource.DataSourceTransactionManager&quot;&gt;  </div><div class="line">        &lt;property name=&quot;dataSource&quot; ref=&quot;test-dataSource&quot;&gt;&lt;/property&gt;  </div><div class="line">    &lt;/bean&gt;  </div><div class="line">  </div><div class="line">    &lt;!-- 注解方式配置事物 --&gt;  </div><div class="line">     &lt;tx:annotation-driven transaction-manager=&quot;transactionManager&quot; /&gt;   </div><div class="line">  </div><div class="line">    &lt;bean id=&quot;sqlSessionCache&quot; class=&quot;com.zy.utils.SqlSessionCache&quot;  </div><div class="line">        init-method=&quot;initMapper&quot;&gt;  </div><div class="line">        &lt;!-- 扫描的映射mapper.xml的文件路径 --&gt;  </div><div class="line">        &lt;property name=&quot;packageSearchPath&quot; value=&quot;classpath*:com/zy/*/sql/*.xml&quot;&gt;&lt;/property&gt;  </div><div class="line">        &lt;property name=&quot;sqlSessionFactory&quot; ref=&quot;sqlSessionFactory&quot;&gt;&lt;/property&gt;  </div><div class="line">    &lt;/bean&gt;  </div><div class="line">    &lt;bean class=&quot;org.mybatis.spring.mapper.MapperScannerConfigurer&quot;&gt;  </div><div class="line">        &lt;property name=&quot;basePackage&quot; value=&quot;com.zy.*.mapper&quot; /&gt;  </div><div class="line">    &lt;/bean&gt;  </div><div class="line">      </div><div class="line">    &lt;bean id=&quot;framelnterceptor&quot; class=&quot;com.zy.utils.Framelnterceptor&quot; /&gt;   </div><div class="line">    &lt;aop:aspectj-autoproxy/&gt;     </div><div class="line">&lt;/beans&gt;</div></pre></td></tr></table></figure>
+<p>mybatis-config.xml如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div></pre></td><td class="code"><pre><div class="line">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;  </div><div class="line">&lt;!DOCTYPE configuration PUBLIC    </div><div class="line">    &quot;-//mybatis.org//DTD Config 3.0//EN&quot;    </div><div class="line">    &quot;http://mybatis.org/dtd/mybatis-3-config.dtd&quot;&gt;    </div><div class="line">&lt;configuration&gt;    </div><div class="line">&lt;!--     &lt;properties resource=&quot;project.properties&quot; /&gt; --&gt;  </div><div class="line">    &lt;settings&gt;    </div><div class="line">        &lt;setting name=&quot;cacheEnabled&quot; value=&quot;true&quot; /&gt;  </div><div class="line">        &lt;setting name=&quot;lazyLoadingEnabled&quot; value=&quot;true&quot; /&gt;  </div><div class="line">        &lt;setting name=&quot;multipleResultSetsEnabled&quot; value=&quot;true&quot; /&gt;  </div><div class="line">        &lt;setting name=&quot;useColumnLabel&quot; value=&quot;true&quot; /&gt;  </div><div class="line">        &lt;setting name=&quot;useGeneratedKeys&quot; value=&quot;false&quot; /&gt;  </div><div class="line">        &lt;setting name=&quot;autoMappingBehavior&quot; value=&quot;PARTIAL&quot; /&gt;  </div><div class="line">        &lt;setting name=&quot;defaultExecutorType&quot; value=&quot;SIMPLE&quot; /&gt;  </div><div class="line">        &lt;setting name=&quot;defaultStatementTimeout&quot; value=&quot;25&quot; /&gt;  </div><div class="line">        &lt;setting name=&quot;safeRowBoundsEnabled&quot; value=&quot;false&quot; /&gt;  </div><div class="line">        &lt;setting name=&quot;mapUnderscoreToCamelCase&quot; value=&quot;false&quot; /&gt;  </div><div class="line">        &lt;setting name=&quot;localCacheScope&quot; value=&quot;SESSION&quot; /&gt;  </div><div class="line">        &lt;!-- &lt;setting name=&quot;logImpl&quot; value=&quot;STDOUT_LOGGING&quot; /&gt; --&gt;  </div><div class="line">        &lt;setting name=&quot;jdbcTypeForNull&quot; value=&quot;OTHER&quot; /&gt;  </div><div class="line">        &lt;setting name=&quot;lazyLoadTriggerMethods&quot; value=&quot;equals,clone,hashCode,toString&quot; /&gt;   </div><div class="line">    &lt;/settings&gt;&lt;/configuration&gt;</div></pre></td></tr></table></figure>
+<p>Spring.xml的配置如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;  </div><div class="line">  </div><div class="line">&lt;beans xmlns=&quot;http://www.springframework.org/schema/beans&quot;  </div><div class="line">       xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;  </div><div class="line">       xmlns:context=&quot;http://www.springframework.org/schema/context&quot;  </div><div class="line">       xsi:schemaLocation=&quot;http://www.springframework.org/schema/beans  </div><div class="line">  http://www.springframework.org/schema/beans/spring-beans.xsd  </div><div class="line">  http://www.springframework.org/schema/context  </div><div class="line">  http://www.springframework.org/schema/context/spring-context.xsd&quot;  </div><div class="line">        &gt;  </div><div class="line">    &lt;!-- 自动扫描dao和service包(自动注入) --&gt;  </div><div class="line">    &lt;context:component-scan base-package=&quot;com.zy.*&quot; /&gt;  </div><div class="line">    &lt;import resource=&quot;classpath:spring-mybatis.xml&quot; /&gt;  </div><div class="line">&lt;/beans&gt;</div></pre></td></tr></table></figure>
+<p>注意：在spring-mybatis.xml配置文件的底部配置了一个拦截器——<br><code>&lt;bean id=&quot;framelnterceptor&quot; class=&quot;com.zy.utils.Framelnterceptor&quot; /&gt;</code>     ——作用是输出请求接口的信息和接口返回的信息，以及获取某些与Token相关的信息。</p>
+<h4 id="5、请求过程"><a href="#5、请求过程" class="headerlink" title="5、请求过程"></a>5、请求过程</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line">Resources</div><div class="line">package com.zy.resource;</div><div class="line"></div><div class="line">import javax.ws.rs.Consumes;</div><div class="line">import javax.ws.rs.GET;</div><div class="line">import javax.ws.rs.Path;</div><div class="line">import javax.ws.rs.Produces;</div><div class="line">import javax.ws.rs.core.MediaType;</div><div class="line"></div><div class="line"></div><div class="line">@Path(&quot;/helloworld&quot;)</div><div class="line">public class RestHelloWorld &#123;</div><div class="line">	</div><div class="line">	@GET</div><div class="line">	@Consumes(MediaType.APPLICATION_JSON)</div><div class="line">	@Produces(&quot;application/json;charset=UTF-8&quot;)</div><div class="line">	public String sayHelloWorld()&#123;</div><div class="line">		return &quot;Hello ZY!!!大苏打&quot;;</div><div class="line">	&#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>————这是一个简单的获取资源，使用GET方式获取，屏幕输出     Hello ZY!!!大苏打 。</p>
+<p>资源类是一个简单的 Java 对象 (POJO)，可以实现任何接口，简单、可重用性强。<br>资源类上的常用注解有：<br>@Path，标注资源类或者方法的相对路径<br>@GET，@PUT，@POST，@DELETE，标注方法是HTTP请求的类型。<br>@Produces，标注返回的MIME媒体类型<br>@Consumes，标注可接受请求的MIME媒体类型<br>@PathParam，@QueryParam，@HeaderParam，@CookieParam，@MatrixParam，@FormParam<br>分别标注方法的参数来自于HTTP请求的不同位置，例如<br>@PathParam来自于URL的路径，<br>@QueryParam来自于URL的查询参数，<br>@HeaderParam来自于HTTP请求的头信息，<br>@CookieParam来自于HTTP请求的Cookie。</p>
+<p>##<strong>总结：以上就是一个简单的Jersey框架搭建过程，其中涉及到的很多东西这里没有详细解释，日后深入理解再详谈。</strong></p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h2 id=&quot;一、什么是Jersey&quot;&gt;&lt;a href=&quot;#一、什么是Jersey&quot; class=&quot;headerlink&quot; title=&quot;一、什么是Jersey&quot;&gt;&lt;/a&gt;一、什么是Jersey&lt;/h2&gt;&lt;p&gt;   Jersey 是一个Java规范（JAX-RS）下的基于Res
+    
+    </summary>
+    
+      <category term="技术" scheme="http://yoursite.com/categories/%E6%8A%80%E6%9C%AF/"/>
+    
+    
+      <category term="Java" scheme="http://yoursite.com/tags/Java/"/>
+    
+      <category term="Jersey" scheme="http://yoursite.com/tags/Jersey/"/>
+    
+  </entry>
+  
+</feed>
