@@ -87,7 +87,7 @@
 <link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="并发,Lock," />
+  <meta name="keywords" content="并发,ReentrantLock,重入锁," />
 
 
 
@@ -105,17 +105,17 @@
 
 
 
-<meta name="description" content="一、Lock的介绍我们知道，在Java中锁的实现可以由synchronized关键字来完成，但在Java5之后，出现了一种新的方式来实现——Lock接口。 那么为什么提出这种新的方式呢？在多线程的情况下，当一段代码被synchronized修饰之后，同一时刻只能被一个线程访问，其他线程都必须等到该线程释放锁之后才能有机会获取锁访问这段代码，占用锁的线程只有在两种情况下才能释放锁：    线程执行完">
-<meta name="keywords" content="并发,Lock">
+<meta name="description" content="一、ReentrantLock概念重入锁概念什么是重入锁？   顾名思义，就是支持重复进入的锁。定义：支持一个线程对资源的重复加锁。（注意是一个线程） 回忆前面有关AQS实现的文章，关于独占锁，当一个线程获取锁后，如果该线程再次调用lock()方法，那么该线程会被自己阻塞。原因是在实现tryAcquire()时没有考虑占有锁的线程再次获取锁的场景。因此这个锁是不支持重入的锁。   回顾synchr">
+<meta name="keywords" content="并发,ReentrantLock,重入锁">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Lock接口的介绍及使用">
-<meta property="og:url" content="http://yoursite.com/2017/10/17/Lock接口的介绍及使用/index.html">
+<meta property="og:title" content="ReentrantLock重入锁">
+<meta property="og:url" content="http://yoursite.com/2017/10/20/ReentrantLock重入锁/index.html">
 <meta property="og:site_name" content="ZY&#39;s Blog">
-<meta property="og:description" content="一、Lock的介绍我们知道，在Java中锁的实现可以由synchronized关键字来完成，但在Java5之后，出现了一种新的方式来实现——Lock接口。 那么为什么提出这种新的方式呢？在多线程的情况下，当一段代码被synchronized修饰之后，同一时刻只能被一个线程访问，其他线程都必须等到该线程释放锁之后才能有机会获取锁访问这段代码，占用锁的线程只有在两种情况下才能释放锁：    线程执行完">
-<meta property="og:updated_time" content="2017-10-18T11:30:07.979Z">
+<meta property="og:description" content="一、ReentrantLock概念重入锁概念什么是重入锁？   顾名思义，就是支持重复进入的锁。定义：支持一个线程对资源的重复加锁。（注意是一个线程） 回忆前面有关AQS实现的文章，关于独占锁，当一个线程获取锁后，如果该线程再次调用lock()方法，那么该线程会被自己阻塞。原因是在实现tryAcquire()时没有考虑占有锁的线程再次获取锁的场景。因此这个锁是不支持重入的锁。   回顾synchr">
+<meta property="og:updated_time" content="2017-10-23T13:58:54.746Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Lock接口的介绍及使用">
-<meta name="twitter:description" content="一、Lock的介绍我们知道，在Java中锁的实现可以由synchronized关键字来完成，但在Java5之后，出现了一种新的方式来实现——Lock接口。 那么为什么提出这种新的方式呢？在多线程的情况下，当一段代码被synchronized修饰之后，同一时刻只能被一个线程访问，其他线程都必须等到该线程释放锁之后才能有机会获取锁访问这段代码，占用锁的线程只有在两种情况下才能释放锁：    线程执行完">
+<meta name="twitter:title" content="ReentrantLock重入锁">
+<meta name="twitter:description" content="一、ReentrantLock概念重入锁概念什么是重入锁？   顾名思义，就是支持重复进入的锁。定义：支持一个线程对资源的重复加锁。（注意是一个线程） 回忆前面有关AQS实现的文章，关于独占锁，当一个线程获取锁后，如果该线程再次调用lock()方法，那么该线程会被自己阻塞。原因是在实现tryAcquire()时没有考虑占有锁的线程再次获取锁的场景。因此这个锁是不支持重入的锁。   回顾synchr">
 
 
 
@@ -143,13 +143,13 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2017/10/17/Lock接口的介绍及使用/"/>
+  <link rel="canonical" href="http://yoursite.com/2017/10/20/ReentrantLock重入锁/"/>
 
 
 
 
 
-  <title>Lock接口的介绍及使用 | ZY's Blog</title>
+  <title>ReentrantLock重入锁 | ZY's Blog</title>
   
 
 
@@ -307,7 +307,7 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/10/17/Lock接口的介绍及使用/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/10/20/ReentrantLock重入锁/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Z Yong">
@@ -324,7 +324,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">Lock接口的介绍及使用</h1>
+          <h1 class="post-title" itemprop="name headline">ReentrantLock重入锁</h1>
         
 
         <div class="post-meta">
@@ -336,8 +336,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-10-17T21:40:19+08:00">
-                2017-10-17
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-10-20T19:48:18+08:00">
+                2017-10-20
               </time>
             
 
@@ -393,36 +393,52 @@
       
 
       
-        <h3 id="一、Lock的介绍"><a href="#一、Lock的介绍" class="headerlink" title="一、Lock的介绍"></a>一、Lock的介绍</h3><p>我们知道，在Java中锁的实现可以由synchronized关键字来完成，但在Java5之后，出现了一种新的方式来实现——Lock接口。</p>
-<p>那么为什么提出这种新的方式呢？<br>在多线程的情况下，当一段代码被synchronized修饰之后，同一时刻只能被一个线程访问，其他线程都必须等到该线程释放锁之后才能有机会获取锁访问这段代码，占用锁的线程只有在两种情况下才能释放锁：  </p>
-<ol>
-<li>线程执行完了这段代码，释放锁；</li>
-<li>线程执行发生异常，释放锁；  </li>
-</ol>
-<p>考虑一下，如果该线程由于IO操作或者其他原因（调用Sleep方法）被阻塞了，那么其他线程就会一直无期限地等待下去，后果可想而知。<br>那么能否用一种方式来防止等待的线程无限等待呢？（等待一段时间或者响应中断）通过Lock就可以实现。</p>
-<p>再如：当用多线程对文件进行读写时，读与写是互斥的，写与写是互斥的，但读与读却不是互斥的。如果用synchronized来实现同步，就会有这样的问题：多个线程都只需要读操作，但只能有一个线程进行读操作，其他线程只能等待。<br>那么能不能让线程不用等待，多线程都能进行读操作呢？通过Lock就可以实现。</p>
-<h3 id="二、Lock的用法"><a href="#二、Lock的用法" class="headerlink" title="二、Lock的用法"></a>二、Lock的用法</h3><p>Lock是一个接口，包含以下方法：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">public interface Lock &#123;</div><div class="line">void lock();      //获取锁</div><div class="line">void lockInterruptibly() throws InterruptedException; //可中断的获取锁</div><div class="line">boolean tryLock(); //尝试非阻塞的获取锁</div><div class="line">boolean tryLock(long time, TimeUnit unit) throws InterruptedException; //超时获取锁</div><div class="line">void unlock(); //释放锁</div><div class="line">Condition newCondition(); //获取等待通知组件，和当前的锁绑定</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<p>可以看到当使用Lock时，获取锁和释放锁都是主动调用执行的，而synchronized则是系统自动释放锁的。<br>前四个方法都是用来获取锁的，但各有区别：  </p>
+        <h3 id="一、ReentrantLock概念"><a href="#一、ReentrantLock概念" class="headerlink" title="一、ReentrantLock概念"></a>一、ReentrantLock概念</h3><h4 id="重入锁概念"><a href="#重入锁概念" class="headerlink" title="重入锁概念"></a>重入锁概念</h4><p>什么是重入锁？   顾名思义，就是支持重复进入的锁。<br><strong>定义：支持一个线程对资源的重复加锁。（注意是一个线程）</strong></p>
+<p>回忆前面有关AQS实现的文章，关于独占锁，当一个线程获取锁后，如果该线程再次调用lock()方法，那么该线程会被自己阻塞。<br>原因是在实现tryAcquire()时没有考虑占有锁的线程再次获取锁的场景。因此这个锁是不支持重入的锁。  </p>
+<p>回顾synchronized的实现原理，我们知道它也是支持重进入的锁，即可以多次获取锁。</p>
+<p>那么Lock能不能实现这个功能呢？当然是可以的。<br>ReentrantLock就是一个支持重进入的锁：<strong>在调用lock()方法时，已经获取到锁的线程，可以再次调用lock()方法获取锁而不被阻塞。</strong></p>
+<h4 id="公平与非公平"><a href="#公平与非公平" class="headerlink" title="公平与非公平"></a>公平与非公平</h4><p>关于锁的获取，还有一个公平性的问题，于是就有了公平锁与非公平锁：  </p>
 <ul>
-<li><strong>lock()</strong>：是最常用的获取锁的方法，若锁被其他线程获取，则等待（阻塞）。</li>
-<li><strong>tryLock()</strong>：尝试非阻塞地获取锁，立即返回。获取成功返回true；获取失败返回false，但不会阻塞。</li>
-<li><strong>tryLock(long time, TimeUnit unit)</strong>：与tryLock()相似，但是会超时等待一段时间，如果未获取到返回false。</li>
-<li><strong>lockInterruptibly()</strong>：可中断地获取锁，该方法会响应中断，在锁的获取过程中可以中断当前线程。  </li>
+<li><strong>公平锁：获取锁是顺序的。先对锁请求的线程先获取；</strong>  </li>
+<li><strong>非公平锁：获取锁是无序的。任意线程都可以获取，无关请求先后；</strong></li>
 </ul>
-<p><strong>注：当使用synchronized关键字时，一个线程在等待获取锁的过程中是无法中断的。而使用lockInterruptibly()方法获取某个锁时，如果不能获取到，在进行等待的情况下是可以响应中断的。</strong></p>
-<p>Lock的使用：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">Lock lock = new ReentrantLock(); //可重入锁（Lock的一种实现）</div><div class="line">lock.lock();</div><div class="line">try&#123;</div><div class="line">    dosomething();</div><div class="line">&#125;finally&#123;</div><div class="line">    lock.unlock();</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p><strong>在finally块中释放锁的目的是保证获取锁之后，最终能被释放。</strong><br>不要将获取锁——lock()放在try中，如果在获取锁时发生了异常，异常抛出的同时，也会导致锁的无故释放（需要主动释放）。</p>
-<h3 id="三、与synchronized的区别"><a href="#三、与synchronized的区别" class="headerlink" title="三、与synchronized的区别"></a>三、与synchronized的区别</h3><p>Lock与synchronized的区别：  </p>
+<p>来看看ReentrantLock的构造函数：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">public ReentrantLock() &#123;</div><div class="line">        sync = new NonfairSync();</div><div class="line">    &#125;</div><div class="line">public ReentrantLock(boolean fair) &#123;</div><div class="line">        sync = fair ? new FairSync() : new NonfairSync();</div><div class="line">    &#125;</div></pre></td></tr></table></figure>
+<p>可以看到，ReentrantLock默认构造函数是非公平锁，另一个构造函数：  </p>
+<ul>
+<li>传入true：公平锁  </li>
+<li>传入false：非公平锁</li>
+</ul>
+<h3 id="二、ReentrantLock的实现原理"><a href="#二、ReentrantLock的实现原理" class="headerlink" title="二、ReentrantLock的实现原理"></a>二、ReentrantLock的实现原理</h3><h4 id="重进入"><a href="#重进入" class="headerlink" title="重进入"></a>重进入</h4><p><strong>重进入的实现原理是定义了一个获取锁的计数器</strong>。 涉及到以下两个问题：  </p>
 <ol>
-<li>Lock是一个接口，是代码层面的实现；synchronized是关键字，是内置的语言实现（JVM层面）。</li>
-<li>Lock是显示地获取释放锁，扩展性更强；synchronized是隐式地获取释放锁，更简捷。</li>
-<li>Lock在发生异常时，如果没有主动通过unlock()去释放锁，则很可能造成死锁现象，因此使用Lock时需要在finally块中释放锁；synchronized在发生异常时，会自动释放线程占有的锁，因此不会导致死锁现象发生。</li>
-<li>Lock可以让等待锁的线程响应中断；而使用synchronized时等待锁的线程会一直等待下去，不能响应中断；</li>
-<li>Lock可以尝试非阻塞、可中断、超时地获取锁；synchronized不可以。</li>
-<li>Lock可以知道是否成功获取锁；synchronized无法知道。  </li>
+<li><strong>线程再次获取锁。</strong><br>锁需要识别获取锁的线程是否为当前占据锁的线程，如果是，则再次获取锁成功，计数器+1。</li>
+<li><strong>锁的最终释放。</strong><br>线程重复n次获取了锁，在第n次释放锁后，其他线程能够获取到锁。释放锁时，计数器-1，计数器为0时表示锁释放成功。</li>
 </ol>
-<p>总结：在资源竞争不是很激烈的情况下，Synchronized的性能要优于Lock；但是在资源竞争很激烈的情况下，Synchronized的性能会下降几十倍，Lock的性能更优；</p>
+<hr>
+<p><strong>ReentrantLock</strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">public class ReentrantLock implements Lock, java.io.Serializable &#123;</div><div class="line">private final Sync sync;</div><div class="line">//AQS</div><div class="line">abstract static class Sync extends AbstractQueuedSynchronizer &#123;...&#125;;</div><div class="line">//非公平锁</div><div class="line">static final class NonfairSync extends Sync &#123;...&#125;;</div><div class="line">//公平锁</div><div class="line">static final class FairSync extends Sync &#123;...&#125;;</div><div class="line"></div><div class="line">....(省略)</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>从源码可以看到，<strong>ReentrantLock的实现依旧是依靠队列同步器AQS（Sync继承自AQS），不同的是这里有两个AQS的实现类，NonfairSync和FairSync，分别实现非公平锁和公平锁的功能。</strong></p>
+<h4 id="非公平锁的实现"><a href="#非公平锁的实现" class="headerlink" title="非公平锁的实现"></a>非公平锁的实现</h4><p>非公平锁获取锁的方法：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line">final boolean nonfairTryAcquire(int acquires) &#123;</div><div class="line">            final Thread current = Thread.currentThread();</div><div class="line">            int c = getState();</div><div class="line">            if (c == 0) &#123;</div><div class="line">                if (compareAndSetState(0, acquires)) &#123;</div><div class="line">                    setExclusiveOwnerThread(current);</div><div class="line">                    return true;</div><div class="line">                &#125;</div><div class="line">            &#125;</div><div class="line">            else if (current == getExclusiveOwnerThread()) &#123;  //判断</div><div class="line">                int nextc = c + acquires;</div><div class="line">                if (nextc &lt; 0) // overflow</div><div class="line">                    throw new Error(&quot;Maximum lock count exceeded&quot;);</div><div class="line">                setState(nextc);</div><div class="line">                return true;</div><div class="line">            &#125;</div><div class="line">            return false;</div><div class="line">        &#125;</div></pre></td></tr></table></figure></p>
+<p>该方法是Sync中的方法，NonfairSync通过重写tryAcquire()调用。<br>可以看到，该方法增加了一个判断：如果当前线程是已经获取锁的线程，那么将同步状态值State增加 <strong>（这里不需要CAS操作，因为该线程已经获取了锁，没有竞争——相当于偏向锁）</strong>，并返回true，表示同步状态获取成功。</p>
+<p>非公平锁释放锁的方法：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">protected final boolean tryRelease(int releases) &#123;</div><div class="line">            int c = getState() - releases;</div><div class="line">            if (Thread.currentThread() != getExclusiveOwnerThread())</div><div class="line">                throw new IllegalMonitorStateException();</div><div class="line">            boolean free = false;</div><div class="line">            if (c == 0) &#123;</div><div class="line">                free = true;</div><div class="line">                setExclusiveOwnerThread(null);</div><div class="line">            &#125;</div><div class="line">            setState(c);</div><div class="line">            return free;</div><div class="line">        &#125;</div></pre></td></tr></table></figure>
+<p>该方法也是由Sync实现。</p>
+<p>既然获取锁的时候增加了同步状态值，那么释放时自然要减少。<br>可以看到，只有当State值减为0的时候，才返回true，表示释放锁成功，并将占有线程设置为null。</p>
+<h4 id="公平锁的实现"><a href="#公平锁的实现" class="headerlink" title="公平锁的实现"></a>公平锁的实现</h4><p>公平锁获取锁的方法：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line">protected final boolean tryAcquire(int acquires) &#123;</div><div class="line">            final Thread current = Thread.currentThread();</div><div class="line">            int c = getState();</div><div class="line">            if (c == 0) &#123;</div><div class="line">                if (!hasQueuedPredecessors() &amp;&amp;</div><div class="line">                    compareAndSetState(0, acquires)) &#123;</div><div class="line">                    setExclusiveOwnerThread(current);</div><div class="line">                    return true;</div><div class="line">                &#125;</div><div class="line">            &#125;</div><div class="line">            else if (current == getExclusiveOwnerThread()) &#123;</div><div class="line">                int nextc = c + acquires;</div><div class="line">                if (nextc &lt; 0)</div><div class="line">                    throw new Error(&quot;Maximum lock count exceeded&quot;);</div><div class="line">                setState(nextc);</div><div class="line">                return true;</div><div class="line">            &#125;</div><div class="line">            return false;</div><div class="line">        &#125;</div><div class="line">    &#125;</div></pre></td></tr></table></figure>
+<p>该方法是FairSync重写的tryAcquire()方法。<br>对比非公平锁的获取，<strong>唯一不同的是该方法在判断时增加了一个条件——hasQueuedPredecessors()方法，该方法判断同步队列中当前节点是否有前驱节点，如果有，表示有线程比当前线程更早请求，则需要等待前面的线程获取释放锁之后才能获取锁。</strong></p>
+<p>公平锁释放锁的方法：  </p>
+<p>同样也是调用Sync中的tryRelease()方法，这里不再赘述。</p>
+<h4 id="公平锁与非公平锁的对比"><a href="#公平锁与非公平锁的对比" class="headerlink" title="公平锁与非公平锁的对比"></a>公平锁与非公平锁的对比</h4><p><strong>公平锁：</strong></p>
+<ul>
+<li>保证了锁的获取顺序，FIFO原则</li>
+<li>不足是需要进行大量的线程切换</li>
+</ul>
+<p><strong>非公平锁</strong>：  </p>
+<ul>
+<li>保证了更大的吞吐量（极少的线程切换）</li>
+<li>不足是可能造成线程“饥饿”（等待很久）</li>
+</ul>
+<p><strong>频繁的线程切换对性能有很大的影响，因此ReentrantLock的默认实现是非公平锁。</strong></p>
 
       
     </div>
@@ -454,7 +470,9 @@
           
             <a href="/tags/并发/" rel="tag"># 并发</a>
           
-            <a href="/tags/Lock/" rel="tag"># Lock</a>
+            <a href="/tags/ReentrantLock/" rel="tag"># ReentrantLock</a>
+          
+            <a href="/tags/重入锁/" rel="tag"># 重入锁</a>
           
         </div>
       
@@ -467,8 +485,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2017/10/14/深入理解synchronized/" rel="next" title="深入理解synchronized关键字">
-                <i class="fa fa-chevron-left"></i> 深入理解synchronized关键字
+              <a href="/2017/10/19/AQS共享锁的实现原理/" rel="next" title="AQS共享锁的实现原理">
+                <i class="fa fa-chevron-left"></i> AQS共享锁的实现原理
               </a>
             
           </div>
@@ -477,8 +495,8 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2017/10/18/Lock实现之AQS——AbstractQueuedSynchronizer/" rel="prev" title="Lock实现之AQS——AbstractQueuedSynchronizer">
-                Lock实现之AQS——AbstractQueuedSynchronizer <i class="fa fa-chevron-right"></i>
+              <a href="/2017/10/21/JVM之垃圾收集算法/" rel="prev" title="JVM之垃圾收集算法">
+                JVM之垃圾收集算法 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -698,7 +716,7 @@ src="//music.163.com/outchain/player?type=2&id=30967791&auto=1&height=66"></ifra
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#一、Lock的介绍"><span class="nav-number">1.</span> <span class="nav-text">一、Lock的介绍</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#二、Lock的用法"><span class="nav-number">2.</span> <span class="nav-text">二、Lock的用法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#三、与synchronized的区别"><span class="nav-number">3.</span> <span class="nav-text">三、与synchronized的区别</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#一、ReentrantLock概念"><span class="nav-number">1.</span> <span class="nav-text">一、ReentrantLock概念</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#重入锁概念"><span class="nav-number">1.1.</span> <span class="nav-text">重入锁概念</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#公平与非公平"><span class="nav-number">1.2.</span> <span class="nav-text">公平与非公平</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#二、ReentrantLock的实现原理"><span class="nav-number">2.</span> <span class="nav-text">二、ReentrantLock的实现原理</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#重进入"><span class="nav-number">2.1.</span> <span class="nav-text">重进入</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#非公平锁的实现"><span class="nav-number">2.2.</span> <span class="nav-text">非公平锁的实现</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#公平锁的实现"><span class="nav-number">2.3.</span> <span class="nav-text">公平锁的实现</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#公平锁与非公平锁的对比"><span class="nav-number">2.4.</span> <span class="nav-text">公平锁与非公平锁的对比</span></a></li></ol></li></ol></div>
             
 
           </div>
