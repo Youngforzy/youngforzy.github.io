@@ -1,0 +1,887 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<script>
+    (function(){
+        if(''){
+            if (prompt('请输入文章密码') !== ''){
+                alert('密码错误！');
+                history.back();
+            }
+        }
+    })();
+</script>
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="ConcurrentHashMap,JDK1.8," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="ZY's Blog" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="http://osuskkx7k.bkt.clouddn.com/bitbug_favicon.ico?v=5.1.1" />
+
+
+
+
+
+
+<meta name="description" content="一、ConcurrentHashMap的介绍ConcurrentHashMap在JDK8中进行了巨大改动，它舍弃了锁分段的技术，大量引入了CAS操作，以此来实现并发操作。    回忆JDK1.7中的ConcurrentHashmap，当hash碰撞频繁时，链表长度会拉长，而链表的增改删查操作都会消耗很长的时间，影响性能，因此和JDK1.8中的HashMap一样，当链表过长时，将其结构转化为红黑树，">
+<meta name="keywords" content="ConcurrentHashMap,JDK1.8">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ConcurrentHashMap在JDK1.8中的实现分析">
+<meta property="og:url" content="http://yoursite.com/2017/11/10/ConcurrentHashMap在JDK1.8中的实现分析/index.html">
+<meta property="og:site_name" content="ZY&#39;s Blog">
+<meta property="og:description" content="一、ConcurrentHashMap的介绍ConcurrentHashMap在JDK8中进行了巨大改动，它舍弃了锁分段的技术，大量引入了CAS操作，以此来实现并发操作。    回忆JDK1.7中的ConcurrentHashmap，当hash碰撞频繁时，链表长度会拉长，而链表的增改删查操作都会消耗很长的时间，影响性能，因此和JDK1.8中的HashMap一样，当链表过长时，将其结构转化为红黑树，">
+<meta property="og:image" content="http://osuskkx7k.bkt.clouddn.com/1.8hash.PNG">
+<meta property="og:updated_time" content="2018-02-24T17:40:51.020Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="ConcurrentHashMap在JDK1.8中的实现分析">
+<meta name="twitter:description" content="一、ConcurrentHashMap的介绍ConcurrentHashMap在JDK8中进行了巨大改动，它舍弃了锁分段的技术，大量引入了CAS操作，以此来实现并发操作。    回忆JDK1.7中的ConcurrentHashmap，当hash碰撞频繁时，链表长度会拉长，而链表的增改删查操作都会消耗很长的时间，影响性能，因此和JDK1.8中的HashMap一样，当链表过长时，将其结构转化为红黑树，">
+<meta name="twitter:image" content="http://osuskkx7k.bkt.clouddn.com/1.8hash.PNG">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2017/11/10/ConcurrentHashMap在JDK1.8中的实现分析/"/>
+
+
+
+
+
+  <title>ConcurrentHashMap在JDK1.8中的实现分析 | ZY's Blog</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">ZY's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Young for you.</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-album">
+          <a href="/album/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-camera"></i> <br />
+            
+            记录
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-love">
+          <a href="/love/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-heart"></i> <br />
+            
+            love
+          </a>
+        </li>
+      
+
+      
+    </ul>
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/11/10/ConcurrentHashMap在JDK1.8中的实现分析/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Z Yong">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="http://osuskkx7k.bkt.clouddn.com/mmexport1500086929549%282%29.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="ZY's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">ConcurrentHashMap在JDK1.8中的实现分析</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-11-10T16:42:18+08:00">
+                2017-11-10
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/技术/" itemprop="url" rel="index">
+                    <span itemprop="name">技术</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h3 id="一、ConcurrentHashMap的介绍"><a href="#一、ConcurrentHashMap的介绍" class="headerlink" title="一、ConcurrentHashMap的介绍"></a>一、ConcurrentHashMap的介绍</h3><p><strong>ConcurrentHashMap在JDK8中进行了巨大改动，它舍弃了锁分段的技术，大量引入了CAS操作，以此来实现并发操作。</strong>   </p>
+<p>回忆JDK1.7中的ConcurrentHashmap，当hash碰撞频繁时，链表长度会拉长，而链表的增改删查操作都会消耗很长的时间，影响性能，因此和JDK1.8中的HashMap一样，当链表过长时，将其结构转化为红黑树，由此提高性能。</p>
+<h3 id="二、ConcurrentHashMap的实现原理"><a href="#二、ConcurrentHashMap的实现原理" class="headerlink" title="二、ConcurrentHashMap的实现原理"></a>二、ConcurrentHashMap的实现原理</h3><p><strong>ConcurrentHashMap的结构图</strong></p>
+<p>ConcurrentHashMap在JDK1.8的实现原理是“<strong>数组+链表+红黑树</strong>”。（与HashMap在1.8中的实现思想一致，但是<strong>红黑树的节点不同</strong>，HashMap是Node节点，ConcurrentHashMap是TreeBin对象）</p>
+<p><img src="http://osuskkx7k.bkt.clouddn.com/1.8hash.PNG" alt="image"></p>
+<hr>
+<p>下面介绍一下ConcurrentHashMap主要方法put()和get()的实现。</p>
+<h4 id="put-方法"><a href="#put-方法" class="headerlink" title="put()方法"></a>put()方法</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div></pre></td><td class="code"><pre><div class="line">final V putVal(K key, V value, boolean onlyIfAbsent) &#123;</div><div class="line">---第一部分</div><div class="line">        if (key == null || value == null) throw new NullPointerException();</div><div class="line">        //计算hash值</div><div class="line">        int hash = spread(key.hashCode());</div><div class="line">        int binCount = 0;</div><div class="line">        for (Node&lt;K,V&gt;[] tab = table;;) &#123;</div><div class="line">            Node&lt;K,V&gt; f; int n, i, fh;</div><div class="line">            //如果tab为null，则初始化</div><div class="line">            if (tab == null || (n = tab.length) == 0)</div><div class="line">                tab = initTable();</div><div class="line">            //判断数组索引位置的元素是否为null</div><div class="line">            else if ((f = tabAt(tab, i = (n - 1) &amp; hash)) == null) &#123;</div><div class="line">                //CAS操作设置该数组索引位置为新节点Node</div><div class="line">                if (casTabAt(tab, i, null,</div><div class="line">                             new Node&lt;K,V&gt;(hash, key, value, null)))</div><div class="line">                    break;                   // no lock when adding to empty bin</div><div class="line">            &#125;</div><div class="line">            //f节点是MOVED节点，表示有其他线程在扩容，帮助一起扩容</div><div class="line">            else if ((fh = f.hash) == MOVED)</div><div class="line">                tab = helpTransfer(tab, f);</div><div class="line">                </div><div class="line">---第二部分-----</div><div class="line">            else &#123;</div><div class="line">                V oldVal = null;</div><div class="line">                synchronized (f) &#123;</div><div class="line">                    if (tabAt(tab, i) == f) &#123;</div><div class="line">                        //表示是链表，还未转化成红黑树</div><div class="line">                        if (fh &gt;= 0) &#123;</div><div class="line">                            binCount = 1;</div><div class="line">                            for (Node&lt;K,V&gt; e = f;; ++binCount) &#123;</div><div class="line">                                K ek;</div><div class="line">                                //如果key已存在，则替换value</div><div class="line">                                if (e.hash == hash &amp;&amp;</div><div class="line">                                    ((ek = e.key) == key ||</div><div class="line">                                     (ek != null &amp;&amp; key.equals(ek)))) &#123;</div><div class="line">                                    oldVal = e.val;</div><div class="line">                                    if (!onlyIfAbsent)</div><div class="line">                                        e.val = value;</div><div class="line">                                    break;</div><div class="line">                                &#125;</div><div class="line">                                Node&lt;K,V&gt; pred = e;</div><div class="line">                                //将新的节点插入尾部</div><div class="line">                                if ((e = e.next) == null) &#123;</div><div class="line">                                    pred.next = new Node&lt;K,V&gt;(hash, key,</div><div class="line">                                                              value, null);</div><div class="line">                                    break;</div><div class="line">                                &#125;</div><div class="line">                            &#125;</div><div class="line">                        &#125;</div><div class="line">                        //节点f是TreeBin对象，表示链表转为了红黑树</div><div class="line">                        else if (f instanceof TreeBin) &#123;</div><div class="line">                            Node&lt;K,V&gt; p;</div><div class="line">                            binCount = 2;</div><div class="line">                            if ((p = ((TreeBin&lt;K,V&gt;)f).putTreeVal(hash, key,</div><div class="line">                                                           value)) != null) &#123;</div><div class="line">                                oldVal = p.val;</div><div class="line">                                if (!onlyIfAbsent)</div><div class="line">                                    p.val = value;</div><div class="line">                            &#125;</div><div class="line">                        &#125;</div><div class="line">                    &#125;</div><div class="line">                &#125;</div><div class="line">                if (binCount != 0) &#123;</div><div class="line">                    //如果大于8，转化为红黑树</div><div class="line">                    if (binCount &gt;= TREEIFY_THRESHOLD)</div><div class="line">                        treeifyBin(tab, i);</div><div class="line">                    if (oldVal != null)</div><div class="line">                        return oldVal;</div><div class="line">                    break;</div><div class="line">                &#125;</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">        addCount(1L, binCount);</div><div class="line">        return null;</div><div class="line">    &#125;</div></pre></td></tr></table></figure>
+<p>由于整个put()方法较长，分成两部分来分析。<br><strong>第一部分：</strong></p>
+<ol>
+<li>遍历数组tab，如果为null，初始化数组；</li>
+<li><strong>调用tabAt()方法查找数组索引i处的节点f，如果f为null，说明该位置还没有节点，调用casTabAt()利用CAS操作插入新的节点</strong></li>
+</ol>
+<ul>
+<li><strong>CAS成功</strong>：break跳出，直到最后的addCount(1L, binCount)方法，判断插入这一个节点后是否需要扩容; </li>
+<li><strong>CAS失败</strong>：说明有其它线程提前插入了节点，自旋重新尝试在这个位置插入节点；<br>tabAt()和casTabAt()方法源码如下：<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"> private static final sun.misc.Unsafe U;</div><div class="line"> </div><div class="line">static final &lt;K,V&gt; Node&lt;K,V&gt; tabAt(Node&lt;K,V&gt;[] tab, int i) &#123;</div><div class="line">        return (Node&lt;K,V&gt;)U.getObjectVolatile(tab, ((long)i &lt;&lt; ASHIFT) + ABASE);</div><div class="line">    &#125;</div><div class="line">static final &lt;K,V&gt; boolean casTabAt(Node&lt;K,V&gt;[] tab, int i,</div><div class="line">                                        Node&lt;K,V&gt; c, Node&lt;K,V&gt; v) &#123;</div><div class="line">        return U.compareAndSwapObject(tab, ((long)i &lt;&lt; ASHIFT) + ABASE, c, v);</div><div class="line">    &#125;</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>可以看到，都是<strong>调用Unsafe类的方法（原子性），Unsafe.getObjectVolatile可以直接获取指定内存的数据，保证了每次拿到数据都是最新的。</strong></p>
+<ol>
+<li><strong>若前面的情况都不满足，判断f节点是否为MOVED节点，是则表示有其他线程在扩容，帮助一起扩容</strong>；否则进入第二部分。  </li>
+</ol>
+<p><strong>第二部分：</strong>  </p>
+<p>第二部分表示把新的节点Node插入链表或红黑树，可以看到使用了synchronized关键字实现同步。<strong>但是注意，只在节点f上进行同步，表示只能有一个线程访问该节点。</strong> 节点插入之前，再次利用 tabAt(tab, i) == f 判断头节点是否还是f，防止被其它线程修改。</p>
+<ol>
+<li>如果f.hash &gt;= 0，说明f是链表结构的头结点，遍历链表，如果key已存在，则修改value，否则在链表尾部插入节点。</li>
+<li>如果f是TreeBin类型节点，说明链表变成红黑树，则在树结构上遍历元素，更新或增加节点。</li>
+<li>最后判断链表中的节点数binCount &gt;= 8，则转化为红黑树。</li>
+</ol>
+<hr>
+<h4 id="get-方法"><a href="#get-方法" class="headerlink" title="get()方法"></a>get()方法</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line">public V get(Object key) &#123;</div><div class="line">        Node&lt;K,V&gt;[] tab; Node&lt;K,V&gt; e, p; int n, eh; K ek;</div><div class="line">        //获取key的hash值</div><div class="line">        int h = spread(key.hashCode());</div><div class="line">        if ((tab = table) != null &amp;&amp; (n = tab.length) &gt; 0 &amp;&amp;</div><div class="line">            (e = tabAt(tab, (n - 1) &amp; h)) != null) &#123;</div><div class="line">            if ((eh = e.hash) == h) &#123;</div><div class="line">                if ((ek = e.key) == key || (ek != null &amp;&amp; key.equals(ek)))</div><div class="line">                    return e.val;</div><div class="line">            &#125;</div><div class="line">            else if (eh &lt; 0)</div><div class="line">                return (p = e.find(h, key)) != null ? p.val : null;</div><div class="line">            //遍历    </div><div class="line">            while ((e = e.next) != null) &#123;</div><div class="line">                if (e.hash == h &amp;&amp;</div><div class="line">                    ((ek = e.key) == key || (ek != null &amp;&amp; key.equals(ek))))</div><div class="line">                    return e.val;</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">        return null;</div><div class="line">    &#125;</div></pre></td></tr></table></figure>
+<ol>
+<li>如果table为null或者遍历之后没找到对应的value，返回null；</li>
+<li>根据key的hash值找到table中指定的Node节点，遍历链表或红黑树找到对应的value值。<h4 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h4></li>
+</ol>
+<p>最后总结一下<strong>ConcurrentHashMap从JDK1.7（1.6）到JDK1.8的变化</strong>：</p>
+<ol>
+<li><strong>底层结构改变</strong>，从“<strong>数组+数组+链表</strong>”到“<strong>数组+链表+红黑树</strong>”</li>
+<li><strong>锁方式改变，取消了Segment重入锁，变成CAS+Synchronized实现锁</strong></li>
+<li><strong>锁粒度变小</strong>，<strong>由Segment数组变成table的元素</strong>。</li>
+<li>JDK1.8中size()实现更简单</li>
+</ol>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/ConcurrentHashMap/" rel="tag"># ConcurrentHashMap</a>
+          
+            <a href="/tags/JDK1-8/" rel="tag"># JDK1.8</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/11/06/ConcurrentHashMap在JDK1.7中的实现分析/" rel="next" title="ConcurrentHashMap在JDK1.7中的实现分析">
+                <i class="fa fa-chevron-left"></i> ConcurrentHashMap在JDK1.7中的实现分析
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript" >
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="http://osuskkx7k.bkt.clouddn.com/mmexport1500086929549%282%29.jpg"
+               alt="Z Yong" />
+          <p class="site-author-name" itemprop="name">Z Yong</p>
+           
+              <p class="site-description motion-element" itemprop="description">不负勇往</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives/">
+                <span class="site-state-item-count">25</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">2</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">33</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="/wechat" target="_blank" title="Wechat">
+                  
+                    <i class="fa fa-fw fa-wechat"></i>
+                  
+                  Wechat
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://blog.csdn.net/babylove_bale" target="_blank" title="Csdn">
+                  
+                    <i class="fa fa-fw fa-book"></i>
+                  
+                  Csdn
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              友情链接
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://hexo.io/" title="Hexo" target="_blank">Hexo</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.xiaonanbobo.com/" title="BoBo" target="_blank">BoBo</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+<br>
+
+<iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width=330 height=86 
+src="//music.163.com/outchain/player?type=2&id=30967791&auto=1&height=66"></iframe>
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#一、ConcurrentHashMap的介绍"><span class="nav-number">1.</span> <span class="nav-text">一、ConcurrentHashMap的介绍</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#二、ConcurrentHashMap的实现原理"><span class="nav-number">2.</span> <span class="nav-text">二、ConcurrentHashMap的实现原理</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#put-方法"><span class="nav-number">2.1.</span> <span class="nav-text">put()方法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#get-方法"><span class="nav-number">2.2.</span> <span class="nav-text">get()方法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#总结"><span class="nav-number">2.3.</span> <span class="nav-text">总结</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2017 - 
+  <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Z Yong</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+  
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+  
+  <script type="text/javascript" src="/lib/three/three.min.js"></script>
+
+  
+  <script type="text/javascript" src="/lib/three/three-waves.min.js"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.1"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.1"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+<script type="text/javascript" src="/js/src/love.js"></script>
+</html>

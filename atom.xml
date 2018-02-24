@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yoursite.com/"/>
-  <updated>2018-02-24T17:26:41.879Z</updated>
+  <updated>2018-02-24T17:40:51.020Z</updated>
   <id>http://yoursite.com/</id>
   
   <author>
@@ -14,6 +14,258 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>ConcurrentHashMap在JDK1.8中的实现分析</title>
+    <link href="http://yoursite.com/2017/11/10/ConcurrentHashMap%E5%9C%A8JDK1.8%E4%B8%AD%E7%9A%84%E5%AE%9E%E7%8E%B0%E5%88%86%E6%9E%90/"/>
+    <id>http://yoursite.com/2017/11/10/ConcurrentHashMap在JDK1.8中的实现分析/</id>
+    <published>2017-11-10T08:42:18.000Z</published>
+    <updated>2018-02-24T17:40:51.020Z</updated>
+    
+    <content type="html"><![CDATA[<h3 id="一、ConcurrentHashMap的介绍"><a href="#一、ConcurrentHashMap的介绍" class="headerlink" title="一、ConcurrentHashMap的介绍"></a>一、ConcurrentHashMap的介绍</h3><p><strong>ConcurrentHashMap在JDK8中进行了巨大改动，它舍弃了锁分段的技术，大量引入了CAS操作，以此来实现并发操作。</strong>   </p>
+<p>回忆JDK1.7中的ConcurrentHashmap，当hash碰撞频繁时，链表长度会拉长，而链表的增改删查操作都会消耗很长的时间，影响性能，因此和JDK1.8中的HashMap一样，当链表过长时，将其结构转化为红黑树，由此提高性能。</p>
+<h3 id="二、ConcurrentHashMap的实现原理"><a href="#二、ConcurrentHashMap的实现原理" class="headerlink" title="二、ConcurrentHashMap的实现原理"></a>二、ConcurrentHashMap的实现原理</h3><p><strong>ConcurrentHashMap的结构图</strong></p>
+<p>ConcurrentHashMap在JDK1.8的实现原理是“<strong>数组+链表+红黑树</strong>”。（与HashMap在1.8中的实现思想一致，但是<strong>红黑树的节点不同</strong>，HashMap是Node节点，ConcurrentHashMap是TreeBin对象）</p>
+<p><img src="http://osuskkx7k.bkt.clouddn.com/1.8hash.PNG" alt="image"></p>
+<hr>
+<p>下面介绍一下ConcurrentHashMap主要方法put()和get()的实现。</p>
+<h4 id="put-方法"><a href="#put-方法" class="headerlink" title="put()方法"></a>put()方法</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div></pre></td><td class="code"><pre><div class="line">final V putVal(K key, V value, boolean onlyIfAbsent) &#123;</div><div class="line">---第一部分</div><div class="line">        if (key == null || value == null) throw new NullPointerException();</div><div class="line">        //计算hash值</div><div class="line">        int hash = spread(key.hashCode());</div><div class="line">        int binCount = 0;</div><div class="line">        for (Node&lt;K,V&gt;[] tab = table;;) &#123;</div><div class="line">            Node&lt;K,V&gt; f; int n, i, fh;</div><div class="line">            //如果tab为null，则初始化</div><div class="line">            if (tab == null || (n = tab.length) == 0)</div><div class="line">                tab = initTable();</div><div class="line">            //判断数组索引位置的元素是否为null</div><div class="line">            else if ((f = tabAt(tab, i = (n - 1) &amp; hash)) == null) &#123;</div><div class="line">                //CAS操作设置该数组索引位置为新节点Node</div><div class="line">                if (casTabAt(tab, i, null,</div><div class="line">                             new Node&lt;K,V&gt;(hash, key, value, null)))</div><div class="line">                    break;                   // no lock when adding to empty bin</div><div class="line">            &#125;</div><div class="line">            //f节点是MOVED节点，表示有其他线程在扩容，帮助一起扩容</div><div class="line">            else if ((fh = f.hash) == MOVED)</div><div class="line">                tab = helpTransfer(tab, f);</div><div class="line">                </div><div class="line">---第二部分-----</div><div class="line">            else &#123;</div><div class="line">                V oldVal = null;</div><div class="line">                synchronized (f) &#123;</div><div class="line">                    if (tabAt(tab, i) == f) &#123;</div><div class="line">                        //表示是链表，还未转化成红黑树</div><div class="line">                        if (fh &gt;= 0) &#123;</div><div class="line">                            binCount = 1;</div><div class="line">                            for (Node&lt;K,V&gt; e = f;; ++binCount) &#123;</div><div class="line">                                K ek;</div><div class="line">                                //如果key已存在，则替换value</div><div class="line">                                if (e.hash == hash &amp;&amp;</div><div class="line">                                    ((ek = e.key) == key ||</div><div class="line">                                     (ek != null &amp;&amp; key.equals(ek)))) &#123;</div><div class="line">                                    oldVal = e.val;</div><div class="line">                                    if (!onlyIfAbsent)</div><div class="line">                                        e.val = value;</div><div class="line">                                    break;</div><div class="line">                                &#125;</div><div class="line">                                Node&lt;K,V&gt; pred = e;</div><div class="line">                                //将新的节点插入尾部</div><div class="line">                                if ((e = e.next) == null) &#123;</div><div class="line">                                    pred.next = new Node&lt;K,V&gt;(hash, key,</div><div class="line">                                                              value, null);</div><div class="line">                                    break;</div><div class="line">                                &#125;</div><div class="line">                            &#125;</div><div class="line">                        &#125;</div><div class="line">                        //节点f是TreeBin对象，表示链表转为了红黑树</div><div class="line">                        else if (f instanceof TreeBin) &#123;</div><div class="line">                            Node&lt;K,V&gt; p;</div><div class="line">                            binCount = 2;</div><div class="line">                            if ((p = ((TreeBin&lt;K,V&gt;)f).putTreeVal(hash, key,</div><div class="line">                                                           value)) != null) &#123;</div><div class="line">                                oldVal = p.val;</div><div class="line">                                if (!onlyIfAbsent)</div><div class="line">                                    p.val = value;</div><div class="line">                            &#125;</div><div class="line">                        &#125;</div><div class="line">                    &#125;</div><div class="line">                &#125;</div><div class="line">                if (binCount != 0) &#123;</div><div class="line">                    //如果大于8，转化为红黑树</div><div class="line">                    if (binCount &gt;= TREEIFY_THRESHOLD)</div><div class="line">                        treeifyBin(tab, i);</div><div class="line">                    if (oldVal != null)</div><div class="line">                        return oldVal;</div><div class="line">                    break;</div><div class="line">                &#125;</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">        addCount(1L, binCount);</div><div class="line">        return null;</div><div class="line">    &#125;</div></pre></td></tr></table></figure>
+<p>由于整个put()方法较长，分成两部分来分析。<br><strong>第一部分：</strong></p>
+<ol>
+<li>遍历数组tab，如果为null，初始化数组；</li>
+<li><strong>调用tabAt()方法查找数组索引i处的节点f，如果f为null，说明该位置还没有节点，调用casTabAt()利用CAS操作插入新的节点</strong></li>
+</ol>
+<ul>
+<li><strong>CAS成功</strong>：break跳出，直到最后的addCount(1L, binCount)方法，判断插入这一个节点后是否需要扩容; </li>
+<li><strong>CAS失败</strong>：说明有其它线程提前插入了节点，自旋重新尝试在这个位置插入节点；<br>tabAt()和casTabAt()方法源码如下：<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"> private static final sun.misc.Unsafe U;</div><div class="line"> </div><div class="line">static final &lt;K,V&gt; Node&lt;K,V&gt; tabAt(Node&lt;K,V&gt;[] tab, int i) &#123;</div><div class="line">        return (Node&lt;K,V&gt;)U.getObjectVolatile(tab, ((long)i &lt;&lt; ASHIFT) + ABASE);</div><div class="line">    &#125;</div><div class="line">static final &lt;K,V&gt; boolean casTabAt(Node&lt;K,V&gt;[] tab, int i,</div><div class="line">                                        Node&lt;K,V&gt; c, Node&lt;K,V&gt; v) &#123;</div><div class="line">        return U.compareAndSwapObject(tab, ((long)i &lt;&lt; ASHIFT) + ABASE, c, v);</div><div class="line">    &#125;</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>可以看到，都是<strong>调用Unsafe类的方法（原子性），Unsafe.getObjectVolatile可以直接获取指定内存的数据，保证了每次拿到数据都是最新的。</strong></p>
+<ol>
+<li><strong>若前面的情况都不满足，判断f节点是否为MOVED节点，是则表示有其他线程在扩容，帮助一起扩容</strong>；否则进入第二部分。  </li>
+</ol>
+<p><strong>第二部分：</strong>  </p>
+<p>第二部分表示把新的节点Node插入链表或红黑树，可以看到使用了synchronized关键字实现同步。<strong>但是注意，只在节点f上进行同步，表示只能有一个线程访问该节点。</strong> 节点插入之前，再次利用 tabAt(tab, i) == f 判断头节点是否还是f，防止被其它线程修改。</p>
+<ol>
+<li>如果f.hash &gt;= 0，说明f是链表结构的头结点，遍历链表，如果key已存在，则修改value，否则在链表尾部插入节点。</li>
+<li>如果f是TreeBin类型节点，说明链表变成红黑树，则在树结构上遍历元素，更新或增加节点。</li>
+<li>最后判断链表中的节点数binCount &gt;= 8，则转化为红黑树。</li>
+</ol>
+<hr>
+<h4 id="get-方法"><a href="#get-方法" class="headerlink" title="get()方法"></a>get()方法</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line">public V get(Object key) &#123;</div><div class="line">        Node&lt;K,V&gt;[] tab; Node&lt;K,V&gt; e, p; int n, eh; K ek;</div><div class="line">        //获取key的hash值</div><div class="line">        int h = spread(key.hashCode());</div><div class="line">        if ((tab = table) != null &amp;&amp; (n = tab.length) &gt; 0 &amp;&amp;</div><div class="line">            (e = tabAt(tab, (n - 1) &amp; h)) != null) &#123;</div><div class="line">            if ((eh = e.hash) == h) &#123;</div><div class="line">                if ((ek = e.key) == key || (ek != null &amp;&amp; key.equals(ek)))</div><div class="line">                    return e.val;</div><div class="line">            &#125;</div><div class="line">            else if (eh &lt; 0)</div><div class="line">                return (p = e.find(h, key)) != null ? p.val : null;</div><div class="line">            //遍历    </div><div class="line">            while ((e = e.next) != null) &#123;</div><div class="line">                if (e.hash == h &amp;&amp;</div><div class="line">                    ((ek = e.key) == key || (ek != null &amp;&amp; key.equals(ek))))</div><div class="line">                    return e.val;</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">        return null;</div><div class="line">    &#125;</div></pre></td></tr></table></figure>
+<ol>
+<li>如果table为null或者遍历之后没找到对应的value，返回null；</li>
+<li>根据key的hash值找到table中指定的Node节点，遍历链表或红黑树找到对应的value值。<h4 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h4></li>
+</ol>
+<p>最后总结一下<strong>ConcurrentHashMap从JDK1.7（1.6）到JDK1.8的变化</strong>：</p>
+<ol>
+<li><strong>底层结构改变</strong>，从“<strong>数组+数组+链表</strong>”到“<strong>数组+链表+红黑树</strong>”</li>
+<li><strong>锁方式改变，取消了Segment重入锁，变成CAS+Synchronized实现锁</strong></li>
+<li><strong>锁粒度变小</strong>，<strong>由Segment数组变成table的元素</strong>。</li>
+<li>JDK1.8中size()实现更简单</li>
+</ol>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h3 id=&quot;一、ConcurrentHashMap的介绍&quot;&gt;&lt;a href=&quot;#一、ConcurrentHashMap的介绍&quot; class=&quot;headerlink&quot; title=&quot;一、ConcurrentHashMap的介绍&quot;&gt;&lt;/a&gt;一、ConcurrentHashMap的
+    
+    </summary>
+    
+      <category term="技术" scheme="http://yoursite.com/categories/%E6%8A%80%E6%9C%AF/"/>
+    
+    
+      <category term="ConcurrentHashMap" scheme="http://yoursite.com/tags/ConcurrentHashMap/"/>
+    
+      <category term="JDK1.8" scheme="http://yoursite.com/tags/JDK1-8/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>ConcurrentHashMap在JDK1.7中的实现分析</title>
+    <link href="http://yoursite.com/2017/11/06/ConcurrentHashMap%E5%9C%A8JDK1.7%E4%B8%AD%E7%9A%84%E5%AE%9E%E7%8E%B0%E5%88%86%E6%9E%90/"/>
+    <id>http://yoursite.com/2017/11/06/ConcurrentHashMap在JDK1.7中的实现分析/</id>
+    <published>2017-11-06T09:48:18.000Z</published>
+    <updated>2018-02-24T17:36:40.387Z</updated>
+    
+    <content type="html"><![CDATA[<h3 id="一、ConcurrentHashMap的介绍"><a href="#一、ConcurrentHashMap的介绍" class="headerlink" title="一、ConcurrentHashMap的介绍"></a>一、ConcurrentHashMap的介绍</h3><p>ConcurrentHashMap是线程安全且高效的HashMap，可以在多线程的环境下使用。<br><strong>ConcurrentHashMap允许多个线程并发访问，其关键在于使用了锁分段技术。</strong><br>锁分段：首先将数据分成一段一段地存储，然后给每一段数据配一把锁，当一个线程占用锁访问其中一个数据段的时候，其他数据段也能被其他线程访问。</p>
+<h3 id="二、ConcurrentHashMap的实现原理"><a href="#二、ConcurrentHashMap的实现原理" class="headerlink" title="二、ConcurrentHashMap的实现原理"></a>二、ConcurrentHashMap的实现原理</h3><p><strong>ConcurrentHashMap的结构图</strong>  </p>
+<p>ConcurrentHashMap在JDK1.8之前的实现原理是“<strong>数组+数组+链表</strong>”。（可能描述不妥）<br><img src="http://osuskkx7k.bkt.clouddn.com/concurrentHashmap.PNG" alt="image"></p>
+<p>第一个数组是Segment[ ]，每一个Segment类似于HashMap；<br>第二个数组是HashEntry[ ]，每个元素可能是一个链表；<br>链表是HashEntry形成的链表，HashEntry是一个节点。</p>
+<hr>
+<h4 id="HashEntry类"><a href="#HashEntry类" class="headerlink" title="HashEntry类"></a>HashEntry类</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">static final class HashEntry&lt;K,V&gt; &#123;</div><div class="line">        final int hash;</div><div class="line">        final K key;</div><div class="line">        volatile V value;</div><div class="line">        volatile HashEntry&lt;K,V&gt; next;</div><div class="line">        ....</div><div class="line">        &#125;</div></pre></td></tr></table></figure>
+<p>HashEntry类相当于HashMap中的Entry类（节点类），储存了key和value，并拥有指向下一个元素的引用next。<br>注：<strong>value采用volatile修饰，保证了线程之间的可见性</strong>。</p>
+<h4 id="Segment类"><a href="#Segment类" class="headerlink" title="Segment类"></a>Segment类</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">static final class Segment&lt;K,V&gt; extends ReentrantLock implements Serializable &#123;</div><div class="line"></div><div class="line">        transient volatile HashEntry&lt;K,V&gt;[] table;</div><div class="line">        transient int count;</div><div class="line">        transient int modCount;</div><div class="line">        transient int threshold;</div><div class="line">        final float loadFactor; </div><div class="line">        ....</div><div class="line">        &#125;</div></pre></td></tr></table></figure>
+<p>每个Segment都拥有一个HashEntry[]数组，还有threshold和loadFactor分别表示极限容量和负载因子，count表示元素个数，modCount表示修改的记录。如此看来，<strong>每个Segment就好比是一个缩小版的HashMap</strong>，从上面ConcurrentHashMap结构图也可以看出来。</p>
+<p><strong>Segment继承自ReentrantLock重入锁，因此它支持一个线程重进入同一个Segment，访问其中的数据。</strong></p>
+<hr>
+<p>下面介绍一下ConcurrentHashMap主要的几个方法的实现:put()方法、get()方法、size()方法</p>
+<h4 id="put-方法"><a href="#put-方法" class="headerlink" title="put()方法"></a>put()方法</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">public V put(K key, V value) &#123;</div><div class="line">        Segment&lt;K,V&gt; s;</div><div class="line">        if (value == null)</div><div class="line">            throw new NullPointerException();</div><div class="line">        int hash = hash(key);</div><div class="line">        int j = (hash &gt;&gt;&gt; segmentShift) &amp; segmentMask;</div><div class="line">        if ((s = (Segment&lt;K,V&gt;)UNSAFE.getObject</div><div class="line">             (segments, (j &lt;&lt; SSHIFT) + SBASE)) == null) </div><div class="line">            // 扩容 </div><div class="line">            s = ensureSegment(j);</div><div class="line">        return s.put(key, hash, value, false);</div><div class="line">    &#125;</div></pre></td></tr></table></figure>
+<p>首先定位到相应的Segment。<br>如果需要扩容则进入ensureSegment(j)方法，<strong>注意ConcurrentHashMap不会对整个容器扩容，而只对当前的Segment进行扩容。</strong>  扩容为原来的2倍。<br>如果不需要扩容，调用Segment中的put()方法：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div></pre></td><td class="code"><pre><div class="line">final V put(K key, int hash, V value, boolean onlyIfAbsent) &#123;</div><div class="line">            HashEntry&lt;K,V&gt; node = tryLock() ? null :</div><div class="line">                scanAndLockForPut(key, hash, value);</div><div class="line">            V oldValue;</div><div class="line">            try &#123;</div><div class="line">                HashEntry&lt;K,V&gt;[] tab = table;</div><div class="line">                int index = (tab.length - 1) &amp; hash;</div><div class="line">                //取出头节点</div><div class="line">                HashEntry&lt;K,V&gt; first = entryAt(tab, index);</div><div class="line">                //遍历链表</div><div class="line">                for (HashEntry&lt;K,V&gt; e = first;;) &#123;</div><div class="line">                    if (e != null) &#123;</div><div class="line">                        K k;</div><div class="line">                        //key已存在，替换value</div><div class="line">                        if ((k = e.key) == key ||</div><div class="line">                            (e.hash == hash &amp;&amp; key.equals(k))) &#123;</div><div class="line">                            oldValue = e.value;</div><div class="line">                            if (!onlyIfAbsent) &#123;</div><div class="line">                                e.value = value;</div><div class="line">                                ++modCount;</div><div class="line">                            &#125;</div><div class="line">                            break;</div><div class="line">                        &#125;</div><div class="line">                        e = e.next;</div><div class="line">                    &#125;</div><div class="line">                    else &#123;</div><div class="line">                        //scanAndLockForPut()方法中已经返回了node，设置为first节点</div><div class="line">                        if (node != null)</div><div class="line">                            node.setNext(first);</div><div class="line">                        else</div><div class="line">                            //新建HashEntry节点作为头节点first</div><div class="line">                            node = new HashEntry&lt;K,V&gt;(hash, key, value, first);</div><div class="line">                        int c = count + 1;</div><div class="line">                        //判断是否扩容</div><div class="line">                        if (c &gt; threshold &amp;&amp; tab.length &lt; MAXIMUM_CAPACITY)</div><div class="line">                            rehash(node);</div><div class="line">                        else</div><div class="line">                            setEntryAt(tab, index, node);</div><div class="line">                        ++modCount; //记录修改次数</div><div class="line">                        count = c;  //修改count值</div><div class="line">                        oldValue = null;</div><div class="line">                        break;</div><div class="line">                    &#125;</div><div class="line">                &#125;</div><div class="line">            &#125; finally &#123;</div><div class="line">                unlock();</div><div class="line">            &#125;</div><div class="line">            return oldValue;</div><div class="line">        &#125;</div></pre></td></tr></table></figure></p>
+<p>过程分析：  </p>
+<ol>
+<li>首先调用tryLock()方法尝试获取锁，如果获取失败，则进入scanAndLockForPut()方法，该方法实际上是先自旋一定的次数等待其他线程释放锁。若自旋过程中，其他线程释放了锁，导致本线程直接获得了锁，就避免了本线程进入等待锁的场景，提高了效率。若自旋一定次数后，仍未获取锁，则调用lock方法进入等待锁的场景。（这是JDK1.7的实现，如果是1.6则没有自旋，直接获取锁）</li>
+<li>获取锁成功，找到对应的链表作相应的操作。具体见代码注释。</li>
+</ol>
+<h4 id="get-方法"><a href="#get-方法" class="headerlink" title="get()方法"></a>get()方法</h4><p>get()方法不需要锁。<strong>因为value字段是volatile修饰，保证了线程之间的可见性，可以被多线程同时读，但只能被单线程写。一句话，get操作只需要读共享变量value，所以不用加锁。</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line">public V get(Object key) &#123;</div><div class="line">        Segment&lt;K,V&gt; s; // manually integrate access methods to reduce overhead</div><div class="line">        HashEntry&lt;K,V&gt;[] tab;</div><div class="line">        int h = hash(key); //第一次散列</div><div class="line">        //第二次散列</div><div class="line">        long u = (((h &gt;&gt;&gt; segmentShift) &amp; segmentMask) &lt;&lt; SSHIFT) + SBASE;</div><div class="line">        if ((s = (Segment&lt;K,V&gt;)UNSAFE.getObjectVolatile(segments, u)) != null &amp;&amp;</div><div class="line">            (tab = s.table) != null) &#123;</div><div class="line">            //第三次散列（for循环中）</div><div class="line">            //遍历链表</div><div class="line">            for (HashEntry&lt;K,V&gt; e = (HashEntry&lt;K,V&gt;) UNSAFE.getObjectVolatile</div><div class="line">                     (tab, ((long)(((tab.length - 1) &amp; h)) &lt;&lt; TSHIFT) + TBASE);</div><div class="line">                 e != null; e = e.next) &#123;</div><div class="line">                K k;</div><div class="line">                if ((k = e.key) == key || (e.hash == h &amp;&amp; key.equals(k)))</div><div class="line">                    return e.value;</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">        return null;</div><div class="line">    &#125;</div></pre></td></tr></table></figure>
+<p>（get()方法中用到了许多UNSAFE类的方法，这是在JDK1.6中没有的，主要是利用Native方法来快速的定位元素。）  </p>
+<p>get()的过程经过了三次散列：  </p>
+<p><strong>第一次：对key进行散列得到h<br>第二次：对h进行散列定位到哪个Segment<br>第三次：对h进行散列定位到哪个HashEntry</strong> </p>
+<p>定位到HashEntry之后就对该链表遍历，查找key对应的value，若没有找到则返回null。  </p>
+<h4 id="size-方法"><a href="#size-方法" class="headerlink" title="size()方法"></a>size()方法</h4><p><strong>size()方法需要跨Segment操作，因为要统计每个Segment中的count值。而count值是volatile变量，一般来说将所有的count变量相加就可以得到整个ConcurrentHashMap的大小。</strong> 但可能在累加前使用的count发生了变化，那么结果就不正确。那么该如何统计呢？</p>
+<ol>
+<li>第一种方法，将所有Segment的put、remove、clean方法都锁住，然后统计count值。做法可行，但是低效。</li>
+<li><strong>第二种方法，先尝试连续2次不通过锁住Segment的方式计算各个count值的和：</strong></li>
+</ol>
+<ul>
+<li>若没有发生变化，则作为size的大小。</li>
+<li>若发生变化说明有线程在操作元素，则锁住Segment统计所有的count值。</li>
+</ul>
+<p><strong>如何判断容器大小没有发生变化？</strong>   </p>
+<p><strong>modCount变量。这个变量记录了每个Segment中put、remove、clean等操作的次数，因此在连续两次统计count的值时，比较modCount是否变化，就可得知容器大小是否变化。</strong></p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h3 id=&quot;一、ConcurrentHashMap的介绍&quot;&gt;&lt;a href=&quot;#一、ConcurrentHashMap的介绍&quot; class=&quot;headerlink&quot; title=&quot;一、ConcurrentHashMap的介绍&quot;&gt;&lt;/a&gt;一、ConcurrentHashMap的
+    
+    </summary>
+    
+      <category term="技术" scheme="http://yoursite.com/categories/%E6%8A%80%E6%9C%AF/"/>
+    
+    
+      <category term="JDK1.7" scheme="http://yoursite.com/tags/JDK1-7/"/>
+    
+      <category term="ConcurrentHashMap" scheme="http://yoursite.com/tags/ConcurrentHashMap/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>HashMap引发的线程安全问题</title>
+    <link href="http://yoursite.com/2017/11/03/HashMap%E5%BC%95%E5%8F%91%E7%9A%84%E7%BA%BF%E7%A8%8B%E5%AE%89%E5%85%A8%E9%97%AE%E9%A2%98/"/>
+    <id>http://yoursite.com/2017/11/03/HashMap引发的线程安全问题/</id>
+    <published>2017-11-03T09:48:18.000Z</published>
+    <updated>2018-02-24T17:34:20.151Z</updated>
+    
+    <content type="html"><![CDATA[<h3 id="一、线程安全性"><a href="#一、线程安全性" class="headerlink" title="一、线程安全性"></a>一、线程安全性</h3><p>我们知道，HashMap是非线程安全的，只能在单线程的情况下使用。那么为什么不能在并发的情况下使用呢？<strong>因为在并发时，HashMap的扩容会产生错误而形成环形链表，导致读取数据时发生死循环</strong>。</p>
+<p>回忆前面描述的扩容过程，调用了transfer()方法将旧链表转化为新链表：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line">void transfer(Entry[] newTable) &#123;  </div><div class="line">    Entry[] src = table;  </div><div class="line">    int newCapacity = newTable.length;  </div><div class="line">    for (int j = 0; j &lt; src.length; j++) &#123;  </div><div class="line">        Entry&lt;K,V&gt; e = src[j];  </div><div class="line">        if (e != null) &#123;  </div><div class="line">            src[j] = null;  </div><div class="line">            do &#123;  </div><div class="line">                Entry&lt;K,V&gt; next = e.next;  </div><div class="line">                int i = indexFor(e.hash, newCapacity);  </div><div class="line">                e.next = newTable[i];  </div><div class="line">                newTable[i] = e;  </div><div class="line">                e = next;  </div><div class="line">            &#125; while (e != null);  </div><div class="line">        &#125;  </div><div class="line">    &#125;  </div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>关键代码如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">do &#123;  </div><div class="line">Entry&lt;K,V&gt; next = e.next;  </div><div class="line">int i = indexFor(e.hash, newCapacity);  </div><div class="line">e.next = newTable[i];  </div><div class="line">newTable[i] = e;  </div><div class="line">e = next;  </div><div class="line">&#125; while (e != null);</div></pre></td></tr></table></figure>
+<p>循环操作将旧链表中的节点放入新链表，直到下一个节点next为null。<br>分别在单线程和多线程的环境下描述扩容过程。</p>
+<h4 id="单线程扩容"><a href="#单线程扩容" class="headerlink" title="单线程扩容"></a>单线程扩容</h4><p>假设hash数组的大小为2，负载因子为1，即超过1×2=2个元素时扩容，添加3个元素5、7、3，数组大小扩大为4，扩容过程如下：</p>
+<p><img src="http://osuskkx7k.bkt.clouddn.com/h1.png?imageView2/2/w/900/h/450" alt="image"></p>
+<p>原链表中3个元素，循环3次，具体如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line">第一次循环</div><div class="line">e = 3,next = 7</div><div class="line">3.next = tab[i] = null  (此时数组tab[i]为空)</div><div class="line">tab[i] = 3</div><div class="line">e = 7 </div><div class="line"></div><div class="line">第二次循环</div><div class="line">e = 7,next = 5</div><div class="line">7.next = tab[i] = 3</div><div class="line">tab[i] = 7</div><div class="line">e = 5</div><div class="line"></div><div class="line">第三次循环</div><div class="line">e = 5,next = null</div><div class="line">5.next = tab[i2] = null  (此时数组tab[i2]为空)</div><div class="line">tab[i2] = 5</div><div class="line">e = null </div><div class="line"></div><div class="line">(停止循环)</div></pre></td></tr></table></figure></p>
+<h4 id="多线程扩容"><a href="#多线程扩容" class="headerlink" title="多线程扩容"></a>多线程扩容</h4><p>为什么多线程环境下扩容会形成环形链表呢？<br>还是刚刚的例子，两个线程并发执行，线程1在进入do循环的第一行挂起，线程2继续执行</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">do &#123;  </div><div class="line">    Entry&lt;K,V&gt; next = e.next;  //线程1在此处挂起</div><div class="line">    int i = indexFor(e.hash, newCapacity);  </div><div class="line">    e.next = newTable[i];  </div><div class="line">    newTable[i] = e;  </div><div class="line">    e = next;  </div><div class="line">    &#125; while (e != null);</div></pre></td></tr></table></figure>
+<p>由前面单线程的情况可知，线程2此时成功扩容，结果如下：</p>
+<p><img src="http://osuskkx7k.bkt.clouddn.com/h2.png" alt="image"></p>
+<p>线程1恢复执行，已知线程1的 e 指向了key(3)，而next指向了key(7)，扩容过程如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line">第一次循环</div><div class="line">e = 3,next = 7</div><div class="line">3.next = tab[i] = null  (此时数组tab[i]为空)</div><div class="line">tab[i] = 3</div><div class="line">e = 7 </div><div class="line"></div><div class="line">第二次循环</div><div class="line">e = 7,next = 3</div><div class="line">7.next = tab[i] = 3</div><div class="line">tab[i] = 7</div><div class="line">e = 3</div><div class="line"></div><div class="line">第三次循环</div><div class="line">e = 3,next = null</div><div class="line">3.next = tab[i] = 7</div><div class="line">tab[i] = 3</div><div class="line">e = null</div><div class="line"></div><div class="line">(停止循环)</div></pre></td></tr></table></figure>
+<p>第一次循环图：  </p>
+<p><img src="http://osuskkx7k.bkt.clouddn.com/h3.png" alt="image">  </p>
+<p>第二次循环图：</p>
+<p><img src="http://osuskkx7k.bkt.clouddn.com/h22.png" alt="image"></p>
+<p>第三次循环图：</p>
+<p><img src="http://osuskkx7k.bkt.clouddn.com/h4.png" alt="image"></p>
+<p>在停止循环后，问题就出现了，如图所示，key(3)和key(7)构成了环形链表。<br><strong>于是，当我们调用HashMap的get方法时，由于查找链表节点时无法退出，就会产生无限循环。</strong></p>
+<h3 id="二、解决方法"><a href="#二、解决方法" class="headerlink" title="二、解决方法"></a>二、解决方法</h3><p>解决方法就是采用同步的数据结构，主要有以下三种：</p>
+<ol>
+<li><strong>Hashtable</strong></li>
+<li><strong>Collections.synchronizedMap()</strong></li>
+<li><strong>ConcurrentHashMap</strong></li>
+</ol>
+<h4 id="Hashtable"><a href="#Hashtable" class="headerlink" title="Hashtable"></a>Hashtable</h4><p>Hashtable是线程安全的。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">public synchronized V put(K key, V value) &#123;...&#125;</div><div class="line"></div><div class="line">public synchronized V get(Object key) &#123;...&#125;</div></pre></td></tr></table></figure>
+<p>可以看到，<strong>Hashtable是通过在方法上加上synchronized关键字来实现同步功能的</strong>。当一个线程访问时，其他线程都被阻塞住，这种方式效率很低，目前几乎不被使用。</p>
+<h4 id="Collections-synchronizedMap"><a href="#Collections-synchronizedMap" class="headerlink" title="Collections.synchronizedMap()"></a>Collections.synchronizedMap()</h4><p>调用Collections的synchronizedMap()方法，传入一个Map，可以得到一个线程安全的SynchronizedMap。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line">private static class SynchronizedMap&lt;K,V&gt;</div><div class="line">        implements Map&lt;K,V&gt;, Serializable &#123;</div><div class="line">        private final Map&lt;K,V&gt; m;     </div><div class="line">        final Object      mutex;        // Object on which to synchronize</div><div class="line"></div><div class="line">        SynchronizedMap(Map&lt;K,V&gt; m) &#123;</div><div class="line">            this.m = Objects.requireNonNull(m);</div><div class="line">            mutex = this;</div><div class="line">        &#125;</div><div class="line">        ....</div><div class="line">        public V get(Object key) &#123;</div><div class="line">            synchronized (mutex) &#123;return m.get(key);&#125;</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        public V put(K key, V value) &#123;</div><div class="line">            synchronized (mutex) &#123;return m.put(key, value);&#125;</div><div class="line">        &#125;</div></pre></td></tr></table></figure>
+<p>可以看到，<strong>它同步的原理同样也是使用了Synchronized关键字，不同的是Synchronized修饰代码块，并且将自身（this）作为了锁对象（mutex）。</strong></p>
+<h4 id="ConcurrentHashMap"><a href="#ConcurrentHashMap" class="headerlink" title="ConcurrentHashMap"></a>ConcurrentHashMap</h4><p>ConcurrentHashMap是JDK1.5之后引入的，是为了替代上面提到的二者。<br>ConcurrentHashMap是线程安全且高效的HashMap，它使用了多个锁来控制对hash数组不同部分的修改。  </p>
+<p>关于它的实现原理可以查看<a href="http://note.youdao.com/" target="_blank" rel="external">ConcurrentHashMap</a>这篇文章中的分析。</p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h3 id=&quot;一、线程安全性&quot;&gt;&lt;a href=&quot;#一、线程安全性&quot; class=&quot;headerlink&quot; title=&quot;一、线程安全性&quot;&gt;&lt;/a&gt;一、线程安全性&lt;/h3&gt;&lt;p&gt;我们知道，HashMap是非线程安全的，只能在单线程的情况下使用。那么为什么不能在并发的情况下使用呢
+    
+    </summary>
+    
+      <category term="技术" scheme="http://yoursite.com/categories/%E6%8A%80%E6%9C%AF/"/>
+    
+    
+      <category term="HashMap" scheme="http://yoursite.com/tags/HashMap/"/>
+    
+      <category term="线程安全" scheme="http://yoursite.com/tags/%E7%BA%BF%E7%A8%8B%E5%AE%89%E5%85%A8/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>HashMap 在JDK1.8中的实现（与JDK1.7对比）</title>
+    <link href="http://yoursite.com/2017/11/01/HashMap%20%E5%9C%A8JDK1.8%E4%B8%AD%E7%9A%84%E5%AE%9E%E7%8E%B0%EF%BC%88%E4%B8%8EJDK1.7%E5%AF%B9%E6%AF%94%EF%BC%89/"/>
+    <id>http://yoursite.com/2017/11/01/HashMap 在JDK1.8中的实现（与JDK1.7对比）/</id>
+    <published>2017-11-01T09:48:18.000Z</published>
+    <updated>2018-02-24T17:30:16.587Z</updated>
+    
+    <content type="html"><![CDATA[<h3 id="HashMap的实现分析"><a href="#HashMap的实现分析" class="headerlink" title="HashMap的实现分析"></a>HashMap的实现分析</h3><h4 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h4><p>通过前面JDK1.7的分析，我们知道，当负载因子和Hash算法设计的很好时，可以降低hash碰撞的概率，但在数据量过大时也避免不了会出现链表变长的情况，一旦出现链表过长，查找元素变慢，则会严重影响HashMap的性能。<br>于是，在JDK1.8中，对数据结构做了进一步的优化，引入了红黑树。<strong>而当链表长度太长（默认超过8）时，链表就转换为红黑树</strong>，利用红黑树快速增删改查的特点提高HashMap的性能，其中会用到红黑树的插入、删除、查找等算法。</p>
+<h4 id="底层实现"><a href="#底层实现" class="headerlink" title="底层实现"></a>底层实现</h4><p>HashMap的底层实现是<strong>数组+链表+红黑树</strong>。</p>
+<p><img src="http://osuskkx7k.bkt.clouddn.com/1.8hash.PNG" alt="image"></p>
+<h4 id="数组索引位置"><a href="#数组索引位置" class="headerlink" title="数组索引位置"></a>数组索引位置</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">//第一步</div><div class="line">static final int hash(Object key) &#123;</div><div class="line">        int h;</div><div class="line">        return (key == null) ? 0 : (h = key.hashCode()) ^ (h &gt;&gt;&gt; 16);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">//第二步，代码中：    </div><div class="line">    tab[i = (n - 1) &amp; hash]</div></pre></td></tr></table></figure>
+<p>确定数组索引的位置同样是两步法：<br>第一步计算hash，与JDK1.7中的计算方法不同；<br>计算过程如下：  </p>
+<p><img src="http://osuskkx7k.bkt.clouddn.com/hash.png" alt="image">  </p>
+<p>第二步确定索引，与JDK1.7中的相同，只是不作为一个独立的方法；</p>
+<h4 id="put-、get-方法"><a href="#put-、get-方法" class="headerlink" title="put()、get()方法"></a>put()、get()方法</h4><p><strong>put()方法</strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">public V put(K key, V value) &#123;</div><div class="line">        return putVal(hash(key), key, value, false, true);</div><div class="line">    &#125;</div></pre></td></tr></table></figure></p>
+<p>调用了putVal()方法：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div></pre></td><td class="code"><pre><div class="line">final V putVal(int hash, K key, V value, boolean onlyIfAbsent,</div><div class="line">                   boolean evict) &#123;</div><div class="line">        Node&lt;K,V&gt;[] tab; Node&lt;K,V&gt; p; int n, i;</div><div class="line">        //如果tab为空或长度为0，则分配内存resize()</div><div class="line">        if ((tab = table) == null || (n = tab.length) == 0)</div><div class="line">            n = (tab = resize()).length;</div><div class="line">        //数组索引位置为null，直接put</div><div class="line">        //同时这一步p赋值为tab[i]</div><div class="line">        if ((p = tab[i = (n - 1) &amp; hash]) == null)</div><div class="line">            tab[i] = newNode(hash, key, value, null);</div><div class="line">        else &#123;</div><div class="line">            Node&lt;K,V&gt; e; K k;</div><div class="line">            //判断hash值和key是否都相同，都相同则后面替换value值</div><div class="line">            if (p.hash == hash &amp;&amp;</div><div class="line">                ((k = p.key) == key || (key != null &amp;&amp; key.equals(k))))</div><div class="line">                e = p;</div><div class="line">            //红黑书处理冲突    </div><div class="line">            else if (p instanceof TreeNode)</div><div class="line">                e = ((TreeNode&lt;K,V&gt;)p).putTreeVal(this, tab, hash, key, value);</div><div class="line">            //链表处理冲突</div><div class="line">            else &#123;</div><div class="line">                for (int binCount = 0; ; ++binCount) &#123;</div><div class="line">                    // 在链表尾部插入新结点</div><div class="line">                    if ((e = p.next) == null) &#123;</div><div class="line">                        p.next = newNode(hash, key, value, null);</div><div class="line">                        //节点数 &gt;= 7，转化为红黑树</div><div class="line">                        if (binCount &gt;= TREEIFY_THRESHOLD - 1) </div><div class="line">                            treeifyBin(tab, hash);</div><div class="line">                        break;</div><div class="line">                    &#125;</div><div class="line">                    //已经存在key，退出循环，后面替换value值</div><div class="line">                    if (e.hash == hash &amp;&amp;</div><div class="line">                        ((k = e.key) == key || (key != null &amp;&amp; key.equals(k))))</div><div class="line">                        break;</div><div class="line">                    //与e = p.next组合，遍历链表</div><div class="line">                    p = e;</div><div class="line">                &#125;</div><div class="line">            &#125;</div><div class="line">            //已经存在key，替换value值</div><div class="line">            if (e != null) &#123; // existing mapping for key</div><div class="line">                V oldValue = e.value;</div><div class="line">                if (!onlyIfAbsent || oldValue == null)</div><div class="line">                    e.value = value;</div><div class="line">                afterNodeAccess(e);</div><div class="line">                return oldValue;</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">        ++modCount;</div><div class="line">        //扩容</div><div class="line">        if (++size &gt; threshold)</div><div class="line">            resize();</div><div class="line">        afterNodeInsertion(evict);</div><div class="line">        return null;</div><div class="line">    &#125;</div></pre></td></tr></table></figure></p>
+<p>put过程分析：</p>
+<ol>
+<li>如果数组索引位置tab[i]为null，直接put；否则进入2；</li>
+<li>与第一个节点hash值相同且key值也相同，则直接到后面替换value值，否则进入3；</li>
+<li>判断链表是否形成红黑树，并根据结果进入不同的处理。</li>
+</ol>
+<hr>
+<p><strong>get()方法</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">public V get(Object key) &#123;</div><div class="line">        Node&lt;K,V&gt; e;</div><div class="line">        return (e = getNode(hash(key), key)) == null ? null : e.value;</div><div class="line">    &#125;</div></pre></td></tr></table></figure>
+<p>调用getNode()方法：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line">final Node&lt;K,V&gt; getNode(int hash, Object key) &#123;</div><div class="line">        Node&lt;K,V&gt;[] tab; Node&lt;K,V&gt; first, e; int n; K k;</div><div class="line">        if ((tab = table) != null &amp;&amp; (n = tab.length) &gt; 0 &amp;&amp;</div><div class="line">            (first = tab[(n - 1) &amp; hash]) != null) &#123;</div><div class="line">            //判断目标是不是first，是直接返回first</div><div class="line">            if (first.hash == hash &amp;&amp; // always check first node</div><div class="line">                ((k = first.key) == key || (key != null &amp;&amp; key.equals(k))))</div><div class="line">                return first;</div><div class="line">            //已经形成链表</div><div class="line">            if ((e = first.next) != null) &#123;</div><div class="line">                //第一个节点是TreeNode，说明形成了红黑树</div><div class="line">                if (first instanceof TreeNode)</div><div class="line">                    return ((TreeNode&lt;K,V&gt;)first).getTreeNode(hash, key);</div><div class="line">                // 还未形成红黑树，按链表处理   </div><div class="line">                do &#123;</div><div class="line">                    if (e.hash == hash &amp;&amp;</div><div class="line">                        ((k = e.key) == key || (key != null &amp;&amp; key.equals(k))))</div><div class="line">                        return e;</div><div class="line">                &#125; while ((e = e.next) != null);</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">        return null;</div><div class="line">    &#125;</div></pre></td></tr></table></figure></p>
+<p>方法分析：</p>
+<ol>
+<li>首先判断第一个节点first是不是要寻找的节点，如果是直接返回；不是进入2；</li>
+<li>判断第一个节点first是不是树节点，如果是说明形成红黑树，调用红黑树的查找方法；不是则进入3；</li>
+<li>说明还是链表，未形成红黑树，调用链表查找方法。</li>
+</ol>
+<h4 id="扩容机制"><a href="#扩容机制" class="headerlink" title="扩容机制"></a>扩容机制</h4><p>我们知道，当往HashMap中不断地添加元素时，它就会扩大数组的长度，把小的数组用大的数组来代替。<br><strong>回忆JDK1.7中的扩容，对于链表中的每个元素都需要重新计算hash值，而在JDK1.8中，只需要看看原来的hash值新增的那个bit是1还是0就好了</strong>，是0的话索引没变，是1的话索引变成“原索引+oldCap（原容量）”，工作过程如下图：</p>
+<p>数组由16扩大到32的过程中，索引位置为15的元素变化：<br><img src="http://osuskkx7k.bkt.clouddn.com/1.8hahs%E6%89%A9%E5%AE%B9.png" alt="image"></p>
+<p><strong>注：JDK1.7中旧链表的元素如果刚好又在新链表中，那么元素的顺序是倒置的，而JDK1.8不会倒置。</strong></p>
+<h4 id="JDK1-8和JDK1-7的区别（HashMap）"><a href="#JDK1-8和JDK1-7的区别（HashMap）" class="headerlink" title="JDK1.8和JDK1.7的区别（HashMap）"></a>JDK1.8和JDK1.7的区别（HashMap）</h4><p><strong>相同点</strong></p>
+<ol>
+<li><strong>默认初始容量都是16，默认负载因子都是0.75。数组的长度length都是2的次幂，扩容时都是2倍</strong></li>
+<li><strong>通过hash计算索引的方法相同（hash &amp; length-1）</strong></li>
+<li><strong>key为null的键值对都会放入table[0]中</strong></li>
+<li><strong>都是懒加载，初始时表为空，在插入第一个键值对时初始</strong>化</li>
+</ol>
+<p><strong>不同点</strong></p>
+<ol>
+<li><strong>结构不同，JDK1.8增加了红黑树优化结构</strong></li>
+<li><strong>put方法的区别，JDK1.7中put时，添加到头节点；JDK1.8中添加到尾节点</strong></li>
+<li><strong>计算hash的方法不同，JDK1.8更优化</strong></li>
+<li><strong>JDK1.7新链表的顺序倒置，JDK1.8新链表顺序不倒置</strong></li>
+</ol>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h3 id=&quot;HashMap的实现分析&quot;&gt;&lt;a href=&quot;#HashMap的实现分析&quot; class=&quot;headerlink&quot; title=&quot;HashMap的实现分析&quot;&gt;&lt;/a&gt;HashMap的实现分析&lt;/h3&gt;&lt;h4 id=&quot;介绍&quot;&gt;&lt;a href=&quot;#介绍&quot; class=&quot;
+    
+    </summary>
+    
+      <category term="技术" scheme="http://yoursite.com/categories/%E6%8A%80%E6%9C%AF/"/>
+    
+    
+      <category term="HashMap" scheme="http://yoursite.com/tags/HashMap/"/>
+    
+      <category term="JDK1.8" scheme="http://yoursite.com/tags/JDK1-8/"/>
+    
+  </entry>
   
   <entry>
     <title>HashMap 在JDK1.7中的实现原理分析</title>
@@ -1179,323 +1431,6 @@ var bmapChart=echarts.init(document.getElementById("map-wrap"));var data=[{name:
     
       <category term="技术" scheme="http://yoursite.com/categories/%E6%8A%80%E6%9C%AF/"/>
     
-    
-  </entry>
-  
-  <entry>
-    <title>使用Redis的管道（Pipeline）进行批量操作</title>
-    <link href="http://yoursite.com/2017/07/28/Redis%E2%80%94Pipline/"/>
-    <id>http://yoursite.com/2017/07/28/Redis—Pipline/</id>
-    <published>2017-07-28T06:55:55.000Z</published>
-    <updated>2017-10-09T16:08:31.273Z</updated>
-    
-    <content type="html"><![CDATA[<h1 id="Redis管道技术简介"><a href="#Redis管道技术简介" class="headerlink" title="Redis管道技术简介"></a>Redis管道技术简介</h1><hr>
-<p>Reids是一个cs模式的Tcp服务，类似于http的请求。 当客户端发送一个请求时，服务器处理之后会将结果通过响应报文返回给客户端 。  </p>
-<p>那么当需要发送多个请求时，难道每次都要等待请求响应，再发送下一个请求吗？</p>
-<p>当然不是，这里就可以采用Redis的管道技术。  </p>
-<p>举个例子，如果说jedis是：request response，request response，…；  </p>
-<p>&emsp;&emsp;&emsp;&emsp;&emsp;那么pipeline则是：request request… response response的方式。  </p>
-<p>下面，就简单测试一下使用管道的效果。</p>
-<hr>
-<h1 id="单条插入与批量插入"><a href="#单条插入与批量插入" class="headerlink" title="单条插入与批量插入"></a>单条插入与批量插入</h1><p>这里采用逐条和批量的方式往Redis中写入一些数据。<br>先从Mysql中查出需要的数据，这里大概是300条左右，数据量并不大，但是简单做个测试应该没问题。<br><strong>单条插入—— Jedis：</strong></p>
-<pre><code>Jedis jedis = jedisPool.getResource();
-long start = System.currentTimeMillis();
-List&lt;VehicleInfo&gt; vehicleInfos  = vehicleInfoMapper.selectByParam(param);
-for (VehicleInfo vehicleInfo : vehicleInfos) {        
-    //遍历每个vehicleInfo
-    TVehicleRealReportMsg real = new TVehicleRealReportMsg();
-    Map&lt;String, String&gt; keysmap = new HashMap&lt;String, String&gt;();
-    keysmap.put(&quot;vehicleStatus&quot;, real.getVehicleStatus() + &quot;&quot;);
-    keysmap.put(&quot;chargeStatus&quot;, real.getChargeStatus() + &quot;&quot;);
-    keysmap.put(&quot;longitude&quot;, &quot;9&quot;);
-    keysmap.put(&quot;latitude&quot;, &quot;9&quot;);
-    List&lt;Long&gt; list1 = new ArrayList&lt;Long&gt;();
-    Long l = 1000L;
-    Long l2 = 22222L;
-    list1.add(l);
-    list1.add(l2);
-    real.setEngineFaultsList(list1);
-    keysmap.put(&quot;engineFaultsList&quot;, JSON.toJSONString(list1));
-    //单条插入
-    jedis.hmset(vehicleInfo.getVehicleSeq()+&quot;&quot;, keysmap);
-}    
-jedis.close();          
-long end = System.currentTimeMillis(); System.out.println(&quot;耗时：&quot;+(end-start) +&quot;ms&quot;);  
-</code></pre><p>结果：467ms  </p>
-<p><img src="http://osuskkx7k.bkt.clouddn.com/%E5%8D%95%E6%9D%A1%E6%8F%92%E5%85%A5.PNG" alt="1">  </p>
-<p><strong>批量插入—— Pipeline：</strong> </p>
-<pre><code>Jedis jedis = jedisPool.getResource();
-Pipeline pip = jedis.pipelined();
-long start = System.currentTimeMillis();
-List&lt;VehicleInfo&gt; vehicleInfos  = vehicleInfoMapper.selectByParam(param);
-for (VehicleInfo vehicleInfo : vehicleInfos) {        
-    //遍历每个vehicleInfo
-    TVehicleRealReportMsg real = new TVehicleRealReportMsg();
-    Map&lt;String, String&gt; keysmap = new HashMap&lt;String, String&gt;();
-    keysmap.put(&quot;vehicleStatus&quot;, real.getVehicleStatus() + &quot;&quot;);
-    keysmap.put(&quot;chargeStatus&quot;, real.getChargeStatus() + &quot;&quot;);
-    keysmap.put(&quot;longitude&quot;, &quot;9&quot;);
-    keysmap.put(&quot;latitude&quot;, &quot;9&quot;);
-    List&lt;Long&gt; list1 = new ArrayList&lt;Long&gt;();
-    Long l = 1000L;
-    Long l2 = 22222L;
-    list1.add(l);
-    list1.add(l2);
-    real.setEngineFaultsList(list1);
-    keysmap.put(&quot;engineFaultsList&quot;, JSON.toJSONString(list1));
-    //批量插入
-    pip.hmset(vehicleInfo.getVehicleSeq()+&quot;&quot;, keysmap);
-}
-pip.sync();//同步
-jedis.close();        
-long end = System.currentTimeMillis();
-System.out.println(&quot;耗时：&quot;+(end-start) +&quot;ms&quot;);  
-</code></pre><p>结果：175ms  </p>
-<p><img src="http://osuskkx7k.bkt.clouddn.com/%E6%89%B9%E9%87%8F%E6%8F%92%E5%85%A5.PNG" alt="2">  </p>
-<p>可以看到使用管道之后的时间为，相比于单条插入的总时间大大减少，性能更优。</p>
-<hr>
-<h1 id="单条读取和批量读取"><a href="#单条读取和批量读取" class="headerlink" title="单条读取和批量读取"></a>单条读取和批量读取</h1><p><strong>单条读取—— Jedis：</strong>  </p>
-<pre><code>Jedis jedis = jedisPool.getResource();
-long start = System.currentTimeMillis();
-//1.采用redis单条读取
-List&lt;VehicleInfo&gt; vehicleInfos = vehicleInfoMapper.selectByParam(param);
-List&lt;Coordinate&gt; list = new ArrayList&lt;Coordinate&gt;();
-for(VehicleInfo key: vehicleInfos){
-    String hashkey = key.getVehicleSeq()+&quot;&quot;;
-    if(jedis.exists(hashkey+&quot;&quot;)){                            
-    Coordinate coord = new Coordinate();
-    coord.setVehicleSeq(key.getVehicleSeq());
-    coord.setOrgId(key.getOrgId());    
-    coord.setVehiclemodelseq(key.getVehiclemodelseq());    
-    coord.setVin(jedis.hget(hashkey, &quot;vin&quot;));
-    coord.setLongitude(Long.valueOf(jedis.hget(hashkey, &quot;longitude&quot;)));
-    coord.setLatitude(Long.valueOf(jedis.hget(hashkey, &quot;latitude&quot;)));         
-    list.add(coord);
-    }
-}    
-jedis.close();
-long end = System.currentTimeMillis();
-System.out.println(&quot;耗时：&quot;+(end-start)+&quot; ms&quot;);
-return list;  
-</code></pre><p>结果： 第一次为1032ms，之后稳定在800~900ms<br> <img src="http://osuskkx7k.bkt.clouddn.com/%E5%8D%95%E4%BD%93%E8%AF%BB.PNG" alt="3">  </p>
-<p><strong>批量读取—— Pipeline</strong>： </p>
-<pre><code>Jedis jedis = jedisPool.getResource();
-Pipeline pip = jedis.pipelined();
-long start = System.currentTimeMillis();
-//2.采用redis管道读取
-List&lt;VehicleInfo&gt; vehicleInfos = vehicleInfoMapper.selectByParam(param);
-List&lt;Coordinate&gt; list = new ArrayList&lt;Coordinate&gt;();
-Map&lt;String,Object&gt; map = new HashMap&lt;String, Object&gt;();//map用来暂存属性
-Map&lt;String,List&lt;Response&lt;String&gt;&gt;&gt; responses  = new HashMap&lt;String, List&lt;Response&lt;String&gt;&gt;&gt;(vehicleInfos.size());
-for(VehicleInfo info: vehicleInfos){
-    List&lt;Response&lt;String&gt;&gt; resls = new ArrayList&lt;Response&lt;String&gt;&gt;();
-    resls.add(pip.hget(info.getVehicleSeq()+&quot;&quot;,&quot;longitude&quot;));
-    resls.add(pip.hget(info.getVehicleSeq()+&quot;&quot;,&quot;latitude&quot;));
-    responses.put(info.getVehicleSeq() + &quot;&quot;, resls);//得到了一辆车所有的实时数据--300辆车
-    map.put(info.getVehicleSeq()+&quot;orgId&quot;, info.getOrgId());
-    map.put(info.getVehicleSeq()+&quot;vin&quot;, info.getVin());
-    map.put(info.getVehicleSeq()+&quot;vehiclemodelseq&quot;, info.getVehiclemodelseq());
-}
-pip.sync(); 
-for(String k:responses.keySet()){
-    Coordinate coord = new Coordinate();
-    coord.setLongitude(Long.valueOf(responses.get(k).get(0).get()));//是get，不是toString
-    coord.setLatitude(Long.valueOf(responses.get(k).get(1).get()));
-    coord.setVehicleSeq(Long.valueOf(k));
-    coord.setOrgId((String) map.get(k+&quot;orgId&quot;));
-    coord.setVin((String) map.get(k+&quot;vin&quot;));
-    coord.setVehiclemodelseq((Long) map.get(k+&quot;vehiclemodelseq&quot;));
-    list.add(coord);
-}
-jedis.close();
-long end = System.currentTimeMillis();
-System.out.println(&quot;耗时：&quot;+(end-start)+&quot; ms&quot;);
-return list;  
-</code></pre><p>结果： 第一次为200ms，之后维持在30ms左右<br> <img src="http://osuskkx7k.bkt.clouddn.com/%E6%89%B9%E9%87%8F%E8%AF%BB.PNG" alt="4">  </p>
-<p>总时间大概是单条读取总时间的1/5甚至更低，可以看出管道大大提升了效率，具有更好的性能。  </p>
-<font size="3">注：使用管道所获取的值的类型是Response<string\>,因此需要转为String，如下代码片段： </string\></font> 
-
-<pre><code>Map&lt;String,List&lt;Response&lt;String&gt;&gt;&gt; responses  = new HashMap&lt;String, List&lt;Response&lt;String&gt;&gt;&gt;  (vehicleInfos.size());  
-
-//转String
-responses.get(k).get(0).get();  
-</code></pre><hr>
-<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><ul>
-<li><font size="3">这里仅仅测试了300条数据的操作，已经取得了相对明显的效果。  </font></li>
-<li>对于大量数据的操作，使用Redis管道可以大大提升性能和效率。</li>
-</ul>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;h1 id=&quot;Redis管道技术简介&quot;&gt;&lt;a href=&quot;#Redis管道技术简介&quot; class=&quot;headerlink&quot; title=&quot;Redis管道技术简介&quot;&gt;&lt;/a&gt;Redis管道技术简介&lt;/h1&gt;&lt;hr&gt;
-&lt;p&gt;Reids是一个cs模式的Tcp服务，类似于http的请求
-    
-    </summary>
-    
-      <category term="技术" scheme="http://yoursite.com/categories/%E6%8A%80%E6%9C%AF/"/>
-    
-    
-      <category term="Redis" scheme="http://yoursite.com/tags/Redis/"/>
-    
-      <category term="Pipeline" scheme="http://yoursite.com/tags/Pipeline/"/>
-    
-      <category term="批量，缓存" scheme="http://yoursite.com/tags/%E6%89%B9%E9%87%8F%EF%BC%8C%E7%BC%93%E5%AD%98/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>You</title>
-    <link href="http://yoursite.com/2017/07/20/our01/"/>
-    <id>http://yoursite.com/2017/07/20/our01/</id>
-    <published>2017-07-19T16:00:00.000Z</published>
-    <updated>2017-10-09T16:08:31.273Z</updated>
-    
-    <content type="html"><![CDATA[<h1 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h1>]]></content>
-    
-    <summary type="html">
-    
-      &lt;h1 id=&quot;概述&quot;&gt;&lt;a href=&quot;#概述&quot; class=&quot;headerlink&quot; title=&quot;概述&quot;&gt;&lt;/a&gt;概述&lt;/h1&gt;
-    
-    </summary>
-    
-      <category term="芭乐" scheme="http://yoursite.com/categories/%E8%8A%AD%E4%B9%90/"/>
-    
-    
-      <category term="Soul" scheme="http://yoursite.com/tags/Soul/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Thrift——入门Demo（Java）</title>
-    <link href="http://yoursite.com/2017/07/18/Thrift/"/>
-    <id>http://yoursite.com/2017/07/18/Thrift/</id>
-    <published>2017-07-18T09:07:07.000Z</published>
-    <updated>2017-10-09T16:08:31.273Z</updated>
-    
-    <content type="html"><![CDATA[<h1 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h1><hr>
-<p>Thrift最初由Facebook研发，主要用于各个服务之间的RPC通信。</p>
-<p>Thrift是一个典型的CS（客户端/服务端）结构，客户端和服务端可以使用不同的语言开发。<br>那么它是如何实现使用不同的语言开发呢？<br>答案：一种关联客户端和服务端的中间语言。</p>
-<p>这种语言就是IDL（Interface Description Language）。将这个IDL作为输入文件，编译器就可以生成代码（支持多种），即RPC客户端和服务器通信的无缝跨编程语言。</p>
-<h1 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h1><hr>
-<p>下载官方链接：<a href="http://thrift.apache.org/download" target="_blank" rel="external">http://thrift.apache.org/download</a><br>将下载好的thrift-0.10.0 .exe文件命名为thrift .exe，放在D盘下的一个Thtift文件夹中，<br>为了更方便使用命令，将目录加入到系统Path路径下：</p>
-<p><img src="http://osuskkx7k.bkt.clouddn.com/path.png" alt="image"></p>
-<p>在cmd中输入：thrift -version ，查看是否安装配置成功</p>
-<p><img src="http://osuskkx7k.bkt.clouddn.com/%E7%89%88%E6%9C%AC1.png" alt="image"></p>
-<p>出现版本号，安装成功。</p>
-<h2 id="定义thrift——IDL文件"><a href="#定义thrift——IDL文件" class="headerlink" title="定义thrift——IDL文件"></a>定义thrift——IDL文件</h2><hr>
-<p>IDL文件有许多数据类型</p>
-<ul>
-<li>结构体类型： struct：定义公共的对象，类似于 C 语 言中的结构体定义，在 Java 中是一个 JavaBean</li>
-<li>容器类型：<br>&emsp;&emsp;&emsp;&emsp;&emsp; list：对应 Java 的 ArrayList<br>&emsp;&emsp;&emsp;&emsp;&emsp; set：对应 Java 的 HashSet<br>&emsp;&emsp;&emsp;&emsp;&emsp; map：对应 Java 的 HashMap</li>
-<li>异常类型： exception：对应 Java 的 Exception</li>
-<li>服务类型： service：对应服务的类  </li>
-</ul>
-<p>这里仅仅定义一个服务。<br>thrift定义服务相当于Java中创建Interface，创建的service通过代码生成命令生成客户端和服务端的框架代码。<br>定义形式如下（helloworld.thrift，注意后缀！）：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">namespace java com.test</div><div class="line"></div><div class="line">service HelloWorldService&#123;</div><div class="line"></div><div class="line">    string sayHello(1:string name)</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>——namespace 相当于Java中的package。</p>
-<p>在 cmd中 输入命令：  thrift -gen java helloworld.thrift</p>
-<p><img src="http://osuskkx7k.bkt.clouddn.com/%E5%91%BD%E4%BB%A41.PNG" alt="image"></p>
-<p>可以看到生成了一个名为gen-java的文件夹，其中就是生成的代码，打开后可以看到层级目录下有：</p>
-<p><img src="http://osuskkx7k.bkt.clouddn.com/%E4%BB%A3%E7%A0%81%E7%94%9F%E6%88%90.png" alt="image"></p>
-<p>代码片段：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line">/**</div><div class="line"> * Autogenerated by Thrift Compiler (0.10.0)</div><div class="line"> *</div><div class="line"> * DO NOT EDIT UNLESS YOU ARE SURE THAT YOU KNOW WHAT YOU ARE DOING</div><div class="line"> *  @generated</div><div class="line"> */</div><div class="line">package com.test;</div><div class="line"></div><div class="line">@SuppressWarnings(&#123;&quot;cast&quot;, &quot;rawtypes&quot;, &quot;serial&quot;, &quot;unchecked&quot;, &quot;unused&quot;&#125;)</div><div class="line">@javax.annotation.Generated(value = &quot;Autogenerated by Thrift Compiler (0.10.0)&quot;, date = &quot;2017-07-18&quot;)</div><div class="line">public class HelloWorldService &#123;</div><div class="line"></div><div class="line">  public interface Iface &#123;</div><div class="line"></div><div class="line">    public java.lang.String sayHello(java.lang.String name) throws org.apache.thrift.TException;</div><div class="line"></div><div class="line">  &#125;</div></pre></td></tr></table></figure></p>
-<h1 id="创建项目"><a href="#创建项目" class="headerlink" title="创建项目"></a>创建项目</h1><hr>
-<p>创建一个Maven工程，引入依赖，可在Maven依赖中看到引入的相关Jar包</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">&lt;dependency&gt;</div><div class="line">      &lt;groupId&gt;org.apache.thrift&lt;/groupId&gt;</div><div class="line">      &lt;artifactId&gt;libthrift&lt;/artifactId&gt;</div><div class="line">      &lt;version&gt;0.10.0&lt;/version&gt;</div><div class="line">&lt;/dependency&gt;</div></pre></td></tr></table></figure>
-<h1 id="服务端实现与启动"><a href="#服务端实现与启动" class="headerlink" title="服务端实现与启动"></a>服务端实现与启动</h1><hr>
-<p>服务端相关操作的步骤如下：</p>
-<ul>
-<li>实现服务处理接口Impl</li>
-<li>创建TProcessor</li>
-<li>创建TServerTransport</li>
-<li>创建TProtocol</li>
-<li>创建TServer</li>
-<li>启动Server  </li>
-</ul>
-<font size="4">服务端实现</font>
-
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">package com.test;</div><div class="line"></div><div class="line">import org.apache.thrift.TException;</div><div class="line"></div><div class="line">public class HelloWorldImpl implements HelloWorldService.Iface&#123;</div><div class="line">	</div><div class="line">	public HelloWorldImpl()&#123;	</div><div class="line">	&#125;</div><div class="line">	</div><div class="line">	public String sayHello(String name) throws TException &#123;</div><div class="line">		</div><div class="line">		return &quot;Hi,&quot; +name + &quot; welcome !&quot;;</div><div class="line">	&#125;</div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<font size="4">服务端启动</font>
-
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div></pre></td><td class="code"><pre><div class="line">package com.test;</div><div class="line"></div><div class="line">import org.apache.thrift.TProcessor;</div><div class="line">import org.apache.thrift.protocol.TBinaryProtocol;</div><div class="line">import org.apache.thrift.server.TServer;</div><div class="line">import org.apache.thrift.server.TSimpleServer;</div><div class="line">import org.apache.thrift.transport.TServerSocket;</div><div class="line"></div><div class="line">public class HelloServer &#123;</div><div class="line">	</div><div class="line">	public static final int SERVER_PORT = 8090;</div><div class="line">	</div><div class="line">	public void startServer()&#123;	</div><div class="line">		System.out.println(&quot;Server is Runing......&quot;);</div><div class="line">		</div><div class="line">		TProcessor tprocessor = new HelloWorldService.Processor(new HelloWorldImpl());	</div><div class="line">		//简单的单线程服务模型，一般用于测试</div><div class="line">		try &#123;</div><div class="line">			TServerSocket serverTransport = new TServerSocket(SERVER_PORT);</div><div class="line">			TServer.Args tArgs = new TServer.Args(serverTransport);</div><div class="line">			tArgs.processor(tprocessor);</div><div class="line">			tArgs.protocolFactory(new TBinaryProtocol.Factory());</div><div class="line">			TServer server = new TSimpleServer(tArgs);</div><div class="line">			server.serve();</div><div class="line">			</div><div class="line">		&#125; catch (Exception e) &#123;</div><div class="line">			System.out.println(&quot;Server start error！&quot;);</div><div class="line">			e.printStackTrace();</div><div class="line">		&#125;</div><div class="line">	&#125;</div><div class="line">	public static void main(String[] args) &#123;</div><div class="line">		HelloServer server = new HelloServer();</div><div class="line">		server.startServer();</div><div class="line">	&#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>运行上面的启动类，控制台输出：Server is Runing……</p>
-<p><img src="http://osuskkx7k.bkt.clouddn.com/%E6%9C%8D%E5%8A%A1%E5%90%AF%E5%8A%A8.png" alt="image"></p>
-<h1 id="客户端启动"><a href="#客户端启动" class="headerlink" title="客户端启动"></a>客户端启动</h1><hr>
-<font size="4">客户端步骤：</font>
-
-<ul>
-<li>创建Transport</li>
-<li>创建TProtocol</li>
-<li>基于TTransport和TProtocol创建 Client</li>
-<li>调用Client的相应方法</li>
-</ul>
-<font size="4">客户端启动</font>
-
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div></pre></td><td class="code"><pre><div class="line">package com.test;</div><div class="line"></div><div class="line">import org.apache.thrift.protocol.TBinaryProtocol;</div><div class="line">import org.apache.thrift.protocol.TProtocol;</div><div class="line">import org.apache.thrift.transport.TSocket;</div><div class="line">import org.apache.thrift.transport.TTransport;</div><div class="line"></div><div class="line">public class HelloClient &#123;</div><div class="line">	</div><div class="line">	public static final String SERVER_IP = &quot;localhost&quot;;</div><div class="line">	public static final int SERVER_PORT = 8090;</div><div class="line">	public static final int TIMEOUT = 30000;</div><div class="line">	</div><div class="line">	public void startClient(String userName)&#123;</div><div class="line">		TTransport transport = null;</div><div class="line">		try &#123;</div><div class="line">			transport = new TSocket(SERVER_IP,SERVER_PORT,TIMEOUT);</div><div class="line">			//协议要和服务端一致</div><div class="line">			TProtocol protocol  = new TBinaryProtocol(transport);</div><div class="line">			</div><div class="line">			HelloWorldService.Client client = new HelloWorldService.Client(protocol);</div><div class="line">			transport.open();</div><div class="line">			</div><div class="line">			String result = client.sayHello(userName);		</div><div class="line">			System.out.println(&quot;Thrift client result is:&quot;+result);</div><div class="line">			</div><div class="line">		&#125; catch (Exception e) &#123;</div><div class="line">			System.out.println(&quot;client is error!&quot;);</div><div class="line">		&#125;finally&#123;</div><div class="line">			if(null != transport)&#123;</div><div class="line">				transport.close();</div><div class="line">			&#125;</div><div class="line">		&#125;	</div><div class="line">	&#125;</div><div class="line">	public static void main(String[] args) &#123;</div><div class="line">		HelloClient client = new HelloClient();</div><div class="line">		client.startClient(&quot;Z Yong&quot;);</div><div class="line">	&#125;	</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<font size="4">控制台输出：  Thrift client result is:  Hi,Z Yong welcome !<br></font>
-
-<p><img src="http://osuskkx7k.bkt.clouddn.com/%E8%BE%93%E5%87%BA2.PNG" alt="image"></p>
-<font size="5"><strong>客户端成功收到了服务端返回的请求结果，通信完成</strong>。</font>
-
-
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;h1 id=&quot;概述&quot;&gt;&lt;a href=&quot;#概述&quot; class=&quot;headerlink&quot; title=&quot;概述&quot;&gt;&lt;/a&gt;概述&lt;/h1&gt;&lt;hr&gt;
-&lt;p&gt;Thrift最初由Facebook研发，主要用于各个服务之间的RPC通信。&lt;/p&gt;
-&lt;p&gt;Thrift是一个典型的CS（客户端/服
-    
-    </summary>
-    
-      <category term="技术" scheme="http://yoursite.com/categories/%E6%8A%80%E6%9C%AF/"/>
-    
-    
-      <category term="Thrift" scheme="http://yoursite.com/tags/Thrift/"/>
-    
-      <category term="RPC" scheme="http://yoursite.com/tags/RPC/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Mysql批量操作之更新及插入</title>
-    <link href="http://yoursite.com/2017/07/12/mysql%E6%89%B9%E9%87%8F%E6%9B%B4%E6%96%B0/"/>
-    <id>http://yoursite.com/2017/07/12/mysql批量更新/</id>
-    <published>2017-07-12T07:12:12.000Z</published>
-    <updated>2017-10-09T16:08:31.273Z</updated>
-    
-    <content type="html"><![CDATA[<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>   这个问题困扰了整整一天。<br>   当遇到多条记录需要插入或者更新的时候，往往会使用批量操作来提高效率，提高性能。然而在使用过程中确是出现了各种问题，真的是有些坑只有趟过才知道！！<br>   好了，话不多说，进入正题。<br>   注：数据库Mysql     持久层框架 Mybatis</p>
-<h2 id="批量更新"><a href="#批量更新" class="headerlink" title="批量更新"></a>批量更新</h2><p>需求如下代码：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">Map&lt;String,Object&gt; ucmap = new HashMap&lt;String, Object&gt;();</div><div class="line">		ucmap.put(&quot;updateUser&quot;,&quot;zyong&quot;);</div><div class="line">		ucmap.put(&quot;updateTime&quot;, time);</div><div class="line">		ucmap.put(&quot;list&quot;, updateClist);</div><div class="line">		connectorInfoMapper.updateBatch(ucmap);</div></pre></td></tr></table></figure></p>
-<p>这里的需求是对设备的信息进行批量更新，利用Map来传参，Map中包含了一个List，这个List包含了需要更新的对象集合，也就是多条记录。<br>sql片段如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">&lt;update id=&quot;updateBatch&quot; parameterType=&quot;java.util.Map&quot;&gt;</div><div class="line">      &lt;foreach collection=&quot;list&quot; item=&quot;item&quot; index=&quot;index&quot; separator=&quot;;&quot;&gt;</div><div class="line"> update connector_info</div><div class="line">    set  </div><div class="line">      Connector_Type = #&#123;item.connectorType,jdbcType=INTEGER&#125;,</div><div class="line">      Voltage_Upper_Limits = #&#123;item.voltageUpperLimits,jdbcType=INTEGER&#125;,</div><div class="line">      Voltage_Lower_Limits = #&#123;item.voltageLowerLimits,jdbcType=INTEGER&#125;,</div><div class="line">      Current = #&#123;item.current,jdbcType=INTEGER&#125;,</div><div class="line">      Power = #&#123;item.power,jdbcType=DOUBLE&#125;,</div><div class="line">      National_Standard = #&#123;item.nationalStandard,jdbcType=INTEGER&#125;,</div><div class="line">      Update_User = #&#123;updateUser,jdbcType=VARCHAR&#125;,</div><div class="line">	  Update_Time = FROM_UNIXTIME(#&#123;updateTime,jdbcType=TIMESTAMP&#125;)   </div><div class="line">    where Connector_ID = #&#123;item.connectorId,jdbcType=VARCHAR&#125;</div><div class="line">    &lt;/foreach&gt;</div><div class="line"> &lt;/update&gt;</div></pre></td></tr></table></figure></p>
-<p>   可以看到，这里使用了foreach标签进行迭代，item代表着每一个元素，item.power等代表的就是每个元素的属性，而没有加上item的参数如updateUser、updateTime等则是存放在Map中的参数，从需求代码中能看得更加明显。</p>
-<p>当我检查了多遍后，感觉没问题之后，运行。<br>控制台的错误让我明白还是太年轻——报错了！！！仔细一看，是Sql语法错误，What？我把sql放入Navicat中美化，又检查了好几遍，这明明没有错啊！</p>
-<p>于是开启了百度，各种查：</p>
-<ul>
-<li>有的说把separator=”;”中的分号换成——separator=”UNION ALL”，测试，还是报同样的错误。</li>
-<li>将几个属于Map的字段删除再测试，依然报错  </li>
-</ul>
-<p>查了很多并没有什么实质性的进展，将多条数据改成一条数据进行更新，测试，竟然通过了！——原因很明显：批量操作的原因导致。<br>再百度，终于找到了答案：<br>并不是Sql的原因，而是数据库设置的原因————Mysql需要打开批量更新的设置。</p>
-<font size="5">在数据库JDBC链接中加入： <strong>&amp;allowMultiQueries=true</strong></font><br>如下：<br>jdbc.url=jdbc:mysql://139.224.35.81:3306/evshare?useUnicode=true&amp;characterEncoding=UTF-8&amp;allowMultiQueries=true<br><br><font size="5">在添加了这个“开关”之后，成功批量更新多条数据。</font>
-
-<h2 id="批量插入"><a href="#批量插入" class="headerlink" title="批量插入"></a>批量插入</h2><p>相比于批量更新，批量插入则没有类似的设置。<br>一个简单的示例Sql：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line">&lt;insert id=&quot;insertBatch&quot; parameterType=&quot;java.util.Map&quot;&gt;</div><div class="line">  insert into connector_info (Equipment_Seq, Connector_ID, </div><div class="line">      Connector_Type, Voltage_Upper_Limits, </div><div class="line">      Voltage_Lower_Limits, Current, Power, </div><div class="line">      National_Standard,Create_User,Create_Time,Update_Time)</div><div class="line">      values</div><div class="line">      &lt;foreach collection=&quot;list&quot; item=&quot;item&quot; index=&quot;index&quot; separator=&quot;,&quot;&gt;</div><div class="line">     (#&#123;item.equipmentSeq,jdbcType=BIGINT&#125;, #&#123;item.connectorId,jdbcType=VARCHAR&#125;, </div><div class="line">      #&#123;item.connectorType,jdbcType=INTEGER&#125;, #&#123;item.voltageUpperLimits,jdbcType=INTEGER&#125;, </div><div class="line">      #&#123;item.voltageLowerLimits,jdbcType=INTEGER&#125;, #&#123;item.current,jdbcType=INTEGER&#125;, #&#123;item.power,jdbcType=DOUBLE&#125;, </div><div class="line">      #&#123;item.nationalStandard,jdbcType=INTEGER&#125;,</div><div class="line">      #&#123;createUser,jdbcType=VARCHAR&#125;,</div><div class="line">      FROM_UNIXTIME(#&#123;createTime,jdbcType=TIMESTAMP&#125;),</div><div class="line">      FROM_UNIXTIME(#&#123;updateTime,jdbcType=TIMESTAMP&#125;))</div><div class="line">      &lt;/foreach&gt;</div><div class="line">  &lt;/insert&gt;</div></pre></td></tr></table></figure></p>
-<h2 id="总结："><a href="#总结：" class="headerlink" title="总结："></a>总结：</h2><ol>
-<li>有时候问题并不是出现在代码上，可以往系统环境和配置方面考虑。  </li>
-<li>对于批量更新Mysql需要设置，而Oracle则不需要设置，但sql可能要变化</li>
-</ol>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;h2 id=&quot;前言&quot;&gt;&lt;a href=&quot;#前言&quot; class=&quot;headerlink&quot; title=&quot;前言&quot;&gt;&lt;/a&gt;前言&lt;/h2&gt;&lt;p&gt;   这个问题困扰了整整一天。&lt;br&gt;   当遇到多条记录需要插入或者更新的时候，往往会使用批量操作来提高效率，提高性能。然而在使用过程中确
-    
-    </summary>
-    
-      <category term="技术" scheme="http://yoursite.com/categories/%E6%8A%80%E6%9C%AF/"/>
-    
-    
-      <category term="Mysql" scheme="http://yoursite.com/tags/Mysql/"/>
-    
-      <category term="Mybatis" scheme="http://yoursite.com/tags/Mybatis/"/>
     
   </entry>
   

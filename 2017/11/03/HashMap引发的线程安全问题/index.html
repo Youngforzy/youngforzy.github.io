@@ -1,0 +1,889 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<script>
+    (function(){
+        if(''){
+            if (prompt('请输入文章密码') !== ''){
+                alert('密码错误！');
+                history.back();
+            }
+        }
+    })();
+</script>
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="HashMap,线程安全," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="ZY's Blog" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="http://osuskkx7k.bkt.clouddn.com/bitbug_favicon.ico?v=5.1.1" />
+
+
+
+
+
+
+<meta name="description" content="一、线程安全性我们知道，HashMap是非线程安全的，只能在单线程的情况下使用。那么为什么不能在并发的情况下使用呢？因为在并发时，HashMap的扩容会产生错误而形成环形链表，导致读取数据时发生死循环。 回忆前面描述的扩容过程，调用了transfer()方法将旧链表转化为新链表： 1234567891011121314151617void transfer(Entry[] newTable) &amp;#">
+<meta name="keywords" content="HashMap,线程安全">
+<meta property="og:type" content="article">
+<meta property="og:title" content="HashMap引发的线程安全问题">
+<meta property="og:url" content="http://yoursite.com/2017/11/03/HashMap引发的线程安全问题/index.html">
+<meta property="og:site_name" content="ZY&#39;s Blog">
+<meta property="og:description" content="一、线程安全性我们知道，HashMap是非线程安全的，只能在单线程的情况下使用。那么为什么不能在并发的情况下使用呢？因为在并发时，HashMap的扩容会产生错误而形成环形链表，导致读取数据时发生死循环。 回忆前面描述的扩容过程，调用了transfer()方法将旧链表转化为新链表： 1234567891011121314151617void transfer(Entry[] newTable) &amp;#">
+<meta property="og:image" content="http://osuskkx7k.bkt.clouddn.com/h1.png?imageView2/2/w/900/h/450">
+<meta property="og:image" content="http://osuskkx7k.bkt.clouddn.com/h2.png">
+<meta property="og:image" content="http://osuskkx7k.bkt.clouddn.com/h3.png">
+<meta property="og:image" content="http://osuskkx7k.bkt.clouddn.com/h22.png">
+<meta property="og:image" content="http://osuskkx7k.bkt.clouddn.com/h4.png">
+<meta property="og:updated_time" content="2018-02-24T17:34:20.151Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="HashMap引发的线程安全问题">
+<meta name="twitter:description" content="一、线程安全性我们知道，HashMap是非线程安全的，只能在单线程的情况下使用。那么为什么不能在并发的情况下使用呢？因为在并发时，HashMap的扩容会产生错误而形成环形链表，导致读取数据时发生死循环。 回忆前面描述的扩容过程，调用了transfer()方法将旧链表转化为新链表： 1234567891011121314151617void transfer(Entry[] newTable) &amp;#">
+<meta name="twitter:image" content="http://osuskkx7k.bkt.clouddn.com/h1.png?imageView2/2/w/900/h/450">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2017/11/03/HashMap引发的线程安全问题/"/>
+
+
+
+
+
+  <title>HashMap引发的线程安全问题 | ZY's Blog</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">ZY's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Young for you.</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-album">
+          <a href="/album/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-camera"></i> <br />
+            
+            记录
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-love">
+          <a href="/love/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-heart"></i> <br />
+            
+            love
+          </a>
+        </li>
+      
+
+      
+    </ul>
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/11/03/HashMap引发的线程安全问题/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Z Yong">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="http://osuskkx7k.bkt.clouddn.com/mmexport1500086929549%282%29.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="ZY's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">HashMap引发的线程安全问题</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-11-03T17:48:18+08:00">
+                2017-11-03
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/技术/" itemprop="url" rel="index">
+                    <span itemprop="name">技术</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h3 id="一、线程安全性"><a href="#一、线程安全性" class="headerlink" title="一、线程安全性"></a>一、线程安全性</h3><p>我们知道，HashMap是非线程安全的，只能在单线程的情况下使用。那么为什么不能在并发的情况下使用呢？<strong>因为在并发时，HashMap的扩容会产生错误而形成环形链表，导致读取数据时发生死循环</strong>。</p>
+<p>回忆前面描述的扩容过程，调用了transfer()方法将旧链表转化为新链表：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line">void transfer(Entry[] newTable) &#123;  </div><div class="line">    Entry[] src = table;  </div><div class="line">    int newCapacity = newTable.length;  </div><div class="line">    for (int j = 0; j &lt; src.length; j++) &#123;  </div><div class="line">        Entry&lt;K,V&gt; e = src[j];  </div><div class="line">        if (e != null) &#123;  </div><div class="line">            src[j] = null;  </div><div class="line">            do &#123;  </div><div class="line">                Entry&lt;K,V&gt; next = e.next;  </div><div class="line">                int i = indexFor(e.hash, newCapacity);  </div><div class="line">                e.next = newTable[i];  </div><div class="line">                newTable[i] = e;  </div><div class="line">                e = next;  </div><div class="line">            &#125; while (e != null);  </div><div class="line">        &#125;  </div><div class="line">    &#125;  </div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>关键代码如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">do &#123;  </div><div class="line">Entry&lt;K,V&gt; next = e.next;  </div><div class="line">int i = indexFor(e.hash, newCapacity);  </div><div class="line">e.next = newTable[i];  </div><div class="line">newTable[i] = e;  </div><div class="line">e = next;  </div><div class="line">&#125; while (e != null);</div></pre></td></tr></table></figure>
+<p>循环操作将旧链表中的节点放入新链表，直到下一个节点next为null。<br>分别在单线程和多线程的环境下描述扩容过程。</p>
+<h4 id="单线程扩容"><a href="#单线程扩容" class="headerlink" title="单线程扩容"></a>单线程扩容</h4><p>假设hash数组的大小为2，负载因子为1，即超过1×2=2个元素时扩容，添加3个元素5、7、3，数组大小扩大为4，扩容过程如下：</p>
+<p><img src="http://osuskkx7k.bkt.clouddn.com/h1.png?imageView2/2/w/900/h/450" alt="image"></p>
+<p>原链表中3个元素，循环3次，具体如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line">第一次循环</div><div class="line">e = 3,next = 7</div><div class="line">3.next = tab[i] = null  (此时数组tab[i]为空)</div><div class="line">tab[i] = 3</div><div class="line">e = 7 </div><div class="line"></div><div class="line">第二次循环</div><div class="line">e = 7,next = 5</div><div class="line">7.next = tab[i] = 3</div><div class="line">tab[i] = 7</div><div class="line">e = 5</div><div class="line"></div><div class="line">第三次循环</div><div class="line">e = 5,next = null</div><div class="line">5.next = tab[i2] = null  (此时数组tab[i2]为空)</div><div class="line">tab[i2] = 5</div><div class="line">e = null </div><div class="line"></div><div class="line">(停止循环)</div></pre></td></tr></table></figure></p>
+<h4 id="多线程扩容"><a href="#多线程扩容" class="headerlink" title="多线程扩容"></a>多线程扩容</h4><p>为什么多线程环境下扩容会形成环形链表呢？<br>还是刚刚的例子，两个线程并发执行，线程1在进入do循环的第一行挂起，线程2继续执行</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">do &#123;  </div><div class="line">    Entry&lt;K,V&gt; next = e.next;  //线程1在此处挂起</div><div class="line">    int i = indexFor(e.hash, newCapacity);  </div><div class="line">    e.next = newTable[i];  </div><div class="line">    newTable[i] = e;  </div><div class="line">    e = next;  </div><div class="line">    &#125; while (e != null);</div></pre></td></tr></table></figure>
+<p>由前面单线程的情况可知，线程2此时成功扩容，结果如下：</p>
+<p><img src="http://osuskkx7k.bkt.clouddn.com/h2.png" alt="image"></p>
+<p>线程1恢复执行，已知线程1的 e 指向了key(3)，而next指向了key(7)，扩容过程如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line">第一次循环</div><div class="line">e = 3,next = 7</div><div class="line">3.next = tab[i] = null  (此时数组tab[i]为空)</div><div class="line">tab[i] = 3</div><div class="line">e = 7 </div><div class="line"></div><div class="line">第二次循环</div><div class="line">e = 7,next = 3</div><div class="line">7.next = tab[i] = 3</div><div class="line">tab[i] = 7</div><div class="line">e = 3</div><div class="line"></div><div class="line">第三次循环</div><div class="line">e = 3,next = null</div><div class="line">3.next = tab[i] = 7</div><div class="line">tab[i] = 3</div><div class="line">e = null</div><div class="line"></div><div class="line">(停止循环)</div></pre></td></tr></table></figure>
+<p>第一次循环图：  </p>
+<p><img src="http://osuskkx7k.bkt.clouddn.com/h3.png" alt="image">  </p>
+<p>第二次循环图：</p>
+<p><img src="http://osuskkx7k.bkt.clouddn.com/h22.png" alt="image"></p>
+<p>第三次循环图：</p>
+<p><img src="http://osuskkx7k.bkt.clouddn.com/h4.png" alt="image"></p>
+<p>在停止循环后，问题就出现了，如图所示，key(3)和key(7)构成了环形链表。<br><strong>于是，当我们调用HashMap的get方法时，由于查找链表节点时无法退出，就会产生无限循环。</strong></p>
+<h3 id="二、解决方法"><a href="#二、解决方法" class="headerlink" title="二、解决方法"></a>二、解决方法</h3><p>解决方法就是采用同步的数据结构，主要有以下三种：</p>
+<ol>
+<li><strong>Hashtable</strong></li>
+<li><strong>Collections.synchronizedMap()</strong></li>
+<li><strong>ConcurrentHashMap</strong></li>
+</ol>
+<h4 id="Hashtable"><a href="#Hashtable" class="headerlink" title="Hashtable"></a>Hashtable</h4><p>Hashtable是线程安全的。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">public synchronized V put(K key, V value) &#123;...&#125;</div><div class="line"></div><div class="line">public synchronized V get(Object key) &#123;...&#125;</div></pre></td></tr></table></figure>
+<p>可以看到，<strong>Hashtable是通过在方法上加上synchronized关键字来实现同步功能的</strong>。当一个线程访问时，其他线程都被阻塞住，这种方式效率很低，目前几乎不被使用。</p>
+<h4 id="Collections-synchronizedMap"><a href="#Collections-synchronizedMap" class="headerlink" title="Collections.synchronizedMap()"></a>Collections.synchronizedMap()</h4><p>调用Collections的synchronizedMap()方法，传入一个Map，可以得到一个线程安全的SynchronizedMap。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line">private static class SynchronizedMap&lt;K,V&gt;</div><div class="line">        implements Map&lt;K,V&gt;, Serializable &#123;</div><div class="line">        private final Map&lt;K,V&gt; m;     </div><div class="line">        final Object      mutex;        // Object on which to synchronize</div><div class="line"></div><div class="line">        SynchronizedMap(Map&lt;K,V&gt; m) &#123;</div><div class="line">            this.m = Objects.requireNonNull(m);</div><div class="line">            mutex = this;</div><div class="line">        &#125;</div><div class="line">        ....</div><div class="line">        public V get(Object key) &#123;</div><div class="line">            synchronized (mutex) &#123;return m.get(key);&#125;</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        public V put(K key, V value) &#123;</div><div class="line">            synchronized (mutex) &#123;return m.put(key, value);&#125;</div><div class="line">        &#125;</div></pre></td></tr></table></figure>
+<p>可以看到，<strong>它同步的原理同样也是使用了Synchronized关键字，不同的是Synchronized修饰代码块，并且将自身（this）作为了锁对象（mutex）。</strong></p>
+<h4 id="ConcurrentHashMap"><a href="#ConcurrentHashMap" class="headerlink" title="ConcurrentHashMap"></a>ConcurrentHashMap</h4><p>ConcurrentHashMap是JDK1.5之后引入的，是为了替代上面提到的二者。<br>ConcurrentHashMap是线程安全且高效的HashMap，它使用了多个锁来控制对hash数组不同部分的修改。  </p>
+<p>关于它的实现原理可以查看<a href="http://note.youdao.com/" target="_blank" rel="external">ConcurrentHashMap</a>这篇文章中的分析。</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/HashMap/" rel="tag"># HashMap</a>
+          
+            <a href="/tags/线程安全/" rel="tag"># 线程安全</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/11/01/HashMap 在JDK1.8中的实现（与JDK1.7对比）/" rel="next" title="HashMap 在JDK1.8中的实现（与JDK1.7对比）">
+                <i class="fa fa-chevron-left"></i> HashMap 在JDK1.8中的实现（与JDK1.7对比）
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/11/06/ConcurrentHashMap在JDK1.7中的实现分析/" rel="prev" title="ConcurrentHashMap在JDK1.7中的实现分析">
+                ConcurrentHashMap在JDK1.7中的实现分析 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript" >
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="http://osuskkx7k.bkt.clouddn.com/mmexport1500086929549%282%29.jpg"
+               alt="Z Yong" />
+          <p class="site-author-name" itemprop="name">Z Yong</p>
+           
+              <p class="site-description motion-element" itemprop="description">不负勇往</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives/">
+                <span class="site-state-item-count">25</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">2</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">33</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="/wechat" target="_blank" title="Wechat">
+                  
+                    <i class="fa fa-fw fa-wechat"></i>
+                  
+                  Wechat
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://blog.csdn.net/babylove_bale" target="_blank" title="Csdn">
+                  
+                    <i class="fa fa-fw fa-book"></i>
+                  
+                  Csdn
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              友情链接
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://hexo.io/" title="Hexo" target="_blank">Hexo</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.xiaonanbobo.com/" title="BoBo" target="_blank">BoBo</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+<br>
+
+<iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width=330 height=86 
+src="//music.163.com/outchain/player?type=2&id=30967791&auto=1&height=66"></iframe>
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#一、线程安全性"><span class="nav-number">1.</span> <span class="nav-text">一、线程安全性</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#单线程扩容"><span class="nav-number">1.1.</span> <span class="nav-text">单线程扩容</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#多线程扩容"><span class="nav-number">1.2.</span> <span class="nav-text">多线程扩容</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#二、解决方法"><span class="nav-number">2.</span> <span class="nav-text">二、解决方法</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Hashtable"><span class="nav-number">2.1.</span> <span class="nav-text">Hashtable</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Collections-synchronizedMap"><span class="nav-number">2.2.</span> <span class="nav-text">Collections.synchronizedMap()</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#ConcurrentHashMap"><span class="nav-number">2.3.</span> <span class="nav-text">ConcurrentHashMap</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2017 - 
+  <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Z Yong</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+  
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+  
+  <script type="text/javascript" src="/lib/three/three.min.js"></script>
+
+  
+  <script type="text/javascript" src="/lib/three/three-waves.min.js"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.1"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.1"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+<script type="text/javascript" src="/js/src/love.js"></script>
+</html>
