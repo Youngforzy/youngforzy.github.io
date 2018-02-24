@@ -220,6 +220,87 @@
   </entry>
   
   <entry>
+    <title>JVM之对象创建过程</title>
+    <link href="http://yoursite.com/2017/10/21/JVM%E4%B9%8B%E5%AF%B9%E8%B1%A1%E5%88%9B%E5%BB%BA%E8%BF%87%E7%A8%8B/"/>
+    <id>http://yoursite.com/2017/10/21/JVM之对象创建过程/</id>
+    <published>2017-10-21T11:48:18.000Z</published>
+    <updated>2018-02-24T07:31:33.481Z</updated>
+    
+    <content type="html"><![CDATA[<h3 id="一、Java对象的创建过程"><a href="#一、Java对象的创建过程" class="headerlink" title="一、Java对象的创建过程"></a>一、Java对象的创建过程</h3><p>在Java程序中，通常都是通过 new 关键字来创建对象，那么在虚拟机中对象是如何创建的？<br>（普通Java对象，不包含数组和Class对象）</p>
+<p>虚拟机创建对象主要经历5个步骤：<strong>类加载检查、为对象分配内存、内存空间初始化、对象设置、执行对象<init>方法。</init></strong></p>
+<h4 id="1-类加载检查"><a href="#1-类加载检查" class="headerlink" title="1 类加载检查"></a>1 类加载检查</h4><p>当虚拟机遇到 new 指令时，首先会去检查这个指令的参数是否能在常量池中定位到一个类的符号引用，并且<strong>检查这个符号引用代表的类是否已被加载、解析和初始化过</strong>。如果没有，先执行类加载过程。</p>
+<h4 id="2-为对象分配内存"><a href="#2-为对象分配内存" class="headerlink" title="2 为对象分配内存"></a>2 为对象分配内存</h4><p>对象所需的内存大小在类加载完成时已经确定，因此<strong>为对象分配内存等同于在Java堆中划分一块大小确定的内存空间</strong>。  </p>
+<h5 id="两种分配方式："><a href="#两种分配方式：" class="headerlink" title="两种分配方式："></a>两种分配方式：</h5><ul>
+<li><strong>指针碰撞</strong>：Java堆中的内存是完整的，将指针往空闲空间挪动一段与对象大小相等的距离</li>
+<li><strong>空闲列表</strong>：Java堆中的内存不是完整的，JVM维护了一个记录可用内存的列表，分配时将列表中足够大的空间划分给对象，并更新列表</li>
+</ul>
+<p>因此选择何种分配方式由Java堆是否完整决定，而这又由垃圾收集器是否带有压缩整理功能决定。如：</p>
+<ul>
+<li><strong>Serial、ParNew等采用指针碰撞</strong></li>
+<li><strong>CMS基于“标记-清除”采用空闲列表</strong></li>
+</ul>
+<h5 id="线程安全问题"><a href="#线程安全问题" class="headerlink" title="线程安全问题"></a>线程安全问题</h5><p>当处于并发情况下时，还要考虑线程安全问题。<br>两种解决方案：</p>
+<ul>
+<li><strong>对分配内存的动作进行同步处理</strong>。JVM采用CAS加失败重试的方式保证原子性</li>
+<li><strong>把内存分配的动作按照线程划分在不同的空间进行</strong>。每个线程在Java堆中预先分配一小块内存（本地线程分配缓冲TLAB），只有TLAB用完重新分配时才同步锁定。<h4 id="3-内存空间初始化"><a href="#3-内存空间初始化" class="headerlink" title="3 内存空间初始化"></a>3 内存空间初始化</h4>JVM将分配到的内存空间都初始化为零值（不包括对象头）；若使用TLAB，则提前至TLAB分配时执行。</li>
+</ul>
+<p>这一步<strong>保证了对象实例字段在Java代码中可以不赋初值就直接使用</strong>，程序能访问到这些字段的数据类型所对应的零值。</p>
+<h4 id="4-对象设置"><a href="#4-对象设置" class="headerlink" title="4 对象设置"></a>4 对象设置</h4><p>JVM设置对象头信息，如类元数据信息、对象的哈希码、对象的GC分代年龄信息等。还有是否启用偏向锁。</p>
+<h4 id="5-执行对象方法"><a href="#5-执行对象方法" class="headerlink" title="5 执行对象方法"></a>5 执行对象<init>方法</init></h4><p>此时，对于JVM来说，对象已经产生；<br>对于Java程序来说，才刚刚开始，执行<init>方法进行初始化，一个对象才算真正创建完成。</init></p>
+<h3 id="二、Java对象的初始化"><a href="#二、Java对象的初始化" class="headerlink" title="二、Java对象的初始化"></a>二、Java对象的初始化</h3><p>在Java对象初始化过程中，主要涉及三种执行对象初始化的结构，分别是 <strong>实例变量初始化、实例代码块初始化</strong> 以及 <strong>构造函数初始化</strong>。 </p>
+<h4 id="实例变量初始化与实例代码块初始化"><a href="#实例变量初始化与实例代码块初始化" class="headerlink" title="实例变量初始化与实例代码块初始化"></a>实例变量初始化与实例代码块初始化</h4><p>在定义（声明）实例变量的同时，还可以直接对实例变量进行赋值或者使用实例代码块对其进行赋值。<br>如果我们<strong>以这两种方式为实例变量进行初始化，那么它们将在构造函数执行之前完成这些初始化操作。</strong> 实际上，如果我们对实例变量直接赋值或者使用实例代码块赋值，那么编译器会将其中的代码放到类的构造函数中去，并且这些代码会被放在对超类构造函数的调用语句之后(Super())，构造函数本身的代码之前。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line">public class Tdemo2 &#123;</div><div class="line">	//成员变量</div><div class="line">	private int i = 1;</div><div class="line">	private int j = 1;</div><div class="line">	public  Tdemo2(int c)&#123;</div><div class="line">		System.out.println(i);</div><div class="line">		System.out.println(j);</div><div class="line">		this.i = c;</div><div class="line">		System.out.println(i);</div><div class="line">	&#125;</div><div class="line">	//代码块</div><div class="line">	&#123;</div><div class="line">		j = j+1;</div><div class="line">	&#125;</div><div class="line">	//静态代码块</div><div class="line">	static&#123;</div><div class="line">		int a = 5;</div><div class="line">		System.out.println(a);</div><div class="line">	&#125;</div><div class="line">	public static void main(String[] args) &#123;</div><div class="line">		new Tdemo2(3);</div><div class="line">	&#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>输出：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">5</div><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td></tr></table></figure></p>
+<p>可见执行顺序是static代码块、成员变量赋值、代码块、构造函数。</p>
+<h4 id="构造函数初始化"><a href="#构造函数初始化" class="headerlink" title="构造函数初始化"></a>构造函数初始化</h4><p><strong>Java要求在实例化类之前，必须先实例化其超类，以保证所创建实例的完整性。</strong><br>Java强制要求Object对象(Object是Java的顶层对象，没有超类)之外的所有对象构造函数的第一条语句必须是超类构造函数的调用语句或者是类中定义的其他的构造函数，如果我们既没有调用其他的构造函数，也没有显式调用超类的构造函数，那么编译器会为我们自动生成一个对超类构造函数的调用。</p>
+<p>实际上，实例化一个类的对象的过程是一个典型的递归过程。</p>
+<p><img src="http://osuskkx7k.bkt.clouddn.com/%E5%AE%9E%E4%BE%8B%E5%8C%96%E9%80%92%E5%BD%92%E8%BF%87%E7%A8%8B.png" alt="image"></p>
+<p>在准备实例化一个类的对象前，首先准备实例化该类的父类，如果该类的父类还有父类，那么准备实例化该类的父类的父类，依次递归直到递归到Object类。</p>
+<p><strong>注意：实例初始化不一定要在类初始化结束之后才开始初始化。</strong></p>
+<p>回忆一下Java中赋值顺序： </p>
+<ol>
+<li>父类的静态变量赋值 </li>
+<li>自身的静态变量赋值 </li>
+<li>父类成员变量赋值和父类代码块赋值 </li>
+<li>父类构造函数赋值 </li>
+<li>自身成员变量赋值和自身块代码赋值 </li>
+<li>自身构造函数赋值</li>
+</ol>
+<h3 id="三、Java对象的创建方式"><a href="#三、Java对象的创建方式" class="headerlink" title="三、Java对象的创建方式"></a>三、Java对象的创建方式</h3><p>Java对象的创建方式有 5 种：</p>
+<ol>
+<li><p>new 关键字</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">Person p = new Person();</div></pre></td></tr></table></figure>
+</li>
+<li><p>Class类的newInstance()（反射）</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">Person p2 = Person.class.newInstance();</div></pre></td></tr></table></figure>
+</li>
+<li><p>Constructor类的newInstance方法（反射）</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">Constructor c = Person.class.getConstructor();</div><div class="line">Person p3 = (Person) c.newInstance();</div></pre></td></tr></table></figure>
+</li>
+<li><p>clone方法（实现Cloneable接口）</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">Person p4 = (Person) p3.clone();</div></pre></td></tr></table></figure>
+</li>
+<li><p>反序列化（实现Serializable接口）</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">//写对象</div><div class="line">ObjectOutputStream output = new ObjectOutputStream(new FileOutputStream(&quot;person.txt&quot;));</div><div class="line">output.writeObject(p);</div><div class="line">output.close();</div><div class="line"></div><div class="line">//读对象</div><div class="line">ObjectInputStream input = new ObjectInputStream(new FileInputStream(&quot;person.txt&quot;));</div><div class="line">Person p5 = (Person) input.readObject();</div></pre></td></tr></table></figure>
+</li>
+</ol>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h3 id=&quot;一、Java对象的创建过程&quot;&gt;&lt;a href=&quot;#一、Java对象的创建过程&quot; class=&quot;headerlink&quot; title=&quot;一、Java对象的创建过程&quot;&gt;&lt;/a&gt;一、Java对象的创建过程&lt;/h3&gt;&lt;p&gt;在Java程序中，通常都是通过 new 关键字来创建
+    
+    </summary>
+    
+      <category term="技术" scheme="http://yoursite.com/categories/%E6%8A%80%E6%9C%AF/"/>
+    
+    
+      <category term="JVM" scheme="http://yoursite.com/tags/JVM/"/>
+    
+      <category term="对象创建过程" scheme="http://yoursite.com/tags/%E5%AF%B9%E8%B1%A1%E5%88%9B%E5%BB%BA%E8%BF%87%E7%A8%8B/"/>
+    
+  </entry>
+  
+  <entry>
     <title>JVM之垃圾收集算法</title>
     <link href="http://yoursite.com/2017/10/21/JVM%E4%B9%8B%E5%9E%83%E5%9C%BE%E6%94%B6%E9%9B%86%E7%AE%97%E6%B3%95/"/>
     <id>http://yoursite.com/2017/10/21/JVM之垃圾收集算法/</id>
