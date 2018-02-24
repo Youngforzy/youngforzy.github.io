@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yoursite.com/"/>
-  <updated>2017-10-23T13:58:22.016Z</updated>
+  <updated>2018-02-24T06:43:07.465Z</updated>
   <id>http://yoursite.com/</id>
   
   <author>
@@ -14,6 +14,118 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>JVM之垃圾收集器</title>
+    <link href="http://yoursite.com/2017/10/23/JVM%E4%B9%8B%E5%9E%83%E5%9C%BE%E6%94%B6%E9%9B%86%E5%99%A8/"/>
+    <id>http://yoursite.com/2017/10/23/JVM之垃圾收集器/</id>
+    <published>2017-10-23T11:28:13.000Z</published>
+    <updated>2018-02-24T06:43:07.465Z</updated>
+    
+    <content type="html"><![CDATA[<h3 id="一、垃圾收集器概述"><a href="#一、垃圾收集器概述" class="headerlink" title="一、垃圾收集器概述"></a>一、垃圾收集器概述</h3><p><strong>垃圾收集器是内存垃圾回收算法的具体实现。</strong><br>Java虚拟机规范中对垃圾收集器应该如何实现并没有任何规定，因此出现了7种收集器：Serial、ParNew、Parallel Scavenge、Serial Old、Parallel Old、CMS、G1。<br>它们以组合的形式配合工作来完成不同分代的垃圾收集工作。</p>
+<p><strong>常用组合</strong>：</p>
+<ol>
+<li>Serial/Serial Old</li>
+<li>ParNew/Serial Old</li>
+<li>ParNew/CMS</li>
+<li>Parallel Scavenge/Parallel Old</li>
+<li>G1</li>
+</ol>
+<p><img src="http://osuskkx7k.bkt.clouddn.com/JVMtool2.png" alt="image"></p>
+<h4 id="Minor-GC和Full-GC"><a href="#Minor-GC和Full-GC" class="headerlink" title="Minor GC和Full GC"></a>Minor GC和Full GC</h4><p>Minor GC（新生代GC）：发生在新生代的GC动作，频率高，回收速度块。</p>
+<p>Full GC（老年代GC）：发生在老年代的GC动作，老年代满了后才进行，一般伴随至少一次Minor GC，频率低，回收速度慢。</p>
+<h4 id="垃圾收集器种类"><a href="#垃圾收集器种类" class="headerlink" title="垃圾收集器种类"></a>垃圾收集器种类</h4><p>目前的收集器主要有以下三种：  </p>
+<p><strong>串行收集器：</strong> 只有一条垃圾收集线程工作  </p>
+<p><strong>并行收集器：</strong> 多条垃圾收集线程并行工作，用户线程等待</p>
+<p><strong>并发收集器：</strong> 垃圾收集线程与用户线程同时执行（不一定并行，可能交替执行）</p>
+<h3 id="二、垃圾收集器详述"><a href="#二、垃圾收集器详述" class="headerlink" title="二、垃圾收集器详述"></a>二、垃圾收集器详述</h3><h4 id="新生代收集器（3种）"><a href="#新生代收集器（3种）" class="headerlink" title="新生代收集器（3种）"></a>新生代收集器（3种）</h4><h5 id="Serial-收集器（串行）"><a href="#Serial-收集器（串行）" class="headerlink" title="Serial 收集器（串行）"></a>Serial 收集器（串行）</h5><p>Serial收集器是一个单线程的收集器。<br>“单线程”：不仅只是有一条收集线程，而且必须暂停用户工作线程。 </p>
+<p>工作过程：  </p>
+<p><img src="http://osuskkx7k.bkt.clouddn.com/seria.png" alt="image"></p>
+<p><strong>特点：</strong> 单线程，无线程切换，简单高效，（管理内存小，停顿可以接受）<br><strong>缺点：</strong>  暂停工作线程<br><strong>应用场景：</strong> 适用于运行在Client模式下的虚拟机</p>
+<h5 id="ParNew-收集器（并行）"><a href="#ParNew-收集器（并行）" class="headerlink" title="ParNew 收集器（并行）"></a>ParNew 收集器（并行）</h5><p>ParNew收集器是Serial收集器的多线程版本。</p>
+<p>工作过程：  </p>
+<p><img src="http://osuskkx7k.bkt.clouddn.com/ParNew.png" alt="image"></p>
+<p><strong>特点：</strong> 多线程，除Serial外唯一能和CMS收集器配合<br><strong>缺点：</strong>  暂停工作线程，单线程下不如Serial<br><strong>应用场景：</strong> 适用于运行在Server模式下的虚拟机</p>
+<h5 id="Parallel-Scavenge-收集器（并行）"><a href="#Parallel-Scavenge-收集器（并行）" class="headerlink" title="Parallel Scavenge 收集器（并行）"></a>Parallel Scavenge 收集器（并行）</h5><p>Parallel Scavenge收集器被称为“吞吐量优先”收集器。</p>
+<p>工作过程：  </p>
+<p><img src="http://osuskkx7k.bkt.clouddn.com/parallel%20scavenge.png" alt="image"></p>
+<p><strong>特点：</strong> </p>
+<ul>
+<li><strong>可控制吞吐量。</strong><br>吞吐量 = 用户代码时间/（用户代码时间+垃圾收集时间）<br>吞吐量越高，表示越高效地利用CPU，适合后台运算任务。  </li>
+<li><strong>GC 自适应调节策略</strong><br>JVM可以根据当前系统的运行情况自适应调节参数，以提供最合适的停顿时间和最大的吞吐量。</li>
+</ul>
+<p><strong>缺点：</strong> 相比停顿时间更注重吞吐量<br><strong>应用场景：</strong> 主要用于后台计算，不需要与用户进行太多交互，对暂停时间没有特别高的要求等场景，如批量处理；</p>
+<h4 id="老年代收集器（3种）"><a href="#老年代收集器（3种）" class="headerlink" title="老年代收集器（3种）"></a>老年代收集器（3种）</h4><h5 id="Serial-Old-收集器（串行）"><a href="#Serial-Old-收集器（串行）" class="headerlink" title="Serial Old 收集器（串行）"></a>Serial Old 收集器（串行）</h5><p>Serial Old是Serial的老年代版本，同样是一个单线程收集器。  </p>
+<p>工作过程：  </p>
+<p><img src="http://osuskkx7k.bkt.clouddn.com/seria.png" alt="image"></p>
+<p><strong>特点：</strong> 单线程，“标记-整理”算法<br><strong>缺点：</strong>  暂停工作线程<br><strong>应用场景：</strong> 适用于运行在Client模式下的虚拟机</p>
+<h5 id="Parallel-Old-收集器（并行）"><a href="#Parallel-Old-收集器（并行）" class="headerlink" title="Parallel Old 收集器（并行）"></a>Parallel Old 收集器（并行）</h5><p>Parallel Old是Parallel Scavenge收集器的老年代版本，多线程收集器。（JDK1.6之后出现）</p>
+<p>工作过程：  </p>
+<p><img src="http://osuskkx7k.bkt.clouddn.com/parallel%20old.png" alt="image"></p>
+<p><strong>特点：</strong> 多线程，“标记-整理”算法，唯一能和Parallel Scavenge收集器配合<br><strong>缺点：</strong>  暂停工作线程<br><strong>应用场景：</strong> 适用于注重吞吐量及CPU资源敏感的场合</p>
+<h5 id="CMS-收集器（并发）"><a href="#CMS-收集器（并发）" class="headerlink" title="CMS 收集器（并发）"></a>CMS 收集器（并发）</h5><p><strong>CMS（Concurrent Mark Sweep）是一种以获取最短回收停顿时间为目标的收集器。<br>第一次实现了让垃圾收集线程与用户线程（基本上）同时工作。</strong>  </p>
+<p>工作过程分为<strong>4个步骤</strong>：  </p>
+<ol>
+<li><strong>初始标记</strong>：标记“GC-Roots”关联的对象（Stop the World）</li>
+<li><strong>并发标记</strong>： 进行GC-Roots Tracing的过程，在刚才产生的集合中标记出存活对象；</li>
+<li><strong>重新标记</strong>：修正并发标记期间因用户程序继续运作而导致标记变动的那一部分对象的标记记录（Stop the World）</li>
+<li><strong>并发清除</strong>：回收所有垃圾对象</li>
+</ol>
+<p>所以，<strong>在初始标记和重新标记阶段，还是只有垃圾收集线程工作；并发标记和并发清除阶段是和用户线程并发执行的</strong>。</p>
+<p><img src="http://osuskkx7k.bkt.clouddn.com/CMS.png" alt="image"></p>
+<p><strong>特点：</strong> 多线程并发执行，停顿时间短<br><strong>缺点：</strong>  </p>
+<ul>
+<li>对CPU资源十分敏感</li>
+<li>无法处理浮动垃圾</li>
+<li>产生大量空间碎片（由于是“标记-清除”算法）  </li>
+</ul>
+<p><strong>应用场景：</strong> 适用于大型网站或B/S的服务端，注重响应速度和用户体验。</p>
+<h4 id="通用收集器"><a href="#通用收集器" class="headerlink" title="通用收集器"></a>通用收集器</h4><h5 id="G1-收集器（并发）"><a href="#G1-收集器（并发）" class="headerlink" title="G1 收集器（并发）"></a>G1 收集器（并发）</h5><p>G1是目前最前沿的收集器，可处理整个GC堆，JDK1.7之后出现。  </p>
+<p><strong>G1是如何处理整个堆</strong>？<br>G1将整个堆划分为多个大小相等的独立区域Region（不再是新生代老年代），然后跟踪各个Region获得其垃圾收集价值大小，并在后台维护一个优先列表，根据允许的收集时间，优先回收价值最大的Region（名称Garbage-First的由来）。这个过程保证了在有限的时间内可以回收更多的垃圾。</p>
+<p>工作过程分为<strong>4个步骤</strong>： </p>
+<ol>
+<li><strong>初始标记</strong>：标记“GC-Roots”关联的对象，并修改TAMS的值，让下一阶段用户程序并发运行时，能在正确可用的Region中创建新对象</li>
+<li><strong>并发标记</strong>：根据GC-Roots进行可达性分析，找出存活对象</li>
+<li><strong>最终标记</strong>：为了修正并发标记期间由于用户程序继续运作而导致标记产生变动的那一部分对象的标示记录</li>
+<li><strong>筛选回收</strong>：根据各个Region的价值回收</li>
+</ol>
+<p><img src="http://osuskkx7k.bkt.clouddn.com/G1.png" alt="image"></p>
+<p><strong>特点：</strong> </p>
+<ul>
+<li>并行且并发  </li>
+<li>独立处理整个GC堆，不需要配合其他收集器</li>
+<li>可预测停顿时间</li>
+<li>不产生空间碎片</li>
+</ul>
+<p><strong>应用场景：</strong> 面向服务器，适用于多CPU及大容量内存的机器。</p>
+<h3 id="三、常见的参数配置"><a href="#三、常见的参数配置" class="headerlink" title="三、常见的参数配置"></a>三、常见的参数配置</h3><ul>
+<li><strong>Xms</strong>：堆的最小值（初始）</li>
+<li><strong>Xmx</strong>：堆的最大值<br>（Xms、Xmx二者一样时，可避免自动扩展）</li>
+<li><strong>Xmn</strong>：堆中新生代的大小</li>
+<li><strong>Xss</strong>：每个线程的堆栈大小</li>
+<li><strong>XX:PermSize</strong>：永久代的大小（初始）</li>
+<li><strong>XX:MaxPermSize</strong>：永久代的最大值</li>
+<li><p><strong>XX:NewRatio</strong>：年轻代（包括Eden和两个Survivor区）与年老代的比值，设置为3，则年轻代与年老代所占比值为1：3，年轻代占整个堆栈的1/4</p>
+</li>
+<li><p><strong>XX:SurvivorRatio</strong>：年轻代中Eden区与Survivor区的大小比值。设置为4，则两个Survivor区与一个Eden区的比值为2:4，一个Survivor区占整个年轻代的1/6</p>
+</li>
+</ul>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h3 id=&quot;一、垃圾收集器概述&quot;&gt;&lt;a href=&quot;#一、垃圾收集器概述&quot; class=&quot;headerlink&quot; title=&quot;一、垃圾收集器概述&quot;&gt;&lt;/a&gt;一、垃圾收集器概述&lt;/h3&gt;&lt;p&gt;&lt;strong&gt;垃圾收集器是内存垃圾回收算法的具体实现。&lt;/strong&gt;&lt;br&gt;J
+    
+    </summary>
+    
+      <category term="技术" scheme="http://yoursite.com/categories/%E6%8A%80%E6%9C%AF/"/>
+    
+    
+      <category term="JVM" scheme="http://yoursite.com/tags/JVM/"/>
+    
+      <category term="垃圾收集器" scheme="http://yoursite.com/tags/%E5%9E%83%E5%9C%BE%E6%94%B6%E9%9B%86%E5%99%A8/"/>
+    
+  </entry>
   
   <entry>
     <title>JVM之垃圾收集算法</title>

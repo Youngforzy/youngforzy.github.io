@@ -1,0 +1,940 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<script>
+    (function(){
+        if(''){
+            if (prompt('请输入文章密码') !== ''){
+                alert('密码错误！');
+                history.back();
+            }
+        }
+    })();
+</script>
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="JVM,垃圾收集器," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="ZY's Blog" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="http://osuskkx7k.bkt.clouddn.com/bitbug_favicon.ico?v=5.1.1" />
+
+
+
+
+
+
+<meta name="description" content="一、垃圾收集器概述垃圾收集器是内存垃圾回收算法的具体实现。Java虚拟机规范中对垃圾收集器应该如何实现并没有任何规定，因此出现了7种收集器：Serial、ParNew、Parallel Scavenge、Serial Old、Parallel Old、CMS、G1。它们以组合的形式配合工作来完成不同分代的垃圾收集工作。 常用组合：  Serial/Serial Old ParNew/Serial">
+<meta name="keywords" content="JVM,垃圾收集器">
+<meta property="og:type" content="article">
+<meta property="og:title" content="JVM之垃圾收集器">
+<meta property="og:url" content="http://yoursite.com/2017/10/23/JVM之垃圾收集器/index.html">
+<meta property="og:site_name" content="ZY&#39;s Blog">
+<meta property="og:description" content="一、垃圾收集器概述垃圾收集器是内存垃圾回收算法的具体实现。Java虚拟机规范中对垃圾收集器应该如何实现并没有任何规定，因此出现了7种收集器：Serial、ParNew、Parallel Scavenge、Serial Old、Parallel Old、CMS、G1。它们以组合的形式配合工作来完成不同分代的垃圾收集工作。 常用组合：  Serial/Serial Old ParNew/Serial">
+<meta property="og:image" content="http://osuskkx7k.bkt.clouddn.com/JVMtool2.png">
+<meta property="og:image" content="http://osuskkx7k.bkt.clouddn.com/seria.png">
+<meta property="og:image" content="http://osuskkx7k.bkt.clouddn.com/ParNew.png">
+<meta property="og:image" content="http://osuskkx7k.bkt.clouddn.com/parallel%20scavenge.png">
+<meta property="og:image" content="http://osuskkx7k.bkt.clouddn.com/seria.png">
+<meta property="og:image" content="http://osuskkx7k.bkt.clouddn.com/parallel%20old.png">
+<meta property="og:image" content="http://osuskkx7k.bkt.clouddn.com/CMS.png">
+<meta property="og:image" content="http://osuskkx7k.bkt.clouddn.com/G1.png">
+<meta property="og:updated_time" content="2018-02-24T06:43:07.465Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="JVM之垃圾收集器">
+<meta name="twitter:description" content="一、垃圾收集器概述垃圾收集器是内存垃圾回收算法的具体实现。Java虚拟机规范中对垃圾收集器应该如何实现并没有任何规定，因此出现了7种收集器：Serial、ParNew、Parallel Scavenge、Serial Old、Parallel Old、CMS、G1。它们以组合的形式配合工作来完成不同分代的垃圾收集工作。 常用组合：  Serial/Serial Old ParNew/Serial">
+<meta name="twitter:image" content="http://osuskkx7k.bkt.clouddn.com/JVMtool2.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2017/10/23/JVM之垃圾收集器/"/>
+
+
+
+
+
+  <title>JVM之垃圾收集器 | ZY's Blog</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">ZY's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Young for you.</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-album">
+          <a href="/album/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-camera"></i> <br />
+            
+            记录
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-love">
+          <a href="/love/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-heart"></i> <br />
+            
+            love
+          </a>
+        </li>
+      
+
+      
+    </ul>
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/10/23/JVM之垃圾收集器/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Z Yong">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="http://osuskkx7k.bkt.clouddn.com/mmexport1500086929549%282%29.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="ZY's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">JVM之垃圾收集器</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-10-23T19:28:13+08:00">
+                2017-10-23
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/技术/" itemprop="url" rel="index">
+                    <span itemprop="name">技术</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h3 id="一、垃圾收集器概述"><a href="#一、垃圾收集器概述" class="headerlink" title="一、垃圾收集器概述"></a>一、垃圾收集器概述</h3><p><strong>垃圾收集器是内存垃圾回收算法的具体实现。</strong><br>Java虚拟机规范中对垃圾收集器应该如何实现并没有任何规定，因此出现了7种收集器：Serial、ParNew、Parallel Scavenge、Serial Old、Parallel Old、CMS、G1。<br>它们以组合的形式配合工作来完成不同分代的垃圾收集工作。</p>
+<p><strong>常用组合</strong>：</p>
+<ol>
+<li>Serial/Serial Old</li>
+<li>ParNew/Serial Old</li>
+<li>ParNew/CMS</li>
+<li>Parallel Scavenge/Parallel Old</li>
+<li>G1</li>
+</ol>
+<p><img src="http://osuskkx7k.bkt.clouddn.com/JVMtool2.png" alt="image"></p>
+<h4 id="Minor-GC和Full-GC"><a href="#Minor-GC和Full-GC" class="headerlink" title="Minor GC和Full GC"></a>Minor GC和Full GC</h4><p>Minor GC（新生代GC）：发生在新生代的GC动作，频率高，回收速度块。</p>
+<p>Full GC（老年代GC）：发生在老年代的GC动作，老年代满了后才进行，一般伴随至少一次Minor GC，频率低，回收速度慢。</p>
+<h4 id="垃圾收集器种类"><a href="#垃圾收集器种类" class="headerlink" title="垃圾收集器种类"></a>垃圾收集器种类</h4><p>目前的收集器主要有以下三种：  </p>
+<p><strong>串行收集器：</strong> 只有一条垃圾收集线程工作  </p>
+<p><strong>并行收集器：</strong> 多条垃圾收集线程并行工作，用户线程等待</p>
+<p><strong>并发收集器：</strong> 垃圾收集线程与用户线程同时执行（不一定并行，可能交替执行）</p>
+<h3 id="二、垃圾收集器详述"><a href="#二、垃圾收集器详述" class="headerlink" title="二、垃圾收集器详述"></a>二、垃圾收集器详述</h3><h4 id="新生代收集器（3种）"><a href="#新生代收集器（3种）" class="headerlink" title="新生代收集器（3种）"></a>新生代收集器（3种）</h4><h5 id="Serial-收集器（串行）"><a href="#Serial-收集器（串行）" class="headerlink" title="Serial 收集器（串行）"></a>Serial 收集器（串行）</h5><p>Serial收集器是一个单线程的收集器。<br>“单线程”：不仅只是有一条收集线程，而且必须暂停用户工作线程。 </p>
+<p>工作过程：  </p>
+<p><img src="http://osuskkx7k.bkt.clouddn.com/seria.png" alt="image"></p>
+<p><strong>特点：</strong> 单线程，无线程切换，简单高效，（管理内存小，停顿可以接受）<br><strong>缺点：</strong>  暂停工作线程<br><strong>应用场景：</strong> 适用于运行在Client模式下的虚拟机</p>
+<h5 id="ParNew-收集器（并行）"><a href="#ParNew-收集器（并行）" class="headerlink" title="ParNew 收集器（并行）"></a>ParNew 收集器（并行）</h5><p>ParNew收集器是Serial收集器的多线程版本。</p>
+<p>工作过程：  </p>
+<p><img src="http://osuskkx7k.bkt.clouddn.com/ParNew.png" alt="image"></p>
+<p><strong>特点：</strong> 多线程，除Serial外唯一能和CMS收集器配合<br><strong>缺点：</strong>  暂停工作线程，单线程下不如Serial<br><strong>应用场景：</strong> 适用于运行在Server模式下的虚拟机</p>
+<h5 id="Parallel-Scavenge-收集器（并行）"><a href="#Parallel-Scavenge-收集器（并行）" class="headerlink" title="Parallel Scavenge 收集器（并行）"></a>Parallel Scavenge 收集器（并行）</h5><p>Parallel Scavenge收集器被称为“吞吐量优先”收集器。</p>
+<p>工作过程：  </p>
+<p><img src="http://osuskkx7k.bkt.clouddn.com/parallel%20scavenge.png" alt="image"></p>
+<p><strong>特点：</strong> </p>
+<ul>
+<li><strong>可控制吞吐量。</strong><br>吞吐量 = 用户代码时间/（用户代码时间+垃圾收集时间）<br>吞吐量越高，表示越高效地利用CPU，适合后台运算任务。  </li>
+<li><strong>GC 自适应调节策略</strong><br>JVM可以根据当前系统的运行情况自适应调节参数，以提供最合适的停顿时间和最大的吞吐量。</li>
+</ul>
+<p><strong>缺点：</strong> 相比停顿时间更注重吞吐量<br><strong>应用场景：</strong> 主要用于后台计算，不需要与用户进行太多交互，对暂停时间没有特别高的要求等场景，如批量处理；</p>
+<h4 id="老年代收集器（3种）"><a href="#老年代收集器（3种）" class="headerlink" title="老年代收集器（3种）"></a>老年代收集器（3种）</h4><h5 id="Serial-Old-收集器（串行）"><a href="#Serial-Old-收集器（串行）" class="headerlink" title="Serial Old 收集器（串行）"></a>Serial Old 收集器（串行）</h5><p>Serial Old是Serial的老年代版本，同样是一个单线程收集器。  </p>
+<p>工作过程：  </p>
+<p><img src="http://osuskkx7k.bkt.clouddn.com/seria.png" alt="image"></p>
+<p><strong>特点：</strong> 单线程，“标记-整理”算法<br><strong>缺点：</strong>  暂停工作线程<br><strong>应用场景：</strong> 适用于运行在Client模式下的虚拟机</p>
+<h5 id="Parallel-Old-收集器（并行）"><a href="#Parallel-Old-收集器（并行）" class="headerlink" title="Parallel Old 收集器（并行）"></a>Parallel Old 收集器（并行）</h5><p>Parallel Old是Parallel Scavenge收集器的老年代版本，多线程收集器。（JDK1.6之后出现）</p>
+<p>工作过程：  </p>
+<p><img src="http://osuskkx7k.bkt.clouddn.com/parallel%20old.png" alt="image"></p>
+<p><strong>特点：</strong> 多线程，“标记-整理”算法，唯一能和Parallel Scavenge收集器配合<br><strong>缺点：</strong>  暂停工作线程<br><strong>应用场景：</strong> 适用于注重吞吐量及CPU资源敏感的场合</p>
+<h5 id="CMS-收集器（并发）"><a href="#CMS-收集器（并发）" class="headerlink" title="CMS 收集器（并发）"></a>CMS 收集器（并发）</h5><p><strong>CMS（Concurrent Mark Sweep）是一种以获取最短回收停顿时间为目标的收集器。<br>第一次实现了让垃圾收集线程与用户线程（基本上）同时工作。</strong>  </p>
+<p>工作过程分为<strong>4个步骤</strong>：  </p>
+<ol>
+<li><strong>初始标记</strong>：标记“GC-Roots”关联的对象（Stop the World）</li>
+<li><strong>并发标记</strong>： 进行GC-Roots Tracing的过程，在刚才产生的集合中标记出存活对象；</li>
+<li><strong>重新标记</strong>：修正并发标记期间因用户程序继续运作而导致标记变动的那一部分对象的标记记录（Stop the World）</li>
+<li><strong>并发清除</strong>：回收所有垃圾对象</li>
+</ol>
+<p>所以，<strong>在初始标记和重新标记阶段，还是只有垃圾收集线程工作；并发标记和并发清除阶段是和用户线程并发执行的</strong>。</p>
+<p><img src="http://osuskkx7k.bkt.clouddn.com/CMS.png" alt="image"></p>
+<p><strong>特点：</strong> 多线程并发执行，停顿时间短<br><strong>缺点：</strong>  </p>
+<ul>
+<li>对CPU资源十分敏感</li>
+<li>无法处理浮动垃圾</li>
+<li>产生大量空间碎片（由于是“标记-清除”算法）  </li>
+</ul>
+<p><strong>应用场景：</strong> 适用于大型网站或B/S的服务端，注重响应速度和用户体验。</p>
+<h4 id="通用收集器"><a href="#通用收集器" class="headerlink" title="通用收集器"></a>通用收集器</h4><h5 id="G1-收集器（并发）"><a href="#G1-收集器（并发）" class="headerlink" title="G1 收集器（并发）"></a>G1 收集器（并发）</h5><p>G1是目前最前沿的收集器，可处理整个GC堆，JDK1.7之后出现。  </p>
+<p><strong>G1是如何处理整个堆</strong>？<br>G1将整个堆划分为多个大小相等的独立区域Region（不再是新生代老年代），然后跟踪各个Region获得其垃圾收集价值大小，并在后台维护一个优先列表，根据允许的收集时间，优先回收价值最大的Region（名称Garbage-First的由来）。这个过程保证了在有限的时间内可以回收更多的垃圾。</p>
+<p>工作过程分为<strong>4个步骤</strong>： </p>
+<ol>
+<li><strong>初始标记</strong>：标记“GC-Roots”关联的对象，并修改TAMS的值，让下一阶段用户程序并发运行时，能在正确可用的Region中创建新对象</li>
+<li><strong>并发标记</strong>：根据GC-Roots进行可达性分析，找出存活对象</li>
+<li><strong>最终标记</strong>：为了修正并发标记期间由于用户程序继续运作而导致标记产生变动的那一部分对象的标示记录</li>
+<li><strong>筛选回收</strong>：根据各个Region的价值回收</li>
+</ol>
+<p><img src="http://osuskkx7k.bkt.clouddn.com/G1.png" alt="image"></p>
+<p><strong>特点：</strong> </p>
+<ul>
+<li>并行且并发  </li>
+<li>独立处理整个GC堆，不需要配合其他收集器</li>
+<li>可预测停顿时间</li>
+<li>不产生空间碎片</li>
+</ul>
+<p><strong>应用场景：</strong> 面向服务器，适用于多CPU及大容量内存的机器。</p>
+<h3 id="三、常见的参数配置"><a href="#三、常见的参数配置" class="headerlink" title="三、常见的参数配置"></a>三、常见的参数配置</h3><ul>
+<li><strong>Xms</strong>：堆的最小值（初始）</li>
+<li><strong>Xmx</strong>：堆的最大值<br>（Xms、Xmx二者一样时，可避免自动扩展）</li>
+<li><strong>Xmn</strong>：堆中新生代的大小</li>
+<li><strong>Xss</strong>：每个线程的堆栈大小</li>
+<li><strong>XX:PermSize</strong>：永久代的大小（初始）</li>
+<li><strong>XX:MaxPermSize</strong>：永久代的最大值</li>
+<li><p><strong>XX:NewRatio</strong>：年轻代（包括Eden和两个Survivor区）与年老代的比值，设置为3，则年轻代与年老代所占比值为1：3，年轻代占整个堆栈的1/4</p>
+</li>
+<li><p><strong>XX:SurvivorRatio</strong>：年轻代中Eden区与Survivor区的大小比值。设置为4，则两个Survivor区与一个Eden区的比值为2:4，一个Survivor区占整个年轻代的1/6</p>
+</li>
+</ul>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/JVM/" rel="tag"># JVM</a>
+          
+            <a href="/tags/垃圾收集器/" rel="tag"># 垃圾收集器</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/10/21/JVM之垃圾收集算法/" rel="next" title="JVM之垃圾收集算法">
+                <i class="fa fa-chevron-left"></i> JVM之垃圾收集算法
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript" >
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="http://osuskkx7k.bkt.clouddn.com/mmexport1500086929549%282%29.jpg"
+               alt="Z Yong" />
+          <p class="site-author-name" itemprop="name">Z Yong</p>
+           
+              <p class="site-description motion-element" itemprop="description">不负勇往</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives/">
+                <span class="site-state-item-count">17</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">2</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">24</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="/wechat" target="_blank" title="Wechat">
+                  
+                    <i class="fa fa-fw fa-wechat"></i>
+                  
+                  Wechat
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://blog.csdn.net/babylove_bale" target="_blank" title="Csdn">
+                  
+                    <i class="fa fa-fw fa-book"></i>
+                  
+                  Csdn
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              友情链接
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://hexo.io/" title="Hexo" target="_blank">Hexo</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.xiaonanbobo.com/" title="BoBo" target="_blank">BoBo</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+<br>
+
+<iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width=330 height=86 
+src="//music.163.com/outchain/player?type=2&id=30967791&auto=1&height=66"></iframe>
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#一、垃圾收集器概述"><span class="nav-number">1.</span> <span class="nav-text">一、垃圾收集器概述</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Minor-GC和Full-GC"><span class="nav-number">1.1.</span> <span class="nav-text">Minor GC和Full GC</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#垃圾收集器种类"><span class="nav-number">1.2.</span> <span class="nav-text">垃圾收集器种类</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#二、垃圾收集器详述"><span class="nav-number">2.</span> <span class="nav-text">二、垃圾收集器详述</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#新生代收集器（3种）"><span class="nav-number">2.1.</span> <span class="nav-text">新生代收集器（3种）</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#Serial-收集器（串行）"><span class="nav-number">2.1.1.</span> <span class="nav-text">Serial 收集器（串行）</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#ParNew-收集器（并行）"><span class="nav-number">2.1.2.</span> <span class="nav-text">ParNew 收集器（并行）</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Parallel-Scavenge-收集器（并行）"><span class="nav-number">2.1.3.</span> <span class="nav-text">Parallel Scavenge 收集器（并行）</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#老年代收集器（3种）"><span class="nav-number">2.2.</span> <span class="nav-text">老年代收集器（3种）</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#Serial-Old-收集器（串行）"><span class="nav-number">2.2.1.</span> <span class="nav-text">Serial Old 收集器（串行）</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Parallel-Old-收集器（并行）"><span class="nav-number">2.2.2.</span> <span class="nav-text">Parallel Old 收集器（并行）</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#CMS-收集器（并发）"><span class="nav-number">2.2.3.</span> <span class="nav-text">CMS 收集器（并发）</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#通用收集器"><span class="nav-number">2.3.</span> <span class="nav-text">通用收集器</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#G1-收集器（并发）"><span class="nav-number">2.3.1.</span> <span class="nav-text">G1 收集器（并发）</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#三、常见的参数配置"><span class="nav-number">3.</span> <span class="nav-text">三、常见的参数配置</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2017 - 
+  <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Z Yong</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+  
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+  
+  <script type="text/javascript" src="/lib/three/three.min.js"></script>
+
+  
+  <script type="text/javascript" src="/lib/three/three-waves.min.js"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.1"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.1"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+<script type="text/javascript" src="/js/src/love.js"></script>
+</html>
