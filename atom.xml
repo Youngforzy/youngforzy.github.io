@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yoursite.com/"/>
-  <updated>2018-02-24T17:40:51.020Z</updated>
+  <updated>2018-02-24T17:54:29.392Z</updated>
   <id>http://yoursite.com/</id>
   
   <author>
@@ -14,6 +14,172 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>Java并发之Executor框架</title>
+    <link href="http://yoursite.com/2017/11/22/Java%E5%B9%B6%E5%8F%91%E4%B9%8BExecutor%E6%A1%86%E6%9E%B6/"/>
+    <id>http://yoursite.com/2017/11/22/Java并发之Executor框架/</id>
+    <published>2017-11-22T08:42:18.000Z</published>
+    <updated>2018-02-24T17:54:29.392Z</updated>
+    
+    <content type="html"><![CDATA[<h3 id="一、Executor框架的介绍"><a href="#一、Executor框架的介绍" class="headerlink" title="一、Executor框架的介绍"></a>一、Executor框架的介绍</h3><p>Java中的线程既是工作单元又是执行机制。JDK1.5开始，把工作单元与执行机制分离开来。<strong>工作单元为Runnable（Thread实现该接口）和Callable，执行机制就是Executor框架。</strong> 使用Executor框架时不用显式的创建线程Thread。</p>
+<p>Executor框架由三部分组成：  </p>
+<ul>
+<li><strong>任务</strong>：Runnable或Callable  </li>
+<li><strong>任务的执行</strong>：ExecutorService接口及其实现。  </li>
+<li><strong>异步计算的结果</strong>：Future接口或其实现类FutureTask</li>
+</ul>
+<h4 id="Executor的结构"><a href="#Executor的结构" class="headerlink" title="Executor的结构"></a>Executor的结构</h4><p><img src="http://osuskkx7k.bkt.clouddn.com/Executor1.png" alt="image"></p>
+<h4 id="Executor接口"><a href="#Executor接口" class="headerlink" title="Executor接口"></a><strong>Executor接口</strong></h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">public interface Executor &#123;</div><div class="line">        void execute(Runnable command);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p><strong>Executor接口中只有一个execute()方法，用来执行已经提交的Runnable实例，可见即使是Callable实例，最后也会被封装成Runnable来执行。</strong></p>
+<h4 id="ExecutorService接口"><a href="#ExecutorService接口" class="headerlink" title="ExecutorService接口"></a><strong>ExecutorService接口</strong></h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">public interface ExecutorService extends Executor &#123;</div><div class="line">        void shutdown();</div><div class="line">        List&lt;Runnable&gt; shutdownNow();</div><div class="line">        &lt;T&gt; Future&lt;T&gt; submit(Callable&lt;T&gt; task);</div><div class="line">        &lt;T&gt; Future&lt;T&gt; submit(Runnable task, T result);</div><div class="line">        Future&lt;?&gt; submit(Runnable task);</div><div class="line">        ....</div><div class="line">    &#125;</div></pre></td></tr></table></figure>
+<p><strong>ExecutorService扩展了Executor接口，添加了许多方法用于服务、管理和关闭线程池。</strong><br>submit()方法最终执行时也是调用了execute()方法。</p>
+<p>ExecutorService接口有两个实现类，ThreadPoolExecutor（核心）和ScheduledThreadPoolExecutor（定时执行）。</p>
+<h4 id="Executors工具类"><a href="#Executors工具类" class="headerlink" title="Executors工具类"></a><strong>Executors工具类</strong></h4><p><strong>Executors工具类中包含了许多静态工厂方法。采用了多方法静态工厂模式。</strong> 本质是根据不同的输入创建出不同类型的对象。</p>
+<p>通过Executors工具类可以创建3种类型的线程池，即3种ThreadPoolExecutor对象。实质是创建ThreadPoolExecutor时传入的参数不同。</p>
+<h3 id="二、3种常用线程池"><a href="#二、3种常用线程池" class="headerlink" title="二、3种常用线程池"></a>二、3种常用线程池</h3><h4 id="FixedThreadPool"><a href="#FixedThreadPool" class="headerlink" title="FixedThreadPool"></a>FixedThreadPool</h4><p><strong>FixedThreadPool是固定大小的线程池。内部线程可重用。</strong><br>Executors工具类中的静态方法：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">public static ExecutorService newFixedThreadPool(int nThreads) &#123;</div><div class="line">        return new ThreadPoolExecutor(nThreads, nThreads,</div><div class="line">                                      0L, TimeUnit.MILLISECONDS,</div><div class="line">                                      new LinkedBlockingQueue&lt;Runnable&gt;());</div><div class="line">    &#125;</div></pre></td></tr></table></figure></p>
+<p><strong>特点</strong>：</p>
+<ol>
+<li>参数corePoolSize和maximumPoolSize大小都是nThreads，说明最大线程数就是核心线程数，所以线程大小固定</li>
+<li>参数keepAliveTime为0L，说明不会有空闲的线程</li>
+<li>参数BlockingQueue是无界队列LinkedBlockingQueue，说明任务会一直放入，不会采用饱和策略。</li>
+</ol>
+<p><strong>应用场景</strong>：需要限制线程数量，适用于负载较重的服务器</p>
+<p><img src="http://osuskkx7k.bkt.clouddn.com/fixed.png" alt="image"></p>
+<p><strong>工作过程</strong>：</p>
+<ol>
+<li>当前线程数小于corePoolSize，创建新线程执行任务</li>
+<li>当前线程数等于corePoolSize，任务加入阻塞队列</li>
+<li>线程反复执行阻塞队列中的任务</li>
+</ol>
+<h4 id="SingleThreadExecutor"><a href="#SingleThreadExecutor" class="headerlink" title="SingleThreadExecutor"></a>SingleThreadExecutor</h4><p><strong>SingleThreadExecutor是只有一个线程的线程池。</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">public static ExecutorService newSingleThreadExecutor() &#123;</div><div class="line">        return new FinalizableDelegatedExecutorService</div><div class="line">            (new ThreadPoolExecutor(1, 1,</div><div class="line">                                    0L, TimeUnit.MILLISECONDS,</div><div class="line">                                    new LinkedBlockingQueue&lt;Runnable&gt;()));</div><div class="line">    &#125;</div></pre></td></tr></table></figure>
+<p><strong>特点</strong>：</p>
+<ol>
+<li>参数corePoolSize和maximumPoolSize大小都是1，说明线程数固定为1</li>
+<li>参数keepAliveTime为0L，说明不会有空闲的线程</li>
+<li>参数BlockingQueue是无界队列LinkedBlockingQueue，说明任务会一直放入，不会采用饱和策略。</li>
+</ol>
+<p><strong>应用场景</strong>：<strong>适用于执行的任务需要保证顺序；并且在任意时间点，不会有多个线程是活动的场景。</strong></p>
+<p><img src="http://osuskkx7k.bkt.clouddn.com/single1.png" alt="image"></p>
+<p><strong>工作过程</strong>：</p>
+<ol>
+<li>当前线程数小于1，创建一个唯一的线程执行任务</li>
+<li>当前线程数等于1，任务加入阻塞队列</li>
+<li>这个唯一的线程反复执行阻塞队列中的任务</li>
+</ol>
+<h4 id="CachedThreadPool"><a href="#CachedThreadPool" class="headerlink" title="CachedThreadPool"></a>CachedThreadPool</h4><p><strong>CachedThreadPool是一个根据需要创建线程的线程池。</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">public static ExecutorService newCachedThreadPool() &#123;</div><div class="line">        return new ThreadPoolExecutor(0, Integer.MAX_VALUE,</div><div class="line">                                      60L, TimeUnit.SECONDS,</div><div class="line">                                      new SynchronousQueue&lt;Runnable&gt;());</div><div class="line">    &#125;</div></pre></td></tr></table></figure>
+<p><strong>特点</strong>：</p>
+<ol>
+<li>参数corePoolSize为0，maximumPoolSize为Integer.MAX_VALUE（2147483647），说明可创建的线程数巨大，且都是可销毁的</li>
+<li>参数keepAliveTime为60L，说明空闲的线程等待时间最长60s</li>
+<li>参数BlockingQueue是一个没有容量的阻塞队列SynchronousQueue，说明任务会一直被线程执行。</li>
+</ol>
+<p><strong>应用场景</strong>：<strong>大小无界的线程池，适用于执行很多的短期异步任务的小程序，或者负载较轻的服务器。<br>注：使用时需控制并发的任务数，否则创建大量的线程可能导致严重的性能问题。</strong></p>
+<p><img src="http://osuskkx7k.bkt.clouddn.com/cached1.png" alt="image"></p>
+<p><strong>工作过程</strong>：</p>
+<ol>
+<li>首先执行SynchronousQueue.offer()，如果有空闲的线程在执行SynchronousQueue.poll()，表示配对成功，任务交给空闲线程执行。</li>
+<li>初始化时，如果没有空闲的线程，那么创建一个新的线程执行任务。</li>
+<li>步骤2中的线程任务完成后，会执行SynchronousQueue.poll()等待60s，若没有任务提交，则该空闲线程销毁。</li>
+</ol>
+<p>SynchronousQueue队列的每个插入操作都要等待一个移除操作，因此是没有容量的队列。</p>
+<hr>
+<p>除上述3种常用线程池外，Executors还可以创建以下几种线程池。</p>
+<p><strong>newScheduledThreadPool</strong>：可以定时或周期性执行任务的线程池（线程数目指定）</p>
+<p><strong>newSingleThreadScheduledExecutor：</strong> 可以定时或周期性执行任务的线程池。只有一个线程。</p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h3 id=&quot;一、Executor框架的介绍&quot;&gt;&lt;a href=&quot;#一、Executor框架的介绍&quot; class=&quot;headerlink&quot; title=&quot;一、Executor框架的介绍&quot;&gt;&lt;/a&gt;一、Executor框架的介绍&lt;/h3&gt;&lt;p&gt;Java中的线程既是工作单元又是执行
+    
+    </summary>
+    
+      <category term="技术" scheme="http://yoursite.com/categories/%E6%8A%80%E6%9C%AF/"/>
+    
+    
+      <category term="并发" scheme="http://yoursite.com/tags/%E5%B9%B6%E5%8F%91/"/>
+    
+      <category term="Executor框架" scheme="http://yoursite.com/tags/Executor%E6%A1%86%E6%9E%B6/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Java线程池的实现分析</title>
+    <link href="http://yoursite.com/2017/11/18/Java%E7%BA%BF%E7%A8%8B%E6%B1%A0%E7%9A%84%E5%AE%9E%E7%8E%B0%E5%88%86%E6%9E%90/"/>
+    <id>http://yoursite.com/2017/11/18/Java线程池的实现分析/</id>
+    <published>2017-11-18T12:42:18.000Z</published>
+    <updated>2018-02-24T17:52:30.529Z</updated>
+    
+    <content type="html"><![CDATA[<h3 id="一、线程池的介绍"><a href="#一、线程池的介绍" class="headerlink" title="一、线程池的介绍"></a>一、线程池的介绍</h3><p>线程池是一种并发框架。</p>
+<p>优势：</p>
+<ol>
+<li><strong>降低资源消耗。</strong>（重复利用线程，减少开销）</li>
+<li><strong>提高响应速度。</strong>（任务到达可直接执行，不需要等待创建线程）</li>
+<li><strong>提高线程的可管理性</strong>。（统一分配、监控、调优）</li>
+</ol>
+<p><strong>ThreadPoolExecutor是线程池的核心实现类</strong>。可以通过ThreadPoolExecutor来创建一个线程池。</p>
+<h3 id="二、线程池的实现分析"><a href="#二、线程池的实现分析" class="headerlink" title="二、线程池的实现分析"></a>二、线程池的实现分析</h3><p>线程池的实现是ThreadPoolExecutor类，因此重点描述ThreadPoolExecutor类的实现。  </p>
+<h4 id="ThreadPoolExecutor的结构"><a href="#ThreadPoolExecutor的结构" class="headerlink" title="ThreadPoolExecutor的结构"></a>ThreadPoolExecutor的结构</h4><p>ThreadPoolExecutor的构造方法<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">public ThreadPoolExecutor(int corePoolSize,</div><div class="line">                              int maximumPoolSize,</div><div class="line">                              long keepAliveTime,</div><div class="line">                              TimeUnit unit,</div><div class="line">                              BlockingQueue&lt;Runnable&gt; workQueue,</div><div class="line">                              ThreadFactory threadFactory,</div><div class="line">                              RejectedExecutionHandler handler) &#123;</div><div class="line">        ...(省略部分)</div><div class="line">        this.corePoolSize = corePoolSize;</div><div class="line">        this.maximumPoolSize = maximumPoolSize;</div><div class="line">        this.workQueue = workQueue;</div><div class="line">        this.keepAliveTime = unit.toNanos(keepAliveTime);</div><div class="line">        this.threadFactory = threadFactory;</div><div class="line">        this.handler = handler;</div><div class="line">    &#125;</div></pre></td></tr></table></figure></p>
+<p>构造函数中省略了部分判断的代码。<br>主要有7个参数：  </p>
+<p><strong>corePoolSize</strong>：核心线程池的大小  </p>
+<p><strong>maximumPoolSize</strong>：线程池的大小  </p>
+<p><strong>keepAliveTime</strong>：存活时间（超过核心数目的线程空闲后的存活时间）  </p>
+<p><strong>TimeUnit</strong>：时间单位  </p>
+<p><strong>BlockingQueue<runnable></runnable></strong>：任务队列（保存等待任务的阻塞队列）  </p>
+<p><strong>ThreadFactory</strong>：创建线程的工厂类   </p>
+<p><strong>RejectedExecutionHandler</strong> ：饱和策略（拒绝策略）</p>
+<p><img src="http://osuskkx7k.bkt.clouddn.com/%E7%BA%BF%E7%A8%8B%E6%B1%A0.png" alt="image"></p>
+<h4 id="工作过程"><a href="#工作过程" class="headerlink" title="工作过程"></a>工作过程</h4><p>当提交一个新任务时，线程池的工作过程：</p>
+<ol>
+<li><p><strong>判断核心线程池（corePool）中的线程是否都在执行任务。如果不是，创建一个新的线程执行任务。核心线程池已满，进入2</strong>；  </p>
+</li>
+<li><p><strong>判断任务队列是否已满。未满，则将新的任务存入；满了，进入3；</strong></p>
+</li>
+<li><strong>判断线程池（maximumPoolSize）里的线程是否都在工作。如果没有，创建一个新的线程执行任务；否则，交给饱和策略4</strong>；</li>
+<li><strong>根据不同的饱和策略处理这个任务</strong>。</li>
+</ol>
+<p><img src="http://osuskkx7k.bkt.clouddn.com/%E7%BA%BF%E7%A8%8B%E6%B1%A0%E6%89%A7%E8%A1%8C%E8%BF%87%E7%A8%8B.png" alt="image"></p>
+<p>饱和策略有4种：</p>
+<ul>
+<li><strong>AbortPolicy（默认）</strong>：直接抛出异常</li>
+<li><strong>CallerRunsPolicy</strong>：只用调用者所在线程来处理</li>
+<li><strong>DiscardOldestPolicy</strong>：丢弃任务队列中最后一个任务，执行当前任务</li>
+<li><strong>DiscardPolicy</strong>：不处理丢弃掉</li>
+</ul>
+<p>线程池回收线程时，对所谓的“核心线程”和“非核心线程”是一视同仁的，直到线程池中线程的数量等于corePoolSize参数时，回收过程才会停止。<br>如果设置的corePoolSize参数和maximumPoolSize参数一致时，线程池在任何情况下都不会回收空闲线程。keepAliveTime和timeUnit也就失去了意义。<br>可以调用以下方法回收核心线程。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">threadPoolExecutor.allowCoreThreadTimeOut(true);</div></pre></td></tr></table></figure></p>
+<h4 id="线程池处理任务"><a href="#线程池处理任务" class="headerlink" title="线程池处理任务"></a>线程池处理任务</h4><p>线程池处理任务的方法主要有两种，execute()和submit()。</p>
+<p><strong>execute()</strong>  </p>
+<p><strong>execute()方法用于提交不需要返回值的任务</strong>，Runnable实例。所以无法判断任务是否被线程池执行成功。</p>
+<p><strong>submit()</strong><br><strong>submit()方法用于提交需要返回值的任务</strong>。线程池会返回一个future类型的对象，通过这个对象可以判断任务是否执行成功。</p>
+<p>future的get()方法会阻塞当前线程直到任务完成，返回结果。</p>
+<p>submit()最终调用的也是execute(Runnable runable)，submit()只是将Callable或Runnable封装成一个FutureTask对象，因为FutureTask是个Runnable，所以调用的是execute()方法。</p>
+<h4 id="线程池的关闭"><a href="#线程池的关闭" class="headerlink" title="线程池的关闭"></a>线程池的关闭</h4><p>线程池关闭的方法主要有两种，shutdown()和shutdownNow()。</p>
+<p><strong>原理</strong>：遍历线程池中的工作线程，逐个调用线程的interrupt方法来中断线程，所以无法响应中断的任务可能永远无法停止。</p>
+<p><strong>区别</strong>：<br><strong>shutdown()只是将线程池的状态设置成SHUTDOWN状态，然后中断没有在执行任务的线程。</strong></p>
+<p><strong>shutdownNow()首先将线程池的状态设置成STOP，然后尝试停止所有正在执行或暂停任务的线程，并返回等待执行任务的列表。</strong></p>
+<p>如果任务不一定要执行完，可以调用shutdownNow()方法。</p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h3 id=&quot;一、线程池的介绍&quot;&gt;&lt;a href=&quot;#一、线程池的介绍&quot; class=&quot;headerlink&quot; title=&quot;一、线程池的介绍&quot;&gt;&lt;/a&gt;一、线程池的介绍&lt;/h3&gt;&lt;p&gt;线程池是一种并发框架。&lt;/p&gt;
+&lt;p&gt;优势：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;降低
+    
+    </summary>
+    
+      <category term="技术" scheme="http://yoursite.com/categories/%E6%8A%80%E6%9C%AF/"/>
+    
+    
+      <category term="并发" scheme="http://yoursite.com/tags/%E5%B9%B6%E5%8F%91/"/>
+    
+      <category term="Java线程池" scheme="http://yoursite.com/tags/Java%E7%BA%BF%E7%A8%8B%E6%B1%A0/"/>
+    
+  </entry>
   
   <entry>
     <title>ConcurrentHashMap在JDK1.8中的实现分析</title>
@@ -1344,93 +1510,6 @@
       <category term="Mysql" scheme="http://yoursite.com/tags/Mysql/"/>
     
       <category term="数据库" scheme="http://yoursite.com/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>在Hexo发布博客的MarkDown文件中引入JS代码</title>
-    <link href="http://yoursite.com/2017/08/07/Hexo%E5%8F%91%E5%B8%83%E5%8D%9A%E5%AE%A2%E7%9A%84MarkDown%E6%96%87%E4%BB%B6%E4%B8%AD%E5%BC%95%E5%85%A5JS%E4%BB%A3%E7%A0%81/"/>
-    <id>http://yoursite.com/2017/08/07/Hexo发布博客的MarkDown文件中引入JS代码/</id>
-    <published>2017-08-07T07:05:05.000Z</published>
-    <updated>2017-10-09T16:08:31.273Z</updated>
-    
-    <content type="html"><![CDATA[<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>上周困扰了两天的问题终于得到解决，于是就打算写点东西，也当作一次记录。</p>
-<p>从题目可以看出，问题就是——<strong>如何在Hexo发布博客的Md文件中引入JS代码</strong>，来实现你想要的特效。<br>之所以会提出这个问题，是源于一个简单的想法，单纯地想在某一篇博客中引入echarts（一个纯 Javascript 的图表库）特效，实质上就是引入它的JS代码。</p>
-<p>那么就详细讲解一下引入echarts来实现特效的过程。</p>
-<h2 id="下载"><a href="#下载" class="headerlink" title="下载"></a>下载</h2><p>首先，在<a href="http://echarts.baidu.com/download.html" target="_blank" rel="external">echarts下载页面</a> 中下载相应的版本，我这里下载的是完整版（echarts.min.js）。<br>文件下载完成后，将其放入下图所示文件夹当中<br><img src="http://osuskkx7k.bkt.clouddn.com/js%E5%AD%98%E5%82%A8.PNG" alt="WithYou"></p>
-<p>我的博客使用的是next主题，打开themes文件夹中的next文件夹，再依次打开source、js、src文件夹，就可以看到许多js文件，将echarts.min.js放入即可。</p>
-<h2 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h2><p>在文件引入后（src就是指向刚刚存入js文件的目录），那么你就可以在你的博客中引用这个js文件来达到特定的效果。<br>引用的方式很简单，只需一行代码：</p>
-<p><code>&lt;script type=&quot;text/javascript&quot; src=&quot;/js/src/echarts.min.js&quot;&gt;&lt;/script&gt;</code></p>
-<p>在引用js文件后，那么你只要在md文件中添加相应的js代码片段即可，这里贴出我使用的js代码片段</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">&lt;script&gt;</div><div class="line">var bmapChart=echarts.init(document.getElementById(&quot;map-wrap&quot;));var data=[&#123;name:&quot;上海&quot;,value:299&#125;,&#123;name:&quot;厦门&quot;,value:245&#125;,&#123;name:&quot;丰城&quot;,value:120&#125;,&#123;name:&quot;南昌&quot;,value:160&#125;,&#123;name:&quot;张家界&quot;,value:128&#125;,&#123;name:&quot;长沙&quot;,value:75&#125;,&#123;name:&quot;杭州&quot;,value:90&#125;,&#123;name:&quot;福州&quot;,value:90&#125;,&#123;name:&quot;深圳&quot;,value:90&#125;,&#123;name:&quot;武汉&quot;,value:73&#125;];var geoCoordMap=&#123;&quot;厦门&quot;:[118.105,24.443],&quot;上海&quot;:[121.399,31.321],&quot;丰城&quot;:[115.801,28.201],&quot;南昌&quot;:[115.856,28.691],&quot;张家界&quot;:[110.489,29.118],&quot;福州&quot;:[119.3,26.08],&quot;长沙&quot;:[113,28.21],&quot;杭州&quot;:[120.16,30.28],&quot;深圳&quot;:[114.06,22.55],&quot;武汉&quot;:[114.31,30.52]&#125;;var convertData=function(data)&#123;var res=[];for(var i=0;i&lt;data.length;i++)&#123;var geoCoord=geoCoordMap[data[i].name];if(geoCoord)&#123;res.push(&#123;name:data[i].name,value:geoCoord.concat(data[i].value)&#125;)&#125;&#125;return res&#125;;option=&#123;title:&#123;text:&quot;我们的足迹 - Our footprints&quot;,subtext:&quot;一步一个脚印，让时光见证&quot;,sublink:&quot;#&quot;,left:&quot;center&quot;&#125;,tooltip:&#123;trigger:&quot;item&quot;&#125;,bmap:&#123;center:[106.320439,32.58783],zoom:5,roam:true,mapStyle:&#123;styleJson:[&#123;&quot;featureType&quot;:&quot;water&quot;,&quot;elementType&quot;:&quot;all&quot;,&quot;stylers&quot;:&#123;&quot;color&quot;:&quot;#d1d1d1&quot;&#125;&#125;,&#123;&quot;featureType&quot;:&quot;land&quot;,&quot;elementType&quot;:&quot;all&quot;,&quot;stylers&quot;:&#123;&quot;color&quot;:&quot;#f3f3f3&quot;&#125;&#125;,&#123;&quot;featureType&quot;:&quot;railway&quot;,&quot;elementType&quot;:&quot;all&quot;,&quot;stylers&quot;:&#123;&quot;visibility&quot;:&quot;off&quot;&#125;&#125;,&#123;&quot;featureType&quot;:&quot;highway&quot;,&quot;elementType&quot;:&quot;all&quot;,&quot;stylers&quot;:&#123;&quot;color&quot;:&quot;#fdfdfd&quot;&#125;&#125;,&#123;&quot;featureType&quot;:&quot;highway&quot;,&quot;elementType&quot;:&quot;labels&quot;,&quot;stylers&quot;:&#123;&quot;visibility&quot;:&quot;off&quot;&#125;&#125;,&#123;&quot;featureType&quot;:&quot;arterial&quot;,&quot;elementType&quot;:&quot;geometry&quot;,&quot;stylers&quot;:&#123;&quot;color&quot;:&quot;#fefefe&quot;&#125;&#125;,&#123;&quot;featureType&quot;:&quot;arterial&quot;,&quot;elementType&quot;:&quot;geometry.fill&quot;,&quot;stylers&quot;:&#123;&quot;color&quot;:&quot;#fefefe&quot;&#125;&#125;,&#123;&quot;featureType&quot;:&quot;poi&quot;,&quot;elementType&quot;:&quot;all&quot;,&quot;stylers&quot;:&#123;&quot;visibility&quot;:&quot;off&quot;&#125;&#125;,&#123;&quot;featureType&quot;:&quot;green&quot;,&quot;elementType&quot;:&quot;all&quot;,&quot;stylers&quot;:&#123;&quot;visibility&quot;:&quot;off&quot;&#125;&#125;,&#123;&quot;featureType&quot;:&quot;subway&quot;,&quot;elementType&quot;:&quot;all&quot;,&quot;stylers&quot;:&#123;&quot;visibility&quot;:&quot;off&quot;&#125;&#125;,&#123;&quot;featureType&quot;:&quot;manmade&quot;,&quot;elementType&quot;:&quot;all&quot;,&quot;stylers&quot;:&#123;&quot;color&quot;:&quot;#d1d1d1&quot;&#125;&#125;,&#123;&quot;featureType&quot;:&quot;local&quot;,&quot;elementType&quot;:&quot;all&quot;,&quot;stylers&quot;:&#123;&quot;color&quot;:&quot;#d1d1d1&quot;&#125;&#125;,&#123;&quot;featureType&quot;:&quot;arterial&quot;,&quot;elementType&quot;:&quot;labels&quot;,&quot;stylers&quot;:&#123;&quot;visibility&quot;:&quot;off&quot;&#125;&#125;,&#123;&quot;featureType&quot;:&quot;boundary&quot;,&quot;elementType&quot;:&quot;all&quot;,&quot;stylers&quot;:&#123;&quot;color&quot;:&quot;#fefefe&quot;&#125;&#125;,&#123;&quot;featureType&quot;:&quot;building&quot;,&quot;elementType&quot;:&quot;all&quot;,&quot;stylers&quot;:&#123;&quot;color&quot;:&quot;#d1d1d1&quot;&#125;&#125;,&#123;&quot;featureType&quot;:&quot;label&quot;,&quot;elementType&quot;:&quot;labels.text.fill&quot;,&quot;stylers&quot;:&#123;&quot;color&quot;:&quot;#999999&quot;&#125;&#125;]&#125;&#125;,series:[&#123;name:&quot;footmark&quot;,type:&quot;scatter&quot;,coordinateSystem:&quot;bmap&quot;,data:convertData(data),symbolSize:function(val)&#123;return val[2]/10&#125;,label:&#123;normal:&#123;formatter:&quot;&#123;b&#125;&quot;,position:&quot;right&quot;,show:false&#125;,emphasis:&#123;show:true&#125;&#125;,itemStyle:&#123;normal:&#123;color:&quot;#60C0DD&quot;&#125;&#125;&#125;,&#123;name:&quot;I miss you&quot;,type:&quot;effectScatter&quot;,coordinateSystem:&quot;bmap&quot;,data:convertData(data.sort(function(a,b)&#123;return b.value-a.value&#125;).slice(0,2)),symbolSize:function(val)&#123;return val[2]/10&#125;,showEffectOn:&quot;render&quot;,rippleEffect:&#123;brushType:&quot;stroke&quot;&#125;,hoverAnimation:true,label:&#123;normal:&#123;formatter:&quot;&#123;b&#125;&quot;,position:&quot;right&quot;,show:true&#125;&#125;,itemStyle:&#123;normal:&#123;color:&quot;purple&quot;,shadowBlur:10,shadowColor:&quot;#333&quot;&#125;&#125;,zlevel:1&#125;]&#125;;bmapChart.setOption(option);</div><div class="line">&lt;/script&gt;</div></pre></td></tr></table></figure>
-<p> 文章末尾有博客链接。<br> 在这个页面中所展现的特效中还引入了其他的js文件，如china.js、api.js、bmap.js等，例如api.js是百度地图的js代码，当然你可以引入任何你想要引用的js文件。  </p>
-<h2 id="详细"><a href="#详细" class="headerlink" title="详细"></a>详细</h2><p>至于bmap.js文件可以在<a href="https://github.com/ecomfe/echarts/tree/master/extension/bmap" target="_blank" rel="external">github</a>下载，下载之后打开echarts-master文件夹，找到extension中的bamp.js,如下图所示:<br><img src="http://osuskkx7k.bkt.clouddn.com/1.PNG" alt="WithYou"></p>
-<p>ECharts使用参考（其中有china.js的介绍）：</p>
-<ul>
-<li><a href="http://efe.baidu.com/blog/echarts-map-tutorial/" target="_blank" rel="external">ECharts 实现地图散点图（上）</a></li>
-<li><a href="http://efe.baidu.com/blog/echarts-map-tutorial-2/" target="_blank" rel="external">ECharts 实现地图散点图（下）</a></li>
-</ul>
-<p>这里要注意一个问题，就是引入bmap.js后，地图并不显示，想要使用百度地图，还要去<a href="http://lbsyun.baidu.com/index.php?title=jspopular" target="_blank" rel="external">百度地图开放平台</a>申请一个密钥，申请成功后在页面中引入，但是经过多次尝试，直接在md文件中引入并不起作用，如下：</p>
-<p><code>&lt;script src=&quot;http://api.map.baidu.com/api?v=2.0&amp;ak=？（你的密钥）&quot;&gt;&lt;/script&gt;</code></p>
-<p>   由此想到在script标签中嵌入了网页链接，md可能不能识别（只是猜测），于是想着将这个链接所指向的js转为文件引入试试。直接点击链接，跳转到如下页面：</p>
-<p><img src="http://osuskkx7k.bkt.clouddn.com/%E7%99%BE%E5%BA%A61.PNG" alt="WithYou"></p>
-<p>可以看到标记处同样为一个链接，再次从浏览器打开，出现如下：  </p>
-<p><img src="http://osuskkx7k.bkt.clouddn.com/%E7%99%BE%E5%BA%A62.PNG" alt="WithYou"></p>
-<p>在你眼前呈现的是全屏的js代码，这就是我们所需要的js文件，即百度地图的js代码，将它全选保存为js文件，这里命名为api.js。<br>然后在md中引入它即可使用，这样我们就能取得和百度地图类似的效果。</p>
-<p>下面贴出完整的文章代码，即md文件：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">&lt;div id=&quot;map-wrap&quot; style=&quot;height: 500px;width:800px;&quot;&gt;&lt;/div&gt;</div><div class="line"></div><div class="line">    &lt;script type=&quot;text/javascript&quot; src=&quot;/js/src/echarts.min.js&quot;&gt;&lt;/script&gt;</div><div class="line">    &lt;script src=&quot;/js/src/china.js&quot;&gt;&lt;/script&gt;</div><div class="line">    &lt;script src=&quot;/js/src/api.js&quot;&gt;&lt;/script&gt;</div><div class="line">    &lt;script src=&quot;/js/src/bmap.js&quot;&gt;&lt;/script&gt;</div><div class="line">    </div><div class="line">&lt;script&gt;</div><div class="line">var bmapChart=echarts.init(document.getElementById(&quot;map-wrap&quot;));var data=[&#123;name:&quot;上海&quot;,value:299&#125;,&#123;name:&quot;厦门&quot;,value:245&#125;,&#123;name:&quot;丰城&quot;,value:120&#125;,&#123;name:&quot;南昌&quot;,value:160&#125;,&#123;name:&quot;张家界&quot;,value:128&#125;,&#123;name:&quot;长沙&quot;,value:75&#125;,&#123;name:&quot;杭州&quot;,value:90&#125;,&#123;name:&quot;福州&quot;,value:90&#125;,&#123;name:&quot;深圳&quot;,value:90&#125;,&#123;name:&quot;武汉&quot;,value:73&#125;];var geoCoordMap=&#123;&quot;厦门&quot;:[118.105,24.443],&quot;上海&quot;:[121.399,31.321],&quot;丰城&quot;:[115.801,28.201],&quot;南昌&quot;:[115.856,28.691],&quot;张家界&quot;:[110.489,29.118],&quot;福州&quot;:[119.3,26.08],&quot;长沙&quot;:[113,28.21],&quot;杭州&quot;:[120.16,30.28],&quot;深圳&quot;:[114.06,22.55],&quot;武汉&quot;:[114.31,30.52]&#125;;var convertData=function(data)&#123;var res=[];for(var i=0;i&lt;data.length;i++)&#123;var geoCoord=geoCoordMap[data[i].name];if(geoCoord)&#123;res.push(&#123;name:data[i].name,value:geoCoord.concat(data[i].value)&#125;)&#125;&#125;return res&#125;;option=&#123;title:&#123;text:&quot;我们的足迹 - Our footprints&quot;,subtext:&quot;一步一个脚印，让时光见证&quot;,sublink:&quot;#&quot;,left:&quot;center&quot;&#125;,tooltip:&#123;trigger:&quot;item&quot;&#125;,bmap:&#123;center:[106.320439,32.58783],zoom:5,roam:true,mapStyle:&#123;styleJson:[&#123;&quot;featureType&quot;:&quot;water&quot;,&quot;elementType&quot;:&quot;all&quot;,&quot;stylers&quot;:&#123;&quot;color&quot;:&quot;#d1d1d1&quot;&#125;&#125;,&#123;&quot;featureType&quot;:&quot;land&quot;,&quot;elementType&quot;:&quot;all&quot;,&quot;stylers&quot;:&#123;&quot;color&quot;:&quot;#f3f3f3&quot;&#125;&#125;,&#123;&quot;featureType&quot;:&quot;railway&quot;,&quot;elementType&quot;:&quot;all&quot;,&quot;stylers&quot;:&#123;&quot;visibility&quot;:&quot;off&quot;&#125;&#125;,&#123;&quot;featureType&quot;:&quot;highway&quot;,&quot;elementType&quot;:&quot;all&quot;,&quot;stylers&quot;:&#123;&quot;color&quot;:&quot;#fdfdfd&quot;&#125;&#125;,&#123;&quot;featureType&quot;:&quot;highway&quot;,&quot;elementType&quot;:&quot;labels&quot;,&quot;stylers&quot;:&#123;&quot;visibility&quot;:&quot;off&quot;&#125;&#125;,&#123;&quot;featureType&quot;:&quot;arterial&quot;,&quot;elementType&quot;:&quot;geometry&quot;,&quot;stylers&quot;:&#123;&quot;color&quot;:&quot;#fefefe&quot;&#125;&#125;,&#123;&quot;featureType&quot;:&quot;arterial&quot;,&quot;elementType&quot;:&quot;geometry.fill&quot;,&quot;stylers&quot;:&#123;&quot;color&quot;:&quot;#fefefe&quot;&#125;&#125;,&#123;&quot;featureType&quot;:&quot;poi&quot;,&quot;elementType&quot;:&quot;all&quot;,&quot;stylers&quot;:&#123;&quot;visibility&quot;:&quot;off&quot;&#125;&#125;,&#123;&quot;featureType&quot;:&quot;green&quot;,&quot;elementType&quot;:&quot;all&quot;,&quot;stylers&quot;:&#123;&quot;visibility&quot;:&quot;off&quot;&#125;&#125;,&#123;&quot;featureType&quot;:&quot;subway&quot;,&quot;elementType&quot;:&quot;all&quot;,&quot;stylers&quot;:&#123;&quot;visibility&quot;:&quot;off&quot;&#125;&#125;,&#123;&quot;featureType&quot;:&quot;manmade&quot;,&quot;elementType&quot;:&quot;all&quot;,&quot;stylers&quot;:&#123;&quot;color&quot;:&quot;#d1d1d1&quot;&#125;&#125;,&#123;&quot;featureType&quot;:&quot;local&quot;,&quot;elementType&quot;:&quot;all&quot;,&quot;stylers&quot;:&#123;&quot;color&quot;:&quot;#d1d1d1&quot;&#125;&#125;,&#123;&quot;featureType&quot;:&quot;arterial&quot;,&quot;elementType&quot;:&quot;labels&quot;,&quot;stylers&quot;:&#123;&quot;visibility&quot;:&quot;off&quot;&#125;&#125;,&#123;&quot;featureType&quot;:&quot;boundary&quot;,&quot;elementType&quot;:&quot;all&quot;,&quot;stylers&quot;:&#123;&quot;color&quot;:&quot;#fefefe&quot;&#125;&#125;,&#123;&quot;featureType&quot;:&quot;building&quot;,&quot;elementType&quot;:&quot;all&quot;,&quot;stylers&quot;:&#123;&quot;color&quot;:&quot;#d1d1d1&quot;&#125;&#125;,&#123;&quot;featureType&quot;:&quot;label&quot;,&quot;elementType&quot;:&quot;labels.text.fill&quot;,&quot;stylers&quot;:&#123;&quot;color&quot;:&quot;#999999&quot;&#125;&#125;]&#125;&#125;,series:[&#123;name:&quot;footmark&quot;,type:&quot;scatter&quot;,coordinateSystem:&quot;bmap&quot;,data:convertData(data),symbolSize:function(val)&#123;return val[2]/10&#125;,label:&#123;normal:&#123;formatter:&quot;&#123;b&#125;&quot;,position:&quot;right&quot;,show:false&#125;,emphasis:&#123;show:true&#125;&#125;,itemStyle:&#123;normal:&#123;color:&quot;#60C0DD&quot;&#125;&#125;&#125;,&#123;name:&quot;I miss you&quot;,type:&quot;effectScatter&quot;,coordinateSystem:&quot;bmap&quot;,data:convertData(data.sort(function(a,b)&#123;return b.value-a.value&#125;).slice(0,2)),symbolSize:function(val)&#123;return val[2]/10&#125;,showEffectOn:&quot;render&quot;,rippleEffect:&#123;brushType:&quot;stroke&quot;&#125;,hoverAnimation:true,label:&#123;normal:&#123;formatter:&quot;&#123;b&#125;&quot;,position:&quot;right&quot;,show:true&#125;&#125;,itemStyle:&#123;normal:&#123;color:&quot;purple&quot;,shadowBlur:10,shadowColor:&quot;#333&quot;&#125;&#125;,zlevel:1&#125;]&#125;;bmapChart.setOption(option);</div><div class="line">    &lt;/script&gt;</div></pre></td></tr></table></figure></p>
-<p>特效如下图所示：</p>
-<p><img src="http://osuskkx7k.bkt.clouddn.com/%E7%89%B9%E6%95%882.PNG" alt="WithYou"></p>
-<p>欢迎访问博客页面查看效果：<a href="https://youngforzy.github.io/2017/08/07/index/#more" target="_blank" rel="external">Youngforzy</a></p>
-<h2 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h2><p><font size="4">这里其实有个问题，就是特效虽然展现出来，但是在网页端还是无法实现地图的缩放，而在手机端和ipad中都可以进行地图的缩放，目前这个问题还未能得到解决，待日后解决再补充。</font></p>
-<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>以上就是在MarkDown中插入js代码的过程。</p>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;h2 id=&quot;前言&quot;&gt;&lt;a href=&quot;#前言&quot; class=&quot;headerlink&quot; title=&quot;前言&quot;&gt;&lt;/a&gt;前言&lt;/h2&gt;&lt;p&gt;上周困扰了两天的问题终于得到解决，于是就打算写点东西，也当作一次记录。&lt;/p&gt;
-&lt;p&gt;从题目可以看出，问题就是——&lt;strong&gt;如何在He
-    
-    </summary>
-    
-      <category term="技术" scheme="http://yoursite.com/categories/%E6%8A%80%E6%9C%AF/"/>
-    
-    
-      <category term="Hexo" scheme="http://yoursite.com/tags/Hexo/"/>
-    
-      <category term="MarkDown" scheme="http://yoursite.com/tags/MarkDown/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>JS特效</title>
-    <link href="http://yoursite.com/2017/08/07/JS%E7%89%B9%E6%95%88/"/>
-    <id>http://yoursite.com/2017/08/07/JS特效/</id>
-    <published>2017-08-07T05:15:25.000Z</published>
-    <updated>2017-10-09T16:08:31.273Z</updated>
-    
-    <content type="html"><![CDATA[<div id="map-wrap" style="height: 500px;width:800px;"></div>
-
-<script type="text/javascript" src="/js/src/echarts.min.js"></script>
-<script src="/js/src/china.js"></script>
-<script src="/js/src/api.js"></script>
-<script src="/js/src/bmap.js"></script>
-
-<script>
-var bmapChart=echarts.init(document.getElementById("map-wrap"));var data=[{name:"上海",value:299},{name:"厦门",value:245},{name:"丰城",value:120},{name:"南昌",value:160},{name:"张家界",value:128},{name:"长沙",value:75},{name:"杭州",value:90},{name:"福州",value:90},{name:"深圳",value:90},{name:"武汉",value:73}];var geoCoordMap={"厦门":[118.105,24.443],"上海":[121.399,31.321],"丰城":[115.801,28.201],"南昌":[115.856,28.691],"张家界":[110.489,29.118],"福州":[119.3,26.08],"长沙":[113,28.21],"杭州":[120.16,30.28],"深圳":[114.06,22.55],"武汉":[114.31,30.52]};var convertData=function(data){var res=[];for(var i=0;i<data.length;i++){var geoCoord=geoCoordMap[data[i].name];if(geoCoord){res.push({name:data[i].name,value:geoCoord.concat(data[i].value)})}}return res};option={title:{text:"我们的足迹 - Our footprints",subtext:"一步一个脚印，让时光见证",sublink:"#",left:"center"},tooltip:{trigger:"item"},bmap:{center:[106.320439,32.58783],zoom:5,roam:true,mapStyle:{styleJson:[{"featureType":"water","elementType":"all","stylers":{"color":"#d1d1d1"}},{"featureType":"land","elementType":"all","stylers":{"color":"#f3f3f3"}},{"featureType":"railway","elementType":"all","stylers":{"visibility":"off"}},{"featureType":"highway","elementType":"all","stylers":{"color":"#fdfdfd"}},{"featureType":"highway","elementType":"labels","stylers":{"visibility":"off"}},{"featureType":"arterial","elementType":"geometry","stylers":{"color":"#fefefe"}},{"featureType":"arterial","elementType":"geometry.fill","stylers":{"color":"#fefefe"}},{"featureType":"poi","elementType":"all","stylers":{"visibility":"off"}},{"featureType":"green","elementType":"all","stylers":{"visibility":"off"}},{"featureType":"subway","elementType":"all","stylers":{"visibility":"off"}},{"featureType":"manmade","elementType":"all","stylers":{"color":"#d1d1d1"}},{"featureType":"local","elementType":"all","stylers":{"color":"#d1d1d1"}},{"featureType":"arterial","elementType":"labels","stylers":{"visibility":"off"}},{"featureType":"boundary","elementType":"all","stylers":{"color":"#fefefe"}},{"featureType":"building","elementType":"all","stylers":{"color":"#d1d1d1"}},{"featureType":"label","elementType":"labels.text.fill","stylers":{"color":"#999999"}}]}},series:[{name:"footmark",type:"scatter",coordinateSystem:"bmap",data:convertData(data),symbolSize:function(val){return val[2]/10},label:{normal:{formatter:"{b}",position:"right",show:false},emphasis:{show:true}},itemStyle:{normal:{color:"#60C0DD"}}},{name:"I miss you",type:"effectScatter",coordinateSystem:"bmap",data:convertData(data.sort(function(a,b){return b.value-a.value}).slice(0,2)),symbolSize:function(val){return val[2]/10},showEffectOn:"render",rippleEffect:{brushType:"stroke"},hoverAnimation:true,label:{normal:{formatter:"{b}",position:"right",show:true}},itemStyle:{normal:{color:"purple",shadowBlur:10,shadowColor:"#333"}},zlevel:1}]};bmapChart.setOption(option);
-</script>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;div id=&quot;map-wrap&quot; style=&quot;height: 500px;width:800px;&quot;&gt;&lt;/div&gt;
-
-&lt;script type=&quot;text/javascript&quot; src=&quot;/js/src/echarts.min.js&quot;&gt;&lt;/script&gt;
-&lt;script 
-    
-    </summary>
-    
-      <category term="技术" scheme="http://yoursite.com/categories/%E6%8A%80%E6%9C%AF/"/>
-    
     
   </entry>
   

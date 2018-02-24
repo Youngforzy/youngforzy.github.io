@@ -87,7 +87,7 @@
 <link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="Mysql,Mybatis," />
+  <meta name="keywords" content="并发,Java线程池," />
 
 
 
@@ -105,17 +105,20 @@
 
 
 
-<meta name="description" content="前言   这个问题困扰了整整一天。   当遇到多条记录需要插入或者更新的时候，往往会使用批量操作来提高效率，提高性能。然而在使用过程中确是出现了各种问题，真的是有些坑只有趟过才知道！！   好了，话不多说，进入正题。   注：数据库Mysql     持久层框架 Mybatis 批量更新需求如下代码：12345Map&amp;lt;String,Object&amp;gt; ucmap = new HashMap">
-<meta name="keywords" content="Mysql,Mybatis">
+<meta name="description" content="一、线程池的介绍线程池是一种并发框架。 优势：  降低资源消耗。（重复利用线程，减少开销） 提高响应速度。（任务到达可直接执行，不需要等待创建线程） 提高线程的可管理性。（统一分配、监控、调优）  ThreadPoolExecutor是线程池的核心实现类。可以通过ThreadPoolExecutor来创建一个线程池。 二、线程池的实现分析线程池的实现是ThreadPoolExecutor类，因此重">
+<meta name="keywords" content="并发,Java线程池">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Mysql批量操作之更新及插入">
-<meta property="og:url" content="http://yoursite.com/2017/07/12/mysql批量更新/index.html">
+<meta property="og:title" content="Java线程池的实现分析">
+<meta property="og:url" content="http://yoursite.com/2017/11/18/Java线程池的实现分析/index.html">
 <meta property="og:site_name" content="ZY&#39;s Blog">
-<meta property="og:description" content="前言   这个问题困扰了整整一天。   当遇到多条记录需要插入或者更新的时候，往往会使用批量操作来提高效率，提高性能。然而在使用过程中确是出现了各种问题，真的是有些坑只有趟过才知道！！   好了，话不多说，进入正题。   注：数据库Mysql     持久层框架 Mybatis 批量更新需求如下代码：12345Map&amp;lt;String,Object&amp;gt; ucmap = new HashMap">
-<meta property="og:updated_time" content="2017-10-09T16:08:31.273Z">
+<meta property="og:description" content="一、线程池的介绍线程池是一种并发框架。 优势：  降低资源消耗。（重复利用线程，减少开销） 提高响应速度。（任务到达可直接执行，不需要等待创建线程） 提高线程的可管理性。（统一分配、监控、调优）  ThreadPoolExecutor是线程池的核心实现类。可以通过ThreadPoolExecutor来创建一个线程池。 二、线程池的实现分析线程池的实现是ThreadPoolExecutor类，因此重">
+<meta property="og:image" content="http://osuskkx7k.bkt.clouddn.com/%E7%BA%BF%E7%A8%8B%E6%B1%A0.png">
+<meta property="og:image" content="http://osuskkx7k.bkt.clouddn.com/%E7%BA%BF%E7%A8%8B%E6%B1%A0%E6%89%A7%E8%A1%8C%E8%BF%87%E7%A8%8B.png">
+<meta property="og:updated_time" content="2018-02-24T17:52:30.529Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Mysql批量操作之更新及插入">
-<meta name="twitter:description" content="前言   这个问题困扰了整整一天。   当遇到多条记录需要插入或者更新的时候，往往会使用批量操作来提高效率，提高性能。然而在使用过程中确是出现了各种问题，真的是有些坑只有趟过才知道！！   好了，话不多说，进入正题。   注：数据库Mysql     持久层框架 Mybatis 批量更新需求如下代码：12345Map&amp;lt;String,Object&amp;gt; ucmap = new HashMap">
+<meta name="twitter:title" content="Java线程池的实现分析">
+<meta name="twitter:description" content="一、线程池的介绍线程池是一种并发框架。 优势：  降低资源消耗。（重复利用线程，减少开销） 提高响应速度。（任务到达可直接执行，不需要等待创建线程） 提高线程的可管理性。（统一分配、监控、调优）  ThreadPoolExecutor是线程池的核心实现类。可以通过ThreadPoolExecutor来创建一个线程池。 二、线程池的实现分析线程池的实现是ThreadPoolExecutor类，因此重">
+<meta name="twitter:image" content="http://osuskkx7k.bkt.clouddn.com/%E7%BA%BF%E7%A8%8B%E6%B1%A0.png">
 
 
 
@@ -143,13 +146,13 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2017/07/12/mysql批量更新/"/>
+  <link rel="canonical" href="http://yoursite.com/2017/11/18/Java线程池的实现分析/"/>
 
 
 
 
 
-  <title>Mysql批量操作之更新及插入 | ZY's Blog</title>
+  <title>Java线程池的实现分析 | ZY's Blog</title>
   
 
 
@@ -307,7 +310,7 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/07/12/mysql批量更新/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/11/18/Java线程池的实现分析/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Z Yong">
@@ -324,7 +327,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">Mysql批量操作之更新及插入</h1>
+          <h1 class="post-title" itemprop="name headline">Java线程池的实现分析</h1>
         
 
         <div class="post-meta">
@@ -336,8 +339,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-07-12T15:12:12+08:00">
-                2017-07-12
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-11-18T20:42:18+08:00">
+                2017-11-18
               </time>
             
 
@@ -393,24 +396,54 @@
       
 
       
-        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>   这个问题困扰了整整一天。<br>   当遇到多条记录需要插入或者更新的时候，往往会使用批量操作来提高效率，提高性能。然而在使用过程中确是出现了各种问题，真的是有些坑只有趟过才知道！！<br>   好了，话不多说，进入正题。<br>   注：数据库Mysql     持久层框架 Mybatis</p>
-<h2 id="批量更新"><a href="#批量更新" class="headerlink" title="批量更新"></a>批量更新</h2><p>需求如下代码：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">Map&lt;String,Object&gt; ucmap = new HashMap&lt;String, Object&gt;();</div><div class="line">		ucmap.put(&quot;updateUser&quot;,&quot;zyong&quot;);</div><div class="line">		ucmap.put(&quot;updateTime&quot;, time);</div><div class="line">		ucmap.put(&quot;list&quot;, updateClist);</div><div class="line">		connectorInfoMapper.updateBatch(ucmap);</div></pre></td></tr></table></figure></p>
-<p>这里的需求是对设备的信息进行批量更新，利用Map来传参，Map中包含了一个List，这个List包含了需要更新的对象集合，也就是多条记录。<br>sql片段如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">&lt;update id=&quot;updateBatch&quot; parameterType=&quot;java.util.Map&quot;&gt;</div><div class="line">      &lt;foreach collection=&quot;list&quot; item=&quot;item&quot; index=&quot;index&quot; separator=&quot;;&quot;&gt;</div><div class="line"> update connector_info</div><div class="line">    set  </div><div class="line">      Connector_Type = #&#123;item.connectorType,jdbcType=INTEGER&#125;,</div><div class="line">      Voltage_Upper_Limits = #&#123;item.voltageUpperLimits,jdbcType=INTEGER&#125;,</div><div class="line">      Voltage_Lower_Limits = #&#123;item.voltageLowerLimits,jdbcType=INTEGER&#125;,</div><div class="line">      Current = #&#123;item.current,jdbcType=INTEGER&#125;,</div><div class="line">      Power = #&#123;item.power,jdbcType=DOUBLE&#125;,</div><div class="line">      National_Standard = #&#123;item.nationalStandard,jdbcType=INTEGER&#125;,</div><div class="line">      Update_User = #&#123;updateUser,jdbcType=VARCHAR&#125;,</div><div class="line">	  Update_Time = FROM_UNIXTIME(#&#123;updateTime,jdbcType=TIMESTAMP&#125;)   </div><div class="line">    where Connector_ID = #&#123;item.connectorId,jdbcType=VARCHAR&#125;</div><div class="line">    &lt;/foreach&gt;</div><div class="line"> &lt;/update&gt;</div></pre></td></tr></table></figure></p>
-<p>   可以看到，这里使用了foreach标签进行迭代，item代表着每一个元素，item.power等代表的就是每个元素的属性，而没有加上item的参数如updateUser、updateTime等则是存放在Map中的参数，从需求代码中能看得更加明显。</p>
-<p>当我检查了多遍后，感觉没问题之后，运行。<br>控制台的错误让我明白还是太年轻——报错了！！！仔细一看，是Sql语法错误，What？我把sql放入Navicat中美化，又检查了好几遍，这明明没有错啊！</p>
-<p>于是开启了百度，各种查：</p>
-<ul>
-<li>有的说把separator=”;”中的分号换成——separator=”UNION ALL”，测试，还是报同样的错误。</li>
-<li>将几个属于Map的字段删除再测试，依然报错  </li>
-</ul>
-<p>查了很多并没有什么实质性的进展，将多条数据改成一条数据进行更新，测试，竟然通过了！——原因很明显：批量操作的原因导致。<br>再百度，终于找到了答案：<br>并不是Sql的原因，而是数据库设置的原因————Mysql需要打开批量更新的设置。</p>
-<font size="5">在数据库JDBC链接中加入： <strong>&amp;allowMultiQueries=true</strong></font><br>如下：<br>jdbc.url=jdbc:mysql://139.224.35.81:3306/evshare?useUnicode=true&amp;characterEncoding=UTF-8&amp;allowMultiQueries=true<br><br><font size="5">在添加了这个“开关”之后，成功批量更新多条数据。</font>
-
-<h2 id="批量插入"><a href="#批量插入" class="headerlink" title="批量插入"></a>批量插入</h2><p>相比于批量更新，批量插入则没有类似的设置。<br>一个简单的示例Sql：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line">&lt;insert id=&quot;insertBatch&quot; parameterType=&quot;java.util.Map&quot;&gt;</div><div class="line">  insert into connector_info (Equipment_Seq, Connector_ID, </div><div class="line">      Connector_Type, Voltage_Upper_Limits, </div><div class="line">      Voltage_Lower_Limits, Current, Power, </div><div class="line">      National_Standard,Create_User,Create_Time,Update_Time)</div><div class="line">      values</div><div class="line">      &lt;foreach collection=&quot;list&quot; item=&quot;item&quot; index=&quot;index&quot; separator=&quot;,&quot;&gt;</div><div class="line">     (#&#123;item.equipmentSeq,jdbcType=BIGINT&#125;, #&#123;item.connectorId,jdbcType=VARCHAR&#125;, </div><div class="line">      #&#123;item.connectorType,jdbcType=INTEGER&#125;, #&#123;item.voltageUpperLimits,jdbcType=INTEGER&#125;, </div><div class="line">      #&#123;item.voltageLowerLimits,jdbcType=INTEGER&#125;, #&#123;item.current,jdbcType=INTEGER&#125;, #&#123;item.power,jdbcType=DOUBLE&#125;, </div><div class="line">      #&#123;item.nationalStandard,jdbcType=INTEGER&#125;,</div><div class="line">      #&#123;createUser,jdbcType=VARCHAR&#125;,</div><div class="line">      FROM_UNIXTIME(#&#123;createTime,jdbcType=TIMESTAMP&#125;),</div><div class="line">      FROM_UNIXTIME(#&#123;updateTime,jdbcType=TIMESTAMP&#125;))</div><div class="line">      &lt;/foreach&gt;</div><div class="line">  &lt;/insert&gt;</div></pre></td></tr></table></figure></p>
-<h2 id="总结："><a href="#总结：" class="headerlink" title="总结："></a>总结：</h2><ol>
-<li>有时候问题并不是出现在代码上，可以往系统环境和配置方面考虑。  </li>
-<li>对于批量更新Mysql需要设置，而Oracle则不需要设置，但sql可能要变化</li>
+        <h3 id="一、线程池的介绍"><a href="#一、线程池的介绍" class="headerlink" title="一、线程池的介绍"></a>一、线程池的介绍</h3><p>线程池是一种并发框架。</p>
+<p>优势：</p>
+<ol>
+<li><strong>降低资源消耗。</strong>（重复利用线程，减少开销）</li>
+<li><strong>提高响应速度。</strong>（任务到达可直接执行，不需要等待创建线程）</li>
+<li><strong>提高线程的可管理性</strong>。（统一分配、监控、调优）</li>
 </ol>
+<p><strong>ThreadPoolExecutor是线程池的核心实现类</strong>。可以通过ThreadPoolExecutor来创建一个线程池。</p>
+<h3 id="二、线程池的实现分析"><a href="#二、线程池的实现分析" class="headerlink" title="二、线程池的实现分析"></a>二、线程池的实现分析</h3><p>线程池的实现是ThreadPoolExecutor类，因此重点描述ThreadPoolExecutor类的实现。  </p>
+<h4 id="ThreadPoolExecutor的结构"><a href="#ThreadPoolExecutor的结构" class="headerlink" title="ThreadPoolExecutor的结构"></a>ThreadPoolExecutor的结构</h4><p>ThreadPoolExecutor的构造方法<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">public ThreadPoolExecutor(int corePoolSize,</div><div class="line">                              int maximumPoolSize,</div><div class="line">                              long keepAliveTime,</div><div class="line">                              TimeUnit unit,</div><div class="line">                              BlockingQueue&lt;Runnable&gt; workQueue,</div><div class="line">                              ThreadFactory threadFactory,</div><div class="line">                              RejectedExecutionHandler handler) &#123;</div><div class="line">        ...(省略部分)</div><div class="line">        this.corePoolSize = corePoolSize;</div><div class="line">        this.maximumPoolSize = maximumPoolSize;</div><div class="line">        this.workQueue = workQueue;</div><div class="line">        this.keepAliveTime = unit.toNanos(keepAliveTime);</div><div class="line">        this.threadFactory = threadFactory;</div><div class="line">        this.handler = handler;</div><div class="line">    &#125;</div></pre></td></tr></table></figure></p>
+<p>构造函数中省略了部分判断的代码。<br>主要有7个参数：  </p>
+<p><strong>corePoolSize</strong>：核心线程池的大小  </p>
+<p><strong>maximumPoolSize</strong>：线程池的大小  </p>
+<p><strong>keepAliveTime</strong>：存活时间（超过核心数目的线程空闲后的存活时间）  </p>
+<p><strong>TimeUnit</strong>：时间单位  </p>
+<p><strong>BlockingQueue<runnable></runnable></strong>：任务队列（保存等待任务的阻塞队列）  </p>
+<p><strong>ThreadFactory</strong>：创建线程的工厂类   </p>
+<p><strong>RejectedExecutionHandler</strong> ：饱和策略（拒绝策略）</p>
+<p><img src="http://osuskkx7k.bkt.clouddn.com/%E7%BA%BF%E7%A8%8B%E6%B1%A0.png" alt="image"></p>
+<h4 id="工作过程"><a href="#工作过程" class="headerlink" title="工作过程"></a>工作过程</h4><p>当提交一个新任务时，线程池的工作过程：</p>
+<ol>
+<li><p><strong>判断核心线程池（corePool）中的线程是否都在执行任务。如果不是，创建一个新的线程执行任务。核心线程池已满，进入2</strong>；  </p>
+</li>
+<li><p><strong>判断任务队列是否已满。未满，则将新的任务存入；满了，进入3；</strong></p>
+</li>
+<li><strong>判断线程池（maximumPoolSize）里的线程是否都在工作。如果没有，创建一个新的线程执行任务；否则，交给饱和策略4</strong>；</li>
+<li><strong>根据不同的饱和策略处理这个任务</strong>。</li>
+</ol>
+<p><img src="http://osuskkx7k.bkt.clouddn.com/%E7%BA%BF%E7%A8%8B%E6%B1%A0%E6%89%A7%E8%A1%8C%E8%BF%87%E7%A8%8B.png" alt="image"></p>
+<p>饱和策略有4种：</p>
+<ul>
+<li><strong>AbortPolicy（默认）</strong>：直接抛出异常</li>
+<li><strong>CallerRunsPolicy</strong>：只用调用者所在线程来处理</li>
+<li><strong>DiscardOldestPolicy</strong>：丢弃任务队列中最后一个任务，执行当前任务</li>
+<li><strong>DiscardPolicy</strong>：不处理丢弃掉</li>
+</ul>
+<p>线程池回收线程时，对所谓的“核心线程”和“非核心线程”是一视同仁的，直到线程池中线程的数量等于corePoolSize参数时，回收过程才会停止。<br>如果设置的corePoolSize参数和maximumPoolSize参数一致时，线程池在任何情况下都不会回收空闲线程。keepAliveTime和timeUnit也就失去了意义。<br>可以调用以下方法回收核心线程。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">threadPoolExecutor.allowCoreThreadTimeOut(true);</div></pre></td></tr></table></figure></p>
+<h4 id="线程池处理任务"><a href="#线程池处理任务" class="headerlink" title="线程池处理任务"></a>线程池处理任务</h4><p>线程池处理任务的方法主要有两种，execute()和submit()。</p>
+<p><strong>execute()</strong>  </p>
+<p><strong>execute()方法用于提交不需要返回值的任务</strong>，Runnable实例。所以无法判断任务是否被线程池执行成功。</p>
+<p><strong>submit()</strong><br><strong>submit()方法用于提交需要返回值的任务</strong>。线程池会返回一个future类型的对象，通过这个对象可以判断任务是否执行成功。</p>
+<p>future的get()方法会阻塞当前线程直到任务完成，返回结果。</p>
+<p>submit()最终调用的也是execute(Runnable runable)，submit()只是将Callable或Runnable封装成一个FutureTask对象，因为FutureTask是个Runnable，所以调用的是execute()方法。</p>
+<h4 id="线程池的关闭"><a href="#线程池的关闭" class="headerlink" title="线程池的关闭"></a>线程池的关闭</h4><p>线程池关闭的方法主要有两种，shutdown()和shutdownNow()。</p>
+<p><strong>原理</strong>：遍历线程池中的工作线程，逐个调用线程的interrupt方法来中断线程，所以无法响应中断的任务可能永远无法停止。</p>
+<p><strong>区别</strong>：<br><strong>shutdown()只是将线程池的状态设置成SHUTDOWN状态，然后中断没有在执行任务的线程。</strong></p>
+<p><strong>shutdownNow()首先将线程池的状态设置成STOP，然后尝试停止所有正在执行或暂停任务的线程，并返回等待执行任务的列表。</strong></p>
+<p>如果任务不一定要执行完，可以调用shutdownNow()方法。</p>
 
       
     </div>
@@ -440,9 +473,9 @@
       
         <div class="post-tags">
           
-            <a href="/tags/Mysql/" rel="tag"># Mysql</a>
+            <a href="/tags/并发/" rel="tag"># 并发</a>
           
-            <a href="/tags/Mybatis/" rel="tag"># Mybatis</a>
+            <a href="/tags/Java线程池/" rel="tag"># Java线程池</a>
           
         </div>
       
@@ -455,8 +488,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2017/07/10/jersey2/" rel="next" title="Jersey—— 一个基于Rest风格的Web Service开发框架">
-                <i class="fa fa-chevron-left"></i> Jersey—— 一个基于Rest风格的Web Service开发框架
+              <a href="/2017/11/10/ConcurrentHashMap在JDK1.8中的实现分析/" rel="next" title="ConcurrentHashMap在JDK1.8中的实现分析">
+                <i class="fa fa-chevron-left"></i> ConcurrentHashMap在JDK1.8中的实现分析
               </a>
             
           </div>
@@ -465,8 +498,8 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2017/07/18/Thrift/" rel="prev" title="Thrift——入门Demo（Java）">
-                Thrift——入门Demo（Java） <i class="fa fa-chevron-right"></i>
+              <a href="/2017/11/22/Java并发之Executor框架/" rel="prev" title="Java并发之Executor框架">
+                Java并发之Executor框架 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -668,7 +701,7 @@ src="//music.163.com/outchain/player?type=2&id=30967791&auto=1&height=66"></ifra
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#批量更新"><span class="nav-number">2.</span> <span class="nav-text">批量更新</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#批量插入"><span class="nav-number">3.</span> <span class="nav-text">批量插入</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结："><span class="nav-number">4.</span> <span class="nav-text">总结：</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#一、线程池的介绍"><span class="nav-number">1.</span> <span class="nav-text">一、线程池的介绍</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#二、线程池的实现分析"><span class="nav-number">2.</span> <span class="nav-text">二、线程池的实现分析</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#ThreadPoolExecutor的结构"><span class="nav-number">2.1.</span> <span class="nav-text">ThreadPoolExecutor的结构</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#工作过程"><span class="nav-number">2.2.</span> <span class="nav-text">工作过程</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#线程池处理任务"><span class="nav-number">2.3.</span> <span class="nav-text">线程池处理任务</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#线程池的关闭"><span class="nav-number">2.4.</span> <span class="nav-text">线程池的关闭</span></a></li></ol></li></ol></div>
             
 
           </div>
