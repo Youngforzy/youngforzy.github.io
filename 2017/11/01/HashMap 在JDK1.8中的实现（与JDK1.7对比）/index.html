@@ -87,7 +87,7 @@
 <link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="HashMap,JDK1.8," />
+  <meta name="keywords" content="JDK1.8,HashMap," />
 
 
 
@@ -106,7 +106,7 @@
 
 
 <meta name="description" content="HashMap的实现分析介绍通过前面JDK1.7的分析，我们知道，当负载因子和Hash算法设计的很好时，可以降低hash碰撞的概率，但在数据量过大时也避免不了会出现链表变长的情况，一旦出现链表过长，查找元素变慢，则会严重影响HashMap的性能。于是，在JDK1.8中，对数据结构做了进一步的优化，引入了红黑树。而当链表长度太长（默认超过8）时，链表就转换为红黑树，利用红黑树快速增删改查的特点提高H">
-<meta name="keywords" content="HashMap,JDK1.8">
+<meta name="keywords" content="JDK1.8,HashMap">
 <meta property="og:type" content="article">
 <meta property="og:title" content="HashMap 在JDK1.8中的实现（与JDK1.7对比）">
 <meta property="og:url" content="http://yoursite.com/2017/11/01/HashMap 在JDK1.8中的实现（与JDK1.7对比）/index.html">
@@ -468,9 +468,9 @@
       
         <div class="post-tags">
           
-            <a href="/tags/HashMap/" rel="tag"># HashMap</a>
-          
             <a href="/tags/JDK1-8/" rel="tag"># JDK1.8</a>
+          
+            <a href="/tags/HashMap/" rel="tag"># HashMap</a>
           
         </div>
       

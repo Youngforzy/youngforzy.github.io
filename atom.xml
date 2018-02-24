@@ -135,9 +135,9 @@
       <category term="技术" scheme="http://yoursite.com/categories/%E6%8A%80%E6%9C%AF/"/>
     
     
-      <category term="JDK1.7" scheme="http://yoursite.com/tags/JDK1-7/"/>
-    
       <category term="ConcurrentHashMap" scheme="http://yoursite.com/tags/ConcurrentHashMap/"/>
+    
+      <category term="JDK1.7" scheme="http://yoursite.com/tags/JDK1-7/"/>
     
   </entry>
   
@@ -146,7 +146,7 @@
     <link href="http://yoursite.com/2017/11/03/HashMap%E5%BC%95%E5%8F%91%E7%9A%84%E7%BA%BF%E7%A8%8B%E5%AE%89%E5%85%A8%E9%97%AE%E9%A2%98/"/>
     <id>http://yoursite.com/2017/11/03/HashMap引发的线程安全问题/</id>
     <published>2017-11-03T09:48:18.000Z</published>
-    <updated>2018-02-24T17:34:20.151Z</updated>
+    <updated>2018-02-24T17:48:06.945Z</updated>
     
     <content type="html"><![CDATA[<h3 id="一、线程安全性"><a href="#一、线程安全性" class="headerlink" title="一、线程安全性"></a>一、线程安全性</h3><p>我们知道，HashMap是非线程安全的，只能在单线程的情况下使用。那么为什么不能在并发的情况下使用呢？<strong>因为在并发时，HashMap的扩容会产生错误而形成环形链表，导致读取数据时发生死循环</strong>。</p>
 <p>回忆前面描述的扩容过程，调用了transfer()方法将旧链表转化为新链表：</p>
@@ -183,7 +183,7 @@
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line">private static class SynchronizedMap&lt;K,V&gt;</div><div class="line">        implements Map&lt;K,V&gt;, Serializable &#123;</div><div class="line">        private final Map&lt;K,V&gt; m;     </div><div class="line">        final Object      mutex;        // Object on which to synchronize</div><div class="line"></div><div class="line">        SynchronizedMap(Map&lt;K,V&gt; m) &#123;</div><div class="line">            this.m = Objects.requireNonNull(m);</div><div class="line">            mutex = this;</div><div class="line">        &#125;</div><div class="line">        ....</div><div class="line">        public V get(Object key) &#123;</div><div class="line">            synchronized (mutex) &#123;return m.get(key);&#125;</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        public V put(K key, V value) &#123;</div><div class="line">            synchronized (mutex) &#123;return m.put(key, value);&#125;</div><div class="line">        &#125;</div></pre></td></tr></table></figure>
 <p>可以看到，<strong>它同步的原理同样也是使用了Synchronized关键字，不同的是Synchronized修饰代码块，并且将自身（this）作为了锁对象（mutex）。</strong></p>
 <h4 id="ConcurrentHashMap"><a href="#ConcurrentHashMap" class="headerlink" title="ConcurrentHashMap"></a>ConcurrentHashMap</h4><p>ConcurrentHashMap是JDK1.5之后引入的，是为了替代上面提到的二者。<br>ConcurrentHashMap是线程安全且高效的HashMap，它使用了多个锁来控制对hash数组不同部分的修改。  </p>
-<p>关于它的实现原理可以查看<a href="http://note.youdao.com/" target="_blank" rel="external">ConcurrentHashMap</a>这篇文章中的分析。</p>
+<p>关于它的实现原理可以查看<a href="https://youngforzy.github.io/2017/11/10/ConcurrentHashMap在JDK1.8中的实现分析/" target="_blank" rel="external">ConcurrentHashMap</a>这篇文章中的分析。</p>
 ]]></content>
     
     <summary type="html">
@@ -261,9 +261,9 @@
       <category term="技术" scheme="http://yoursite.com/categories/%E6%8A%80%E6%9C%AF/"/>
     
     
-      <category term="HashMap" scheme="http://yoursite.com/tags/HashMap/"/>
-    
       <category term="JDK1.8" scheme="http://yoursite.com/tags/JDK1-8/"/>
+    
+      <category term="HashMap" scheme="http://yoursite.com/tags/HashMap/"/>
     
   </entry>
   
@@ -345,9 +345,9 @@
       <category term="技术" scheme="http://yoursite.com/categories/%E6%8A%80%E6%9C%AF/"/>
     
     
-      <category term="HashMap" scheme="http://yoursite.com/tags/HashMap/"/>
-    
       <category term="JDK1.7" scheme="http://yoursite.com/tags/JDK1-7/"/>
+    
+      <category term="HashMap" scheme="http://yoursite.com/tags/HashMap/"/>
     
   </entry>
   
