@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<!--[if lte IE 8 ]>
+<html class="ie" xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-US" lang="en-US">
+<![endif]-->
+<!--[if (gte IE 9)|!(IE)]><!-->
+<!--
+***************  *      *     *
+      8          *    *       *
+      8          *  *         *
+      8          **           *
+      8          *  *         *
+      8          *    *       *
+      8          *      *     *
+      8          *        *   ***********    -----Theme By Kieran(http://go.kieran.top)
+-->
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-US" lang="en-US">
+<!--<![endif]-->
+
+<head>
+  <title>Java并发之Executor框架 | ZY&#39;s Blog</title>
+  <!-- Meta data -->
+    <meta http-equiv="Content-Type" content="text/html" charset="UTF-8" >
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="generator" content="ZY's Blog">
+    <meta name="author" content="Z Yong">
+    <meta name="description" content="Young for you." />
+    <meta name="keywords" content="" />
+
+    <!-- Favicon, (keep icon in root folder) -->
+    <link rel="Shortcut Icon" href="/img/favicon.ico" type="image/ico">
+
+    <link rel="alternate" href="/atom.xml" title="ZY&#39;s Blog" type="application/atom+xml">
+    <link rel="stylesheet" href="/css/all.css" media="screen" type="text/css">
+    
+    <link rel="stylesheet" href="/highlightjs/vs.css" type="text/css">
+    
+
+    <!--[if IE 8]>
+    <link rel="stylesheet" type="text/css" href="/css/ie8.css" />
+    <![endif]-->
+
+    <!-- jQuery | Load our jQuery, with an alternative source fallback to a local version if request is unavailable -->
+    <script src="/js/jquery-1.11.1.min.js"></script>
+    <script>window.jQuery || document.write('<script src="js/jquery-1.11.1.min.js"><\/script>')</script>
+
+    <!-- Load these in the <head> for quicker IE8+ load times -->
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+    <script src="/js/html5shiv.min.js"></script>
+    <script src="/js/respond.min.js"></script>
+    <![endif]-->
+
+  
+  
+  <link rel="alternate" type="application/atom+xml" title="Atom 0.3" href="atom.xml">
+  
+  
+
+  <style>.col-md-8.col-md-offset-2.opening-statement img{display:none;}</style>
+</head>
+
+<!--
+<body class="post-template">
+-->
+<body id="index" class="lightnav animsition">
+
+      <!-- ============================ Off-canvas navigation =========================== -->
+
+    <div class="sb-slidebar sb-right sb-style-overlay sb-momentum-scrolling">
+        <div class="sb-close" aria-label="Close Menu" aria-hidden="true">
+            <img src="/img/close.png" alt="Close"/>
+        </div>
+        <!-- Lists in Slidebars -->
+        <ul class="sb-menu">
+            <li><a href="/" class="animsition-link" title="Home">Home</a></li>
+            <li><a href="/archives" class="animsition-link" title="archive">archives</a></li>
+            <!-- Dropdown Menu -->
+			 
+            <li>
+                <a class="sb-toggle-submenu">Works<span class="sb-caret"></span></a>
+                <ul class="sb-submenu">
+                    
+                        <li><a href="/" target="_BLANK" class="animsition-link">AAA</a></li>
+                    
+                        <li><a href="/atom.xml" target="_BLANK" class="animsition-link">BBB</a></li>
+                    
+                </ul>
+            </li>
+            
+            
+        	<li>
+        		<a class="sb-toggle-submenu">Categories<span class="sb-caret"></span></a>
+            	<ul class="sb-submenu">
+				  	
+				    <li><a href="/categories/技术/" class="animsition-link">技术<small>(31)</small></a></li>
+				    
+				    <li><a href="/categories/芭乐/" class="animsition-link">芭乐<small>(1)</small></a></li>
+				    
+				</ul>
+        	</li>
+			
+            
+            <li>
+                <a class="sb-toggle-submenu">Links<span class="sb-caret"></span></a>
+                <ul class="sb-submenu">
+                    
+                    <li><a href="http://go.kieran.top/" class="animsition-link">Kieran</a></li>
+                    
+                    <li><a href="http://www.xiaonanbobo.com/" class="animsition-link">Bobo</a></li>
+                    
+                </ul>
+            </li>
+            
+        </ul>
+        <!-- Lists in Slidebars -->
+        <ul class="sb-menu secondary">
+            <li><a href="/about.html" class="animsition-link" title="about">About</a></li>
+            <li><a href="/atom.xml" class="animsition-link" title="rss">RSS</a></li>
+        </ul>
+    </div>
+    
+    <!-- ============================ END Off-canvas navigation =========================== -->
+
+    <!-- ============================ #sb-site Main Page Wrapper =========================== -->
+
+    <div id="sb-site">
+        <!-- #sb-site - All page content should be contained within this id, except the off-canvas navigation itself -->
+
+        <!-- ============================ Header & Logo bar =========================== -->
+
+        <div id="navigation" class="navbar navbar-fixed-top">
+            <div class="navbar-inner">
+                <div class="container">
+                    <!-- Nav logo -->
+                    <div class="logo">
+                        <a href="/" title="Logo" class="animsition-link">
+                         <img src="/img/logo.png" alt="Logo" width="35px;"/> 
+                        </a>
+                    </div>
+                    <!-- // Nav logo -->
+                    <!-- Info-bar -->
+                    <nav>
+                        <ul class="nav">
+                            <li><a href="/" class="animsition-link">ZY's Blog</a></li>
+                            <li class="nolink"><span>Always </span>Creative.</li>
+                            
+                            <li><a href="https://github.com/" title="Github" target="_blank"><i class="icon-github"></i></a></li>
+                            
+                            
+                            
+                            
+                            <li><a href="https://google.com/" title="Google-Plus" target="_blank"><i class="icon-google-plus"></i></a></li>
+                            
+                            
+                            <li><a href="http://weibo.com/" title="Sina-Weibo" target="_blank"><i class="icon-sina-weibo"></i></a></li>
+                            
+                            <li class="nolink"><span>Welcome!</span></li>
+                        </ul>
+                    </nav>
+                    <!--// Info-bar -->
+                </div>
+                <!-- // .container -->
+                <div class="learnmore sb-toggle-right">More</div>
+                <button type="button" class="navbar-toggle menu-icon sb-toggle-right" title="More">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar before"></span>
+                <span class="icon-bar main"></span>
+                <span class="icon-bar after"></span>
+                </button>
+            </div>
+            <!-- // .navbar-inner -->
+        </div>
+
+        <!-- ============================ Header & Logo bar =========================== -->
+
+
+      
+<section id="intro">
+    <div class="container">
+        <div class="row col-md-offset-2">
+            <div class="col-md-8">
+    			<span class="post-meta">
+      <time datetime="2017-11-22T08:42:18.000Z" itemprop="datePublished">
+          2017-11-22
+      </time>
+    
+    
+    | 
+    <a href='/tags/并发/'>并发</a>,
+    
+    <a href='/tags/Executor框架/'>Executor框架</a>
+    
+    
+</span>
+                <h1>Java并发之Executor框架</h1>
+            </div>
+        </div>
+        <div class="col-md-8 col-md-offset-2">
+      		<h3 id="一、Executor框架的介绍"><a href="#一、Executor框架的介绍" class="headerlink" title="一、Executor框架的介绍"></a>一、Executor框架的介绍</h3><p>Java中的线程既是工作单元又是执行机制。JDK1.5开始，把工作单元与执行机制分离开来。<strong>工作单元为Runnable（Thread实现该接口）和Callable，执行机制就是Executor框架。</strong> 使用Executor框架时不用显式的创建线程Thread。</p>
+<p>Executor框架由三部分组成：  </p>
+<ul>
+<li><strong>任务</strong>：Runnable或Callable  </li>
+<li><strong>任务的执行</strong>：ExecutorService接口及其实现。  </li>
+<li><strong>异步计算的结果</strong>：Future接口或其实现类FutureTask</li>
+</ul>
+<h4 id="Executor的结构"><a href="#Executor的结构" class="headerlink" title="Executor的结构"></a>Executor的结构</h4><p><img src="http://osuskkx7k.bkt.clouddn.com/Executor1.png" alt="image"></p>
+<h4 id="Executor接口"><a href="#Executor接口" class="headerlink" title="Executor接口"></a><strong>Executor接口</strong></h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">public interface Executor &#123;</div><div class="line">        void execute(Runnable command);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p><strong>Executor接口中只有一个execute()方法，用来执行已经提交的Runnable实例，可见即使是Callable实例，最后也会被封装成Runnable来执行。</strong></p>
+<h4 id="ExecutorService接口"><a href="#ExecutorService接口" class="headerlink" title="ExecutorService接口"></a><strong>ExecutorService接口</strong></h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">public interface ExecutorService extends Executor &#123;</div><div class="line">        void shutdown();</div><div class="line">        List&lt;Runnable&gt; shutdownNow();</div><div class="line">        &lt;T&gt; Future&lt;T&gt; submit(Callable&lt;T&gt; task);</div><div class="line">        &lt;T&gt; Future&lt;T&gt; submit(Runnable task, T result);</div><div class="line">        Future&lt;?&gt; submit(Runnable task);</div><div class="line">        ....</div><div class="line">    &#125;</div></pre></td></tr></table></figure>
+<p><strong>ExecutorService扩展了Executor接口，添加了许多方法用于服务、管理和关闭线程池。</strong><br>submit()方法最终执行时也是调用了execute()方法。</p>
+<p>ExecutorService接口有两个实现类，ThreadPoolExecutor（核心）和ScheduledThreadPoolExecutor（定时执行）。</p>
+<h4 id="Executors工具类"><a href="#Executors工具类" class="headerlink" title="Executors工具类"></a><strong>Executors工具类</strong></h4><p><strong>Executors工具类中包含了许多静态工厂方法。采用了多方法静态工厂模式。</strong> 本质是根据不同的输入创建出不同类型的对象。</p>
+<p>通过Executors工具类可以创建3种类型的线程池，即3种ThreadPoolExecutor对象。实质是创建ThreadPoolExecutor时传入的参数不同。</p>
+<h3 id="二、3种常用线程池"><a href="#二、3种常用线程池" class="headerlink" title="二、3种常用线程池"></a>二、3种常用线程池</h3><h4 id="FixedThreadPool"><a href="#FixedThreadPool" class="headerlink" title="FixedThreadPool"></a>FixedThreadPool</h4><p><strong>FixedThreadPool是固定大小的线程池。内部线程可重用。</strong><br>Executors工具类中的静态方法：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">public static ExecutorService newFixedThreadPool(int nThreads) &#123;</div><div class="line">        return new ThreadPoolExecutor(nThreads, nThreads,</div><div class="line">                                      0L, TimeUnit.MILLISECONDS,</div><div class="line">                                      new LinkedBlockingQueue&lt;Runnable&gt;());</div><div class="line">    &#125;</div></pre></td></tr></table></figure></p>
+<p><strong>特点</strong>：</p>
+<ol>
+<li>参数corePoolSize和maximumPoolSize大小都是nThreads，说明最大线程数就是核心线程数，所以线程大小固定</li>
+<li>参数keepAliveTime为0L，说明不会有空闲的线程</li>
+<li>参数BlockingQueue是无界队列LinkedBlockingQueue，说明任务会一直放入，不会采用饱和策略。</li>
+</ol>
+<p><strong>应用场景</strong>：需要限制线程数量，适用于负载较重的服务器</p>
+<p><img src="http://osuskkx7k.bkt.clouddn.com/fixed.png" alt="image"></p>
+<p><strong>工作过程</strong>：</p>
+<ol>
+<li>当前线程数小于corePoolSize，创建新线程执行任务</li>
+<li>当前线程数等于corePoolSize，任务加入阻塞队列</li>
+<li>线程反复执行阻塞队列中的任务</li>
+</ol>
+<h4 id="SingleThreadExecutor"><a href="#SingleThreadExecutor" class="headerlink" title="SingleThreadExecutor"></a>SingleThreadExecutor</h4><p><strong>SingleThreadExecutor是只有一个线程的线程池。</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">public static ExecutorService newSingleThreadExecutor() &#123;</div><div class="line">        return new FinalizableDelegatedExecutorService</div><div class="line">            (new ThreadPoolExecutor(1, 1,</div><div class="line">                                    0L, TimeUnit.MILLISECONDS,</div><div class="line">                                    new LinkedBlockingQueue&lt;Runnable&gt;()));</div><div class="line">    &#125;</div></pre></td></tr></table></figure>
+<p><strong>特点</strong>：</p>
+<ol>
+<li>参数corePoolSize和maximumPoolSize大小都是1，说明线程数固定为1</li>
+<li>参数keepAliveTime为0L，说明不会有空闲的线程</li>
+<li>参数BlockingQueue是无界队列LinkedBlockingQueue，说明任务会一直放入，不会采用饱和策略。</li>
+</ol>
+<p><strong>应用场景</strong>：<strong>适用于执行的任务需要保证顺序；并且在任意时间点，不会有多个线程是活动的场景。</strong></p>
+<p><img src="http://osuskkx7k.bkt.clouddn.com/single1.png" alt="image"></p>
+<p><strong>工作过程</strong>：</p>
+<ol>
+<li>当前线程数小于1，创建一个唯一的线程执行任务</li>
+<li>当前线程数等于1，任务加入阻塞队列</li>
+<li>这个唯一的线程反复执行阻塞队列中的任务</li>
+</ol>
+<h4 id="CachedThreadPool"><a href="#CachedThreadPool" class="headerlink" title="CachedThreadPool"></a>CachedThreadPool</h4><p><strong>CachedThreadPool是一个根据需要创建线程的线程池。</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">public static ExecutorService newCachedThreadPool() &#123;</div><div class="line">        return new ThreadPoolExecutor(0, Integer.MAX_VALUE,</div><div class="line">                                      60L, TimeUnit.SECONDS,</div><div class="line">                                      new SynchronousQueue&lt;Runnable&gt;());</div><div class="line">    &#125;</div></pre></td></tr></table></figure>
+<p><strong>特点</strong>：</p>
+<ol>
+<li>参数corePoolSize为0，maximumPoolSize为Integer.MAX_VALUE（2147483647），说明可创建的线程数巨大，且都是可销毁的</li>
+<li>参数keepAliveTime为60L，说明空闲的线程等待时间最长60s</li>
+<li>参数BlockingQueue是一个没有容量的阻塞队列SynchronousQueue，说明任务会一直被线程执行。</li>
+</ol>
+<p><strong>应用场景</strong>：<strong>大小无界的线程池，适用于执行很多的短期异步任务的小程序，或者负载较轻的服务器。<br>注：使用时需控制并发的任务数，否则创建大量的线程可能导致严重的性能问题。</strong></p>
+<p><img src="http://osuskkx7k.bkt.clouddn.com/cached1.png" alt="image"></p>
+<p><strong>工作过程</strong>：</p>
+<ol>
+<li>首先执行SynchronousQueue.offer()，如果有空闲的线程在执行SynchronousQueue.poll()，表示配对成功，任务交给空闲线程执行。</li>
+<li>初始化时，如果没有空闲的线程，那么创建一个新的线程执行任务。</li>
+<li>步骤2中的线程任务完成后，会执行SynchronousQueue.poll()等待60s，若没有任务提交，则该空闲线程销毁。</li>
+</ol>
+<p>SynchronousQueue队列的每个插入操作都要等待一个移除操作，因此是没有容量的队列。</p>
+<hr>
+<p>除上述3种常用线程池外，Executors还可以创建以下几种线程池。</p>
+<p><strong>newScheduledThreadPool</strong>：可以定时或周期性执行任务的线程池（线程数目指定）</p>
+<p><strong>newSingleThreadScheduledExecutor：</strong> 可以定时或周期性执行任务的线程池。只有一个线程。</p>
+
+            <div class="clearfix"></div>
+            <hr class="nogutter">
+        </div>
+        <nav class="pagination" role="pagination">
+    
+    <a class="pull-left" href="/2017/12/01/Java并发之Condition的实现分析/" style="float: left;">
+        ← Java并发之Condition的实现分析
+    </a>
+    
+    
+    <a class="pull-right" href="/2017/11/18/Java线程池的实现分析/">
+        Java线程池的实现分析 →
+    </a>
+    
+</nav>
+
+        <div class="duoshuo">
+
+
+</div>
+    </div>
+</section>
+
+
+      
+<!-- ============================ Footer =========================== -->
+
+<footer>
+    <div class="container">
+            <div class="copy">
+                <p>
+                    &copy; 2014<script>new Date().getFullYear()>2010&&document.write("-"+new Date().getFullYear());</script>, Content By Z Yong. All Rights Reserved.
+                </p>
+                <p>Theme By <a href="//go.kieran.top" style="color: #767D84">Kieran</a></p>
+            </div>
+            <div class="social">
+                <ul>
+                    
+                    <li><a href="https://github.com/" title="Github" target="_blank"><i class="icon-github"></i></a>&nbsp;</li>
+                    
+                    
+                    
+                    
+                    <li><a href="https://google.com/" title="Google-Plus" target="_blank"><i class="icon-google-plus"></i></a>&nbsp;</li>
+                    
+                    
+                    <li><a href="http://weibo.com/" title="Sina-Weibo" target="_blank"><i class="icon-sina-weibo"></i></a>&nbsp;</li>
+                    
+                </ul>
+            </div>
+            <div class="clearfix"> </div>
+        </div>
+</footer>
+
+<!-- ============================ END Footer =========================== -->
+      <!-- Load our scripts -->
+<!-- Resizable 'on-demand' full-height hero -->
+<script type="text/javascript">
+    var resizeHero = function () {
+        var hero = $(".cover,.heightblock"),
+            window1 = $(window);
+        hero.css({
+            "height": window1.height()
+        });
+    };
+
+    resizeHero();
+
+    $(window).resize(function () {
+        resizeHero();
+    });
+</script>
+<script src="/js/plugins.min.js"></script><!-- Bootstrap core and concatenated plugins always load here -->
+<script src="/js/jquery.flexslider-min.js"></script><!-- Flexslider plugin -->
+<script src="/js/scripts.js"></script><!-- Theme scripts -->
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+$('#intro').find('img').each(function(){
+  var alt = this.alt;
+
+  if (alt){
+    $(this).after('<span class="caption" style="display:none">' + alt + '</span>');
+  }
+
+  $(this).wrap('<a href="' + this.src + '" title="' + alt + '" class="fancybox" rel="gallery" />');
+});
+(function($){
+  $('.fancybox').fancybox();
+})(jQuery);
+</script>
+
+<!-- Initiate flexslider plugin -->
+<script type="text/javascript">
+    $(document).ready(function($) {
+      (function(){
+        console.log('font');
+        var getCss = function(path) {
+          var head = document.getElementsByTagName('head')[0];
+          link = document.createElement('link');
+          link.href = path;
+          link.rel = 'stylesheet';
+          link.type = 'text/css';
+          head.appendChild(link);
+        };
+        getCss('https://fonts.googleapis.com/css?family=Montserrat:400,700');
+        getCss('https://fonts.googleapis.com/css?family=Open+Sans:400,600');
+      })();
+      $('.flexslider').flexslider({
+        animation: "fade",
+        prevText: "",
+        nextText: "",
+        directionNav: true
+      });
+    });
+</script>
+
+</body>
+</html>

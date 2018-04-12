@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<!--[if lte IE 8 ]>
+<html class="ie" xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-US" lang="en-US">
+<![endif]-->
+<!--[if (gte IE 9)|!(IE)]><!-->
+<!--
+***************  *      *     *
+      8          *    *       *
+      8          *  *         *
+      8          **           *
+      8          *  *         *
+      8          *    *       *
+      8          *      *     *
+      8          *        *   ***********    -----Theme By Kieran(http://go.kieran.top)
+-->
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-US" lang="en-US">
+<!--<![endif]-->
+
+<head>
+  <title>HashMap 在JDK1.8中的实现（与JDK1.7对比） | ZY&#39;s Blog</title>
+  <!-- Meta data -->
+    <meta http-equiv="Content-Type" content="text/html" charset="UTF-8" >
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="generator" content="ZY's Blog">
+    <meta name="author" content="Z Yong">
+    <meta name="description" content="Young for you." />
+    <meta name="keywords" content="" />
+
+    <!-- Favicon, (keep icon in root folder) -->
+    <link rel="Shortcut Icon" href="/img/favicon.ico" type="image/ico">
+
+    <link rel="alternate" href="/atom.xml" title="ZY&#39;s Blog" type="application/atom+xml">
+    <link rel="stylesheet" href="/css/all.css" media="screen" type="text/css">
+    
+    <link rel="stylesheet" href="/highlightjs/vs.css" type="text/css">
+    
+
+    <!--[if IE 8]>
+    <link rel="stylesheet" type="text/css" href="/css/ie8.css" />
+    <![endif]-->
+
+    <!-- jQuery | Load our jQuery, with an alternative source fallback to a local version if request is unavailable -->
+    <script src="/js/jquery-1.11.1.min.js"></script>
+    <script>window.jQuery || document.write('<script src="js/jquery-1.11.1.min.js"><\/script>')</script>
+
+    <!-- Load these in the <head> for quicker IE8+ load times -->
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+    <script src="/js/html5shiv.min.js"></script>
+    <script src="/js/respond.min.js"></script>
+    <![endif]-->
+
+  
+  
+  <link rel="alternate" type="application/atom+xml" title="Atom 0.3" href="atom.xml">
+  
+  
+
+  <style>.col-md-8.col-md-offset-2.opening-statement img{display:none;}</style>
+</head>
+
+<!--
+<body class="post-template">
+-->
+<body id="index" class="lightnav animsition">
+
+      <!-- ============================ Off-canvas navigation =========================== -->
+
+    <div class="sb-slidebar sb-right sb-style-overlay sb-momentum-scrolling">
+        <div class="sb-close" aria-label="Close Menu" aria-hidden="true">
+            <img src="/img/close.png" alt="Close"/>
+        </div>
+        <!-- Lists in Slidebars -->
+        <ul class="sb-menu">
+            <li><a href="/" class="animsition-link" title="Home">Home</a></li>
+            <li><a href="/archives" class="animsition-link" title="archive">archives</a></li>
+            <!-- Dropdown Menu -->
+			 
+            <li>
+                <a class="sb-toggle-submenu">Works<span class="sb-caret"></span></a>
+                <ul class="sb-submenu">
+                    
+                        <li><a href="/" target="_BLANK" class="animsition-link">AAA</a></li>
+                    
+                        <li><a href="/atom.xml" target="_BLANK" class="animsition-link">BBB</a></li>
+                    
+                </ul>
+            </li>
+            
+            
+        	<li>
+        		<a class="sb-toggle-submenu">Categories<span class="sb-caret"></span></a>
+            	<ul class="sb-submenu">
+				  	
+				    <li><a href="/categories/技术/" class="animsition-link">技术<small>(31)</small></a></li>
+				    
+				    <li><a href="/categories/芭乐/" class="animsition-link">芭乐<small>(1)</small></a></li>
+				    
+				</ul>
+        	</li>
+			
+            
+            <li>
+                <a class="sb-toggle-submenu">Links<span class="sb-caret"></span></a>
+                <ul class="sb-submenu">
+                    
+                    <li><a href="http://go.kieran.top/" class="animsition-link">Kieran</a></li>
+                    
+                    <li><a href="http://www.xiaonanbobo.com/" class="animsition-link">Bobo</a></li>
+                    
+                </ul>
+            </li>
+            
+        </ul>
+        <!-- Lists in Slidebars -->
+        <ul class="sb-menu secondary">
+            <li><a href="/about.html" class="animsition-link" title="about">About</a></li>
+            <li><a href="/atom.xml" class="animsition-link" title="rss">RSS</a></li>
+        </ul>
+    </div>
+    
+    <!-- ============================ END Off-canvas navigation =========================== -->
+
+    <!-- ============================ #sb-site Main Page Wrapper =========================== -->
+
+    <div id="sb-site">
+        <!-- #sb-site - All page content should be contained within this id, except the off-canvas navigation itself -->
+
+        <!-- ============================ Header & Logo bar =========================== -->
+
+        <div id="navigation" class="navbar navbar-fixed-top">
+            <div class="navbar-inner">
+                <div class="container">
+                    <!-- Nav logo -->
+                    <div class="logo">
+                        <a href="/" title="Logo" class="animsition-link">
+                         <img src="/img/logo.png" alt="Logo" width="35px;"/> 
+                        </a>
+                    </div>
+                    <!-- // Nav logo -->
+                    <!-- Info-bar -->
+                    <nav>
+                        <ul class="nav">
+                            <li><a href="/" class="animsition-link">ZY's Blog</a></li>
+                            <li class="nolink"><span>Always </span>Creative.</li>
+                            
+                            <li><a href="https://github.com/" title="Github" target="_blank"><i class="icon-github"></i></a></li>
+                            
+                            
+                            
+                            
+                            <li><a href="https://google.com/" title="Google-Plus" target="_blank"><i class="icon-google-plus"></i></a></li>
+                            
+                            
+                            <li><a href="http://weibo.com/" title="Sina-Weibo" target="_blank"><i class="icon-sina-weibo"></i></a></li>
+                            
+                            <li class="nolink"><span>Welcome!</span></li>
+                        </ul>
+                    </nav>
+                    <!--// Info-bar -->
+                </div>
+                <!-- // .container -->
+                <div class="learnmore sb-toggle-right">More</div>
+                <button type="button" class="navbar-toggle menu-icon sb-toggle-right" title="More">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar before"></span>
+                <span class="icon-bar main"></span>
+                <span class="icon-bar after"></span>
+                </button>
+            </div>
+            <!-- // .navbar-inner -->
+        </div>
+
+        <!-- ============================ Header & Logo bar =========================== -->
+
+
+      
+<section id="intro">
+    <div class="container">
+        <div class="row col-md-offset-2">
+            <div class="col-md-8">
+    			<span class="post-meta">
+      <time datetime="2017-11-01T09:48:18.000Z" itemprop="datePublished">
+          2017-11-01
+      </time>
+    
+    
+    | 
+    <a href='/tags/HashMap/'>HashMap</a>,
+    
+    <a href='/tags/JDK1-8/'>JDK1.8</a>
+    
+    
+</span>
+                <h1>HashMap 在JDK1.8中的实现（与JDK1.7对比）</h1>
+            </div>
+        </div>
+        <div class="col-md-8 col-md-offset-2">
+      		<h3 id="HashMap的实现分析"><a href="#HashMap的实现分析" class="headerlink" title="HashMap的实现分析"></a>HashMap的实现分析</h3><h4 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h4><p>通过前面JDK1.7的分析，我们知道，当负载因子和Hash算法设计的很好时，可以降低hash碰撞的概率，但在数据量过大时也避免不了会出现链表变长的情况，一旦出现链表过长，查找元素变慢，则会严重影响HashMap的性能。<br>于是，在JDK1.8中，对数据结构做了进一步的优化，引入了红黑树。<strong>而当链表长度太长（默认超过8）时，链表就转换为红黑树</strong>，利用红黑树快速增删改查的特点提高HashMap的性能，其中会用到红黑树的插入、删除、查找等算法。</p>
+<h4 id="底层实现"><a href="#底层实现" class="headerlink" title="底层实现"></a>底层实现</h4><p>HashMap的底层实现是<strong>数组+链表+红黑树</strong>。</p>
+<p><img src="http://osuskkx7k.bkt.clouddn.com/1.8hash.PNG" alt="image"></p>
+<h4 id="数组索引位置"><a href="#数组索引位置" class="headerlink" title="数组索引位置"></a>数组索引位置</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">//第一步</div><div class="line">static final int hash(Object key) &#123;</div><div class="line">        int h;</div><div class="line">        return (key == null) ? 0 : (h = key.hashCode()) ^ (h &gt;&gt;&gt; 16);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">//第二步，代码中：    </div><div class="line">    tab[i = (n - 1) &amp; hash]</div></pre></td></tr></table></figure>
+<p>确定数组索引的位置同样是两步法：<br>第一步计算hash，与JDK1.7中的计算方法不同；<br>计算过程如下：  </p>
+<p><img src="http://osuskkx7k.bkt.clouddn.com/hash.png" alt="image">  </p>
+<p>第二步确定索引，与JDK1.7中的相同，只是不作为一个独立的方法；</p>
+<h4 id="put-、get-方法"><a href="#put-、get-方法" class="headerlink" title="put()、get()方法"></a>put()、get()方法</h4><p><strong>put()方法</strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">public V put(K key, V value) &#123;</div><div class="line">        return putVal(hash(key), key, value, false, true);</div><div class="line">    &#125;</div></pre></td></tr></table></figure></p>
+<p>调用了putVal()方法：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div></pre></td><td class="code"><pre><div class="line">final V putVal(int hash, K key, V value, boolean onlyIfAbsent,</div><div class="line">                   boolean evict) &#123;</div><div class="line">        Node&lt;K,V&gt;[] tab; Node&lt;K,V&gt; p; int n, i;</div><div class="line">        //如果tab为空或长度为0，则分配内存resize()</div><div class="line">        if ((tab = table) == null || (n = tab.length) == 0)</div><div class="line">            n = (tab = resize()).length;</div><div class="line">        //数组索引位置为null，直接put</div><div class="line">        //同时这一步p赋值为tab[i]</div><div class="line">        if ((p = tab[i = (n - 1) &amp; hash]) == null)</div><div class="line">            tab[i] = newNode(hash, key, value, null);</div><div class="line">        else &#123;</div><div class="line">            Node&lt;K,V&gt; e; K k;</div><div class="line">            //判断hash值和key是否都相同，都相同则后面替换value值</div><div class="line">            if (p.hash == hash &amp;&amp;</div><div class="line">                ((k = p.key) == key || (key != null &amp;&amp; key.equals(k))))</div><div class="line">                e = p;</div><div class="line">            //红黑书处理冲突    </div><div class="line">            else if (p instanceof TreeNode)</div><div class="line">                e = ((TreeNode&lt;K,V&gt;)p).putTreeVal(this, tab, hash, key, value);</div><div class="line">            //链表处理冲突</div><div class="line">            else &#123;</div><div class="line">                for (int binCount = 0; ; ++binCount) &#123;</div><div class="line">                    // 在链表尾部插入新结点</div><div class="line">                    if ((e = p.next) == null) &#123;</div><div class="line">                        p.next = newNode(hash, key, value, null);</div><div class="line">                        //节点数 &gt;= 7，转化为红黑树</div><div class="line">                        if (binCount &gt;= TREEIFY_THRESHOLD - 1) </div><div class="line">                            treeifyBin(tab, hash);</div><div class="line">                        break;</div><div class="line">                    &#125;</div><div class="line">                    //已经存在key，退出循环，后面替换value值</div><div class="line">                    if (e.hash == hash &amp;&amp;</div><div class="line">                        ((k = e.key) == key || (key != null &amp;&amp; key.equals(k))))</div><div class="line">                        break;</div><div class="line">                    //与e = p.next组合，遍历链表</div><div class="line">                    p = e;</div><div class="line">                &#125;</div><div class="line">            &#125;</div><div class="line">            //已经存在key，替换value值</div><div class="line">            if (e != null) &#123; // existing mapping for key</div><div class="line">                V oldValue = e.value;</div><div class="line">                if (!onlyIfAbsent || oldValue == null)</div><div class="line">                    e.value = value;</div><div class="line">                afterNodeAccess(e);</div><div class="line">                return oldValue;</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">        ++modCount;</div><div class="line">        //扩容</div><div class="line">        if (++size &gt; threshold)</div><div class="line">            resize();</div><div class="line">        afterNodeInsertion(evict);</div><div class="line">        return null;</div><div class="line">    &#125;</div></pre></td></tr></table></figure></p>
+<p>put过程分析：</p>
+<ol>
+<li>如果数组索引位置tab[i]为null，直接put；否则进入2；</li>
+<li>与第一个节点hash值相同且key值也相同，则直接到后面替换value值，否则进入3；</li>
+<li>判断链表是否形成红黑树，并根据结果进入不同的处理。</li>
+</ol>
+<hr>
+<p><strong>get()方法</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">public V get(Object key) &#123;</div><div class="line">        Node&lt;K,V&gt; e;</div><div class="line">        return (e = getNode(hash(key), key)) == null ? null : e.value;</div><div class="line">    &#125;</div></pre></td></tr></table></figure>
+<p>调用getNode()方法：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line">final Node&lt;K,V&gt; getNode(int hash, Object key) &#123;</div><div class="line">        Node&lt;K,V&gt;[] tab; Node&lt;K,V&gt; first, e; int n; K k;</div><div class="line">        if ((tab = table) != null &amp;&amp; (n = tab.length) &gt; 0 &amp;&amp;</div><div class="line">            (first = tab[(n - 1) &amp; hash]) != null) &#123;</div><div class="line">            //判断目标是不是first，是直接返回first</div><div class="line">            if (first.hash == hash &amp;&amp; // always check first node</div><div class="line">                ((k = first.key) == key || (key != null &amp;&amp; key.equals(k))))</div><div class="line">                return first;</div><div class="line">            //已经形成链表</div><div class="line">            if ((e = first.next) != null) &#123;</div><div class="line">                //第一个节点是TreeNode，说明形成了红黑树</div><div class="line">                if (first instanceof TreeNode)</div><div class="line">                    return ((TreeNode&lt;K,V&gt;)first).getTreeNode(hash, key);</div><div class="line">                // 还未形成红黑树，按链表处理   </div><div class="line">                do &#123;</div><div class="line">                    if (e.hash == hash &amp;&amp;</div><div class="line">                        ((k = e.key) == key || (key != null &amp;&amp; key.equals(k))))</div><div class="line">                        return e;</div><div class="line">                &#125; while ((e = e.next) != null);</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">        return null;</div><div class="line">    &#125;</div></pre></td></tr></table></figure></p>
+<p>方法分析：</p>
+<ol>
+<li>首先判断第一个节点first是不是要寻找的节点，如果是直接返回；不是进入2；</li>
+<li>判断第一个节点first是不是树节点，如果是说明形成红黑树，调用红黑树的查找方法；不是则进入3；</li>
+<li>说明还是链表，未形成红黑树，调用链表查找方法。</li>
+</ol>
+<h4 id="扩容机制"><a href="#扩容机制" class="headerlink" title="扩容机制"></a>扩容机制</h4><p>我们知道，当往HashMap中不断地添加元素时，它就会扩大数组的长度，把小的数组用大的数组来代替。<br><strong>回忆JDK1.7中的扩容，对于链表中的每个元素都需要重新计算hash值，而在JDK1.8中，只需要看看原来的hash值新增的那个bit是1还是0就好了</strong>，是0的话索引没变，是1的话索引变成“原索引+oldCap（原容量）”，工作过程如下图：</p>
+<p>数组由16扩大到32的过程中，索引位置为15的元素变化：<br><img src="http://osuskkx7k.bkt.clouddn.com/1.8hahs%E6%89%A9%E5%AE%B9.png" alt="image"></p>
+<p><strong>注：JDK1.7中旧链表的元素如果刚好又在新链表中，那么元素的顺序是倒置的，而JDK1.8不会倒置。</strong></p>
+<h4 id="JDK1-8和JDK1-7的区别（HashMap）"><a href="#JDK1-8和JDK1-7的区别（HashMap）" class="headerlink" title="JDK1.8和JDK1.7的区别（HashMap）"></a>JDK1.8和JDK1.7的区别（HashMap）</h4><p><strong>相同点</strong></p>
+<ol>
+<li><strong>默认初始容量都是16，默认负载因子都是0.75。数组的长度length都是2的次幂，扩容时都是2倍</strong></li>
+<li><strong>通过hash计算索引的方法相同（hash &amp; length-1）</strong></li>
+<li><strong>key为null的键值对都会放入table[0]中</strong></li>
+<li><strong>都是懒加载，初始时表为空，在插入第一个键值对时初始</strong>化</li>
+</ol>
+<p><strong>不同点</strong></p>
+<ol>
+<li><strong>结构不同，JDK1.8增加了红黑树优化结构</strong></li>
+<li><strong>put方法的区别，JDK1.7中put时，添加到头节点；JDK1.8中添加到尾节点</strong></li>
+<li><strong>计算hash的方法不同，JDK1.8更优化</strong></li>
+<li><strong>JDK1.7新链表的顺序倒置，JDK1.8新链表顺序不倒置</strong></li>
+</ol>
+
+            <div class="clearfix"></div>
+            <hr class="nogutter">
+        </div>
+        <nav class="pagination" role="pagination">
+    
+    <a class="pull-left" href="/2017/11/03/HashMap引发的线程安全问题/" style="float: left;">
+        ← HashMap引发的线程安全问题
+    </a>
+    
+    
+    <a class="pull-right" href="/2017/10/30/HashMap 在JDK1.7中的实现原理分析/">
+        HashMap 在JDK1.7中的实现原理分析 →
+    </a>
+    
+</nav>
+
+        <div class="duoshuo">
+
+
+</div>
+    </div>
+</section>
+
+
+      
+<!-- ============================ Footer =========================== -->
+
+<footer>
+    <div class="container">
+            <div class="copy">
+                <p>
+                    &copy; 2014<script>new Date().getFullYear()>2010&&document.write("-"+new Date().getFullYear());</script>, Content By Z Yong. All Rights Reserved.
+                </p>
+                <p>Theme By <a href="//go.kieran.top" style="color: #767D84">Kieran</a></p>
+            </div>
+            <div class="social">
+                <ul>
+                    
+                    <li><a href="https://github.com/" title="Github" target="_blank"><i class="icon-github"></i></a>&nbsp;</li>
+                    
+                    
+                    
+                    
+                    <li><a href="https://google.com/" title="Google-Plus" target="_blank"><i class="icon-google-plus"></i></a>&nbsp;</li>
+                    
+                    
+                    <li><a href="http://weibo.com/" title="Sina-Weibo" target="_blank"><i class="icon-sina-weibo"></i></a>&nbsp;</li>
+                    
+                </ul>
+            </div>
+            <div class="clearfix"> </div>
+        </div>
+</footer>
+
+<!-- ============================ END Footer =========================== -->
+      <!-- Load our scripts -->
+<!-- Resizable 'on-demand' full-height hero -->
+<script type="text/javascript">
+    var resizeHero = function () {
+        var hero = $(".cover,.heightblock"),
+            window1 = $(window);
+        hero.css({
+            "height": window1.height()
+        });
+    };
+
+    resizeHero();
+
+    $(window).resize(function () {
+        resizeHero();
+    });
+</script>
+<script src="/js/plugins.min.js"></script><!-- Bootstrap core and concatenated plugins always load here -->
+<script src="/js/jquery.flexslider-min.js"></script><!-- Flexslider plugin -->
+<script src="/js/scripts.js"></script><!-- Theme scripts -->
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+$('#intro').find('img').each(function(){
+  var alt = this.alt;
+
+  if (alt){
+    $(this).after('<span class="caption" style="display:none">' + alt + '</span>');
+  }
+
+  $(this).wrap('<a href="' + this.src + '" title="' + alt + '" class="fancybox" rel="gallery" />');
+});
+(function($){
+  $('.fancybox').fancybox();
+})(jQuery);
+</script>
+
+<!-- Initiate flexslider plugin -->
+<script type="text/javascript">
+    $(document).ready(function($) {
+      (function(){
+        console.log('font');
+        var getCss = function(path) {
+          var head = document.getElementsByTagName('head')[0];
+          link = document.createElement('link');
+          link.href = path;
+          link.rel = 'stylesheet';
+          link.type = 'text/css';
+          head.appendChild(link);
+        };
+        getCss('https://fonts.googleapis.com/css?family=Montserrat:400,700');
+        getCss('https://fonts.googleapis.com/css?family=Open+Sans:400,600');
+      })();
+      $('.flexslider').flexslider({
+        animation: "fade",
+        prevText: "",
+        nextText: "",
+        directionNav: true
+      });
+    });
+</script>
+
+</body>
+</html>

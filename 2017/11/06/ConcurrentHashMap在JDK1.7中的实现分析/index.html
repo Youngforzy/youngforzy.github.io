@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<!--[if lte IE 8 ]>
+<html class="ie" xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-US" lang="en-US">
+<![endif]-->
+<!--[if (gte IE 9)|!(IE)]><!-->
+<!--
+***************  *      *     *
+      8          *    *       *
+      8          *  *         *
+      8          **           *
+      8          *  *         *
+      8          *    *       *
+      8          *      *     *
+      8          *        *   ***********    -----Theme By Kieran(http://go.kieran.top)
+-->
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-US" lang="en-US">
+<!--<![endif]-->
+
+<head>
+  <title>ConcurrentHashMap在JDK1.7中的实现分析 | ZY&#39;s Blog</title>
+  <!-- Meta data -->
+    <meta http-equiv="Content-Type" content="text/html" charset="UTF-8" >
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="generator" content="ZY's Blog">
+    <meta name="author" content="Z Yong">
+    <meta name="description" content="Young for you." />
+    <meta name="keywords" content="" />
+
+    <!-- Favicon, (keep icon in root folder) -->
+    <link rel="Shortcut Icon" href="/img/favicon.ico" type="image/ico">
+
+    <link rel="alternate" href="/atom.xml" title="ZY&#39;s Blog" type="application/atom+xml">
+    <link rel="stylesheet" href="/css/all.css" media="screen" type="text/css">
+    
+    <link rel="stylesheet" href="/highlightjs/vs.css" type="text/css">
+    
+
+    <!--[if IE 8]>
+    <link rel="stylesheet" type="text/css" href="/css/ie8.css" />
+    <![endif]-->
+
+    <!-- jQuery | Load our jQuery, with an alternative source fallback to a local version if request is unavailable -->
+    <script src="/js/jquery-1.11.1.min.js"></script>
+    <script>window.jQuery || document.write('<script src="js/jquery-1.11.1.min.js"><\/script>')</script>
+
+    <!-- Load these in the <head> for quicker IE8+ load times -->
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+    <script src="/js/html5shiv.min.js"></script>
+    <script src="/js/respond.min.js"></script>
+    <![endif]-->
+
+  
+  
+  <link rel="alternate" type="application/atom+xml" title="Atom 0.3" href="atom.xml">
+  
+  
+
+  <style>.col-md-8.col-md-offset-2.opening-statement img{display:none;}</style>
+</head>
+
+<!--
+<body class="post-template">
+-->
+<body id="index" class="lightnav animsition">
+
+      <!-- ============================ Off-canvas navigation =========================== -->
+
+    <div class="sb-slidebar sb-right sb-style-overlay sb-momentum-scrolling">
+        <div class="sb-close" aria-label="Close Menu" aria-hidden="true">
+            <img src="/img/close.png" alt="Close"/>
+        </div>
+        <!-- Lists in Slidebars -->
+        <ul class="sb-menu">
+            <li><a href="/" class="animsition-link" title="Home">Home</a></li>
+            <li><a href="/archives" class="animsition-link" title="archive">archives</a></li>
+            <!-- Dropdown Menu -->
+			 
+            <li>
+                <a class="sb-toggle-submenu">Works<span class="sb-caret"></span></a>
+                <ul class="sb-submenu">
+                    
+                        <li><a href="/" target="_BLANK" class="animsition-link">AAA</a></li>
+                    
+                        <li><a href="/atom.xml" target="_BLANK" class="animsition-link">BBB</a></li>
+                    
+                </ul>
+            </li>
+            
+            
+        	<li>
+        		<a class="sb-toggle-submenu">Categories<span class="sb-caret"></span></a>
+            	<ul class="sb-submenu">
+				  	
+				    <li><a href="/categories/技术/" class="animsition-link">技术<small>(31)</small></a></li>
+				    
+				    <li><a href="/categories/芭乐/" class="animsition-link">芭乐<small>(1)</small></a></li>
+				    
+				</ul>
+        	</li>
+			
+            
+            <li>
+                <a class="sb-toggle-submenu">Links<span class="sb-caret"></span></a>
+                <ul class="sb-submenu">
+                    
+                    <li><a href="http://go.kieran.top/" class="animsition-link">Kieran</a></li>
+                    
+                    <li><a href="http://www.xiaonanbobo.com/" class="animsition-link">Bobo</a></li>
+                    
+                </ul>
+            </li>
+            
+        </ul>
+        <!-- Lists in Slidebars -->
+        <ul class="sb-menu secondary">
+            <li><a href="/about.html" class="animsition-link" title="about">About</a></li>
+            <li><a href="/atom.xml" class="animsition-link" title="rss">RSS</a></li>
+        </ul>
+    </div>
+    
+    <!-- ============================ END Off-canvas navigation =========================== -->
+
+    <!-- ============================ #sb-site Main Page Wrapper =========================== -->
+
+    <div id="sb-site">
+        <!-- #sb-site - All page content should be contained within this id, except the off-canvas navigation itself -->
+
+        <!-- ============================ Header & Logo bar =========================== -->
+
+        <div id="navigation" class="navbar navbar-fixed-top">
+            <div class="navbar-inner">
+                <div class="container">
+                    <!-- Nav logo -->
+                    <div class="logo">
+                        <a href="/" title="Logo" class="animsition-link">
+                         <img src="/img/logo.png" alt="Logo" width="35px;"/> 
+                        </a>
+                    </div>
+                    <!-- // Nav logo -->
+                    <!-- Info-bar -->
+                    <nav>
+                        <ul class="nav">
+                            <li><a href="/" class="animsition-link">ZY's Blog</a></li>
+                            <li class="nolink"><span>Always </span>Creative.</li>
+                            
+                            <li><a href="https://github.com/" title="Github" target="_blank"><i class="icon-github"></i></a></li>
+                            
+                            
+                            
+                            
+                            <li><a href="https://google.com/" title="Google-Plus" target="_blank"><i class="icon-google-plus"></i></a></li>
+                            
+                            
+                            <li><a href="http://weibo.com/" title="Sina-Weibo" target="_blank"><i class="icon-sina-weibo"></i></a></li>
+                            
+                            <li class="nolink"><span>Welcome!</span></li>
+                        </ul>
+                    </nav>
+                    <!--// Info-bar -->
+                </div>
+                <!-- // .container -->
+                <div class="learnmore sb-toggle-right">More</div>
+                <button type="button" class="navbar-toggle menu-icon sb-toggle-right" title="More">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar before"></span>
+                <span class="icon-bar main"></span>
+                <span class="icon-bar after"></span>
+                </button>
+            </div>
+            <!-- // .navbar-inner -->
+        </div>
+
+        <!-- ============================ Header & Logo bar =========================== -->
+
+
+      
+<section id="intro">
+    <div class="container">
+        <div class="row col-md-offset-2">
+            <div class="col-md-8">
+    			<span class="post-meta">
+      <time datetime="2017-11-06T09:48:18.000Z" itemprop="datePublished">
+          2017-11-06
+      </time>
+    
+    
+    | 
+    <a href='/tags/ConcurrentHashMap/'>ConcurrentHashMap</a>,
+    
+    <a href='/tags/JDK1-7/'>JDK1.7</a>
+    
+    
+</span>
+                <h1>ConcurrentHashMap在JDK1.7中的实现分析</h1>
+            </div>
+        </div>
+        <div class="col-md-8 col-md-offset-2">
+      		<h3 id="一、ConcurrentHashMap的介绍"><a href="#一、ConcurrentHashMap的介绍" class="headerlink" title="一、ConcurrentHashMap的介绍"></a>一、ConcurrentHashMap的介绍</h3><p>ConcurrentHashMap是线程安全且高效的HashMap，可以在多线程的环境下使用。<br><strong>ConcurrentHashMap允许多个线程并发访问，其关键在于使用了锁分段技术。</strong><br>锁分段：首先将数据分成一段一段地存储，然后给每一段数据配一把锁，当一个线程占用锁访问其中一个数据段的时候，其他数据段也能被其他线程访问。</p>
+<h3 id="二、ConcurrentHashMap的实现原理"><a href="#二、ConcurrentHashMap的实现原理" class="headerlink" title="二、ConcurrentHashMap的实现原理"></a>二、ConcurrentHashMap的实现原理</h3><p><strong>ConcurrentHashMap的结构图</strong>  </p>
+<p>ConcurrentHashMap在JDK1.8之前的实现原理是“<strong>数组+数组+链表</strong>”。（可能描述不妥）<br><img src="http://osuskkx7k.bkt.clouddn.com/concurrentHashmap.PNG" alt="image"></p>
+<p>第一个数组是Segment[ ]，每一个Segment类似于HashMap；<br>第二个数组是HashEntry[ ]，每个元素可能是一个链表；<br>链表是HashEntry形成的链表，HashEntry是一个节点。</p>
+<hr>
+<h4 id="HashEntry类"><a href="#HashEntry类" class="headerlink" title="HashEntry类"></a>HashEntry类</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">static final class HashEntry&lt;K,V&gt; &#123;</div><div class="line">        final int hash;</div><div class="line">        final K key;</div><div class="line">        volatile V value;</div><div class="line">        volatile HashEntry&lt;K,V&gt; next;</div><div class="line">        ....</div><div class="line">        &#125;</div></pre></td></tr></table></figure>
+<p>HashEntry类相当于HashMap中的Entry类（节点类），储存了key和value，并拥有指向下一个元素的引用next。<br>注：<strong>value采用volatile修饰，保证了线程之间的可见性</strong>。</p>
+<h4 id="Segment类"><a href="#Segment类" class="headerlink" title="Segment类"></a>Segment类</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">static final class Segment&lt;K,V&gt; extends ReentrantLock implements Serializable &#123;</div><div class="line"></div><div class="line">        transient volatile HashEntry&lt;K,V&gt;[] table;</div><div class="line">        transient int count;</div><div class="line">        transient int modCount;</div><div class="line">        transient int threshold;</div><div class="line">        final float loadFactor; </div><div class="line">        ....</div><div class="line">        &#125;</div></pre></td></tr></table></figure>
+<p>每个Segment都拥有一个HashEntry[]数组，还有threshold和loadFactor分别表示极限容量和负载因子，count表示元素个数，modCount表示修改的记录。如此看来，<strong>每个Segment就好比是一个缩小版的HashMap</strong>，从上面ConcurrentHashMap结构图也可以看出来。</p>
+<p><strong>Segment继承自ReentrantLock重入锁，因此它支持一个线程重进入同一个Segment，访问其中的数据。</strong></p>
+<hr>
+<p>下面介绍一下ConcurrentHashMap主要的几个方法的实现:put()方法、get()方法、size()方法</p>
+<h4 id="put-方法"><a href="#put-方法" class="headerlink" title="put()方法"></a>put()方法</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">public V put(K key, V value) &#123;</div><div class="line">        Segment&lt;K,V&gt; s;</div><div class="line">        if (value == null)</div><div class="line">            throw new NullPointerException();</div><div class="line">        int hash = hash(key);</div><div class="line">        int j = (hash &gt;&gt;&gt; segmentShift) &amp; segmentMask;</div><div class="line">        if ((s = (Segment&lt;K,V&gt;)UNSAFE.getObject</div><div class="line">             (segments, (j &lt;&lt; SSHIFT) + SBASE)) == null) </div><div class="line">            // 扩容 </div><div class="line">            s = ensureSegment(j);</div><div class="line">        return s.put(key, hash, value, false);</div><div class="line">    &#125;</div></pre></td></tr></table></figure>
+<p>首先定位到相应的Segment。<br>如果需要扩容则进入ensureSegment(j)方法，<strong>注意ConcurrentHashMap不会对整个容器扩容，而只对当前的Segment进行扩容。</strong>  扩容为原来的2倍。<br>如果不需要扩容，调用Segment中的put()方法：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div></pre></td><td class="code"><pre><div class="line">final V put(K key, int hash, V value, boolean onlyIfAbsent) &#123;</div><div class="line">            HashEntry&lt;K,V&gt; node = tryLock() ? null :</div><div class="line">                scanAndLockForPut(key, hash, value);</div><div class="line">            V oldValue;</div><div class="line">            try &#123;</div><div class="line">                HashEntry&lt;K,V&gt;[] tab = table;</div><div class="line">                int index = (tab.length - 1) &amp; hash;</div><div class="line">                //取出头节点</div><div class="line">                HashEntry&lt;K,V&gt; first = entryAt(tab, index);</div><div class="line">                //遍历链表</div><div class="line">                for (HashEntry&lt;K,V&gt; e = first;;) &#123;</div><div class="line">                    if (e != null) &#123;</div><div class="line">                        K k;</div><div class="line">                        //key已存在，替换value</div><div class="line">                        if ((k = e.key) == key ||</div><div class="line">                            (e.hash == hash &amp;&amp; key.equals(k))) &#123;</div><div class="line">                            oldValue = e.value;</div><div class="line">                            if (!onlyIfAbsent) &#123;</div><div class="line">                                e.value = value;</div><div class="line">                                ++modCount;</div><div class="line">                            &#125;</div><div class="line">                            break;</div><div class="line">                        &#125;</div><div class="line">                        e = e.next;</div><div class="line">                    &#125;</div><div class="line">                    else &#123;</div><div class="line">                        //scanAndLockForPut()方法中已经返回了node，设置为first节点</div><div class="line">                        if (node != null)</div><div class="line">                            node.setNext(first);</div><div class="line">                        else</div><div class="line">                            //新建HashEntry节点作为头节点first</div><div class="line">                            node = new HashEntry&lt;K,V&gt;(hash, key, value, first);</div><div class="line">                        int c = count + 1;</div><div class="line">                        //判断是否扩容</div><div class="line">                        if (c &gt; threshold &amp;&amp; tab.length &lt; MAXIMUM_CAPACITY)</div><div class="line">                            rehash(node);</div><div class="line">                        else</div><div class="line">                            setEntryAt(tab, index, node);</div><div class="line">                        ++modCount; //记录修改次数</div><div class="line">                        count = c;  //修改count值</div><div class="line">                        oldValue = null;</div><div class="line">                        break;</div><div class="line">                    &#125;</div><div class="line">                &#125;</div><div class="line">            &#125; finally &#123;</div><div class="line">                unlock();</div><div class="line">            &#125;</div><div class="line">            return oldValue;</div><div class="line">        &#125;</div></pre></td></tr></table></figure></p>
+<p>过程分析：  </p>
+<ol>
+<li>首先调用tryLock()方法尝试获取锁，如果获取失败，则进入scanAndLockForPut()方法，该方法实际上是先自旋一定的次数等待其他线程释放锁。若自旋过程中，其他线程释放了锁，导致本线程直接获得了锁，就避免了本线程进入等待锁的场景，提高了效率。若自旋一定次数后，仍未获取锁，则调用lock方法进入等待锁的场景。（这是JDK1.7的实现，如果是1.6则没有自旋，直接获取锁）</li>
+<li>获取锁成功，找到对应的链表作相应的操作。具体见代码注释。</li>
+</ol>
+<h4 id="get-方法"><a href="#get-方法" class="headerlink" title="get()方法"></a>get()方法</h4><p>get()方法不需要锁。<strong>因为value字段是volatile修饰，保证了线程之间的可见性，可以被多线程同时读，但只能被单线程写。一句话，get操作只需要读共享变量value，所以不用加锁。</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line">public V get(Object key) &#123;</div><div class="line">        Segment&lt;K,V&gt; s; // manually integrate access methods to reduce overhead</div><div class="line">        HashEntry&lt;K,V&gt;[] tab;</div><div class="line">        int h = hash(key); //第一次散列</div><div class="line">        //第二次散列</div><div class="line">        long u = (((h &gt;&gt;&gt; segmentShift) &amp; segmentMask) &lt;&lt; SSHIFT) + SBASE;</div><div class="line">        if ((s = (Segment&lt;K,V&gt;)UNSAFE.getObjectVolatile(segments, u)) != null &amp;&amp;</div><div class="line">            (tab = s.table) != null) &#123;</div><div class="line">            //第三次散列（for循环中）</div><div class="line">            //遍历链表</div><div class="line">            for (HashEntry&lt;K,V&gt; e = (HashEntry&lt;K,V&gt;) UNSAFE.getObjectVolatile</div><div class="line">                     (tab, ((long)(((tab.length - 1) &amp; h)) &lt;&lt; TSHIFT) + TBASE);</div><div class="line">                 e != null; e = e.next) &#123;</div><div class="line">                K k;</div><div class="line">                if ((k = e.key) == key || (e.hash == h &amp;&amp; key.equals(k)))</div><div class="line">                    return e.value;</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">        return null;</div><div class="line">    &#125;</div></pre></td></tr></table></figure>
+<p>（get()方法中用到了许多UNSAFE类的方法，这是在JDK1.6中没有的，主要是利用Native方法来快速的定位元素。）  </p>
+<p>get()的过程经过了三次散列：  </p>
+<p><strong>第一次：对key进行散列得到h<br>第二次：对h进行散列定位到哪个Segment<br>第三次：对h进行散列定位到哪个HashEntry</strong> </p>
+<p>定位到HashEntry之后就对该链表遍历，查找key对应的value，若没有找到则返回null。  </p>
+<h4 id="size-方法"><a href="#size-方法" class="headerlink" title="size()方法"></a>size()方法</h4><p><strong>size()方法需要跨Segment操作，因为要统计每个Segment中的count值。而count值是volatile变量，一般来说将所有的count变量相加就可以得到整个ConcurrentHashMap的大小。</strong> 但可能在累加前使用的count发生了变化，那么结果就不正确。那么该如何统计呢？</p>
+<ol>
+<li>第一种方法，将所有Segment的put、remove、clean方法都锁住，然后统计count值。做法可行，但是低效。</li>
+<li><strong>第二种方法，先尝试连续2次不通过锁住Segment的方式计算各个count值的和：</strong></li>
+</ol>
+<ul>
+<li>若没有发生变化，则作为size的大小。</li>
+<li>若发生变化说明有线程在操作元素，则锁住Segment统计所有的count值。</li>
+</ul>
+<p><strong>如何判断容器大小没有发生变化？</strong>   </p>
+<p><strong>modCount变量。这个变量记录了每个Segment中put、remove、clean等操作的次数，因此在连续两次统计count的值时，比较modCount是否变化，就可得知容器大小是否变化。</strong></p>
+
+            <div class="clearfix"></div>
+            <hr class="nogutter">
+        </div>
+        <nav class="pagination" role="pagination">
+    
+    <a class="pull-left" href="/2017/11/10/ConcurrentHashMap在JDK1.8中的实现分析/" style="float: left;">
+        ← ConcurrentHashMap在JDK1.8中的实现分析
+    </a>
+    
+    
+    <a class="pull-right" href="/2017/11/03/HashMap引发的线程安全问题/">
+        HashMap引发的线程安全问题 →
+    </a>
+    
+</nav>
+
+        <div class="duoshuo">
+
+
+</div>
+    </div>
+</section>
+
+
+      
+<!-- ============================ Footer =========================== -->
+
+<footer>
+    <div class="container">
+            <div class="copy">
+                <p>
+                    &copy; 2014<script>new Date().getFullYear()>2010&&document.write("-"+new Date().getFullYear());</script>, Content By Z Yong. All Rights Reserved.
+                </p>
+                <p>Theme By <a href="//go.kieran.top" style="color: #767D84">Kieran</a></p>
+            </div>
+            <div class="social">
+                <ul>
+                    
+                    <li><a href="https://github.com/" title="Github" target="_blank"><i class="icon-github"></i></a>&nbsp;</li>
+                    
+                    
+                    
+                    
+                    <li><a href="https://google.com/" title="Google-Plus" target="_blank"><i class="icon-google-plus"></i></a>&nbsp;</li>
+                    
+                    
+                    <li><a href="http://weibo.com/" title="Sina-Weibo" target="_blank"><i class="icon-sina-weibo"></i></a>&nbsp;</li>
+                    
+                </ul>
+            </div>
+            <div class="clearfix"> </div>
+        </div>
+</footer>
+
+<!-- ============================ END Footer =========================== -->
+      <!-- Load our scripts -->
+<!-- Resizable 'on-demand' full-height hero -->
+<script type="text/javascript">
+    var resizeHero = function () {
+        var hero = $(".cover,.heightblock"),
+            window1 = $(window);
+        hero.css({
+            "height": window1.height()
+        });
+    };
+
+    resizeHero();
+
+    $(window).resize(function () {
+        resizeHero();
+    });
+</script>
+<script src="/js/plugins.min.js"></script><!-- Bootstrap core and concatenated plugins always load here -->
+<script src="/js/jquery.flexslider-min.js"></script><!-- Flexslider plugin -->
+<script src="/js/scripts.js"></script><!-- Theme scripts -->
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+$('#intro').find('img').each(function(){
+  var alt = this.alt;
+
+  if (alt){
+    $(this).after('<span class="caption" style="display:none">' + alt + '</span>');
+  }
+
+  $(this).wrap('<a href="' + this.src + '" title="' + alt + '" class="fancybox" rel="gallery" />');
+});
+(function($){
+  $('.fancybox').fancybox();
+})(jQuery);
+</script>
+
+<!-- Initiate flexslider plugin -->
+<script type="text/javascript">
+    $(document).ready(function($) {
+      (function(){
+        console.log('font');
+        var getCss = function(path) {
+          var head = document.getElementsByTagName('head')[0];
+          link = document.createElement('link');
+          link.href = path;
+          link.rel = 'stylesheet';
+          link.type = 'text/css';
+          head.appendChild(link);
+        };
+        getCss('https://fonts.googleapis.com/css?family=Montserrat:400,700');
+        getCss('https://fonts.googleapis.com/css?family=Open+Sans:400,600');
+      })();
+      $('.flexslider').flexslider({
+        animation: "fade",
+        prevText: "",
+        nextText: "",
+        directionNav: true
+      });
+    });
+</script>
+
+</body>
+</html>

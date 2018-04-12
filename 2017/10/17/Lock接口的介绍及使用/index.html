@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<!--[if lte IE 8 ]>
+<html class="ie" xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-US" lang="en-US">
+<![endif]-->
+<!--[if (gte IE 9)|!(IE)]><!-->
+<!--
+***************  *      *     *
+      8          *    *       *
+      8          *  *         *
+      8          **           *
+      8          *  *         *
+      8          *    *       *
+      8          *      *     *
+      8          *        *   ***********    -----Theme By Kieran(http://go.kieran.top)
+-->
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-US" lang="en-US">
+<!--<![endif]-->
+
+<head>
+  <title>Lock接口的介绍及使用 | ZY&#39;s Blog</title>
+  <!-- Meta data -->
+    <meta http-equiv="Content-Type" content="text/html" charset="UTF-8" >
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="generator" content="ZY's Blog">
+    <meta name="author" content="Z Yong">
+    <meta name="description" content="Young for you." />
+    <meta name="keywords" content="" />
+
+    <!-- Favicon, (keep icon in root folder) -->
+    <link rel="Shortcut Icon" href="/img/favicon.ico" type="image/ico">
+
+    <link rel="alternate" href="/atom.xml" title="ZY&#39;s Blog" type="application/atom+xml">
+    <link rel="stylesheet" href="/css/all.css" media="screen" type="text/css">
+    
+    <link rel="stylesheet" href="/highlightjs/vs.css" type="text/css">
+    
+
+    <!--[if IE 8]>
+    <link rel="stylesheet" type="text/css" href="/css/ie8.css" />
+    <![endif]-->
+
+    <!-- jQuery | Load our jQuery, with an alternative source fallback to a local version if request is unavailable -->
+    <script src="/js/jquery-1.11.1.min.js"></script>
+    <script>window.jQuery || document.write('<script src="js/jquery-1.11.1.min.js"><\/script>')</script>
+
+    <!-- Load these in the <head> for quicker IE8+ load times -->
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+    <script src="/js/html5shiv.min.js"></script>
+    <script src="/js/respond.min.js"></script>
+    <![endif]-->
+
+  
+  
+  <link rel="alternate" type="application/atom+xml" title="Atom 0.3" href="atom.xml">
+  
+  
+
+  <style>.col-md-8.col-md-offset-2.opening-statement img{display:none;}</style>
+</head>
+
+<!--
+<body class="post-template">
+-->
+<body id="index" class="lightnav animsition">
+
+      <!-- ============================ Off-canvas navigation =========================== -->
+
+    <div class="sb-slidebar sb-right sb-style-overlay sb-momentum-scrolling">
+        <div class="sb-close" aria-label="Close Menu" aria-hidden="true">
+            <img src="/img/close.png" alt="Close"/>
+        </div>
+        <!-- Lists in Slidebars -->
+        <ul class="sb-menu">
+            <li><a href="/" class="animsition-link" title="Home">Home</a></li>
+            <li><a href="/archives" class="animsition-link" title="archive">archives</a></li>
+            <!-- Dropdown Menu -->
+			 
+            <li>
+                <a class="sb-toggle-submenu">Works<span class="sb-caret"></span></a>
+                <ul class="sb-submenu">
+                    
+                        <li><a href="/" target="_BLANK" class="animsition-link">AAA</a></li>
+                    
+                        <li><a href="/atom.xml" target="_BLANK" class="animsition-link">BBB</a></li>
+                    
+                </ul>
+            </li>
+            
+            
+        	<li>
+        		<a class="sb-toggle-submenu">Categories<span class="sb-caret"></span></a>
+            	<ul class="sb-submenu">
+				  	
+				    <li><a href="/categories/技术/" class="animsition-link">技术<small>(31)</small></a></li>
+				    
+				    <li><a href="/categories/芭乐/" class="animsition-link">芭乐<small>(1)</small></a></li>
+				    
+				</ul>
+        	</li>
+			
+            
+            <li>
+                <a class="sb-toggle-submenu">Links<span class="sb-caret"></span></a>
+                <ul class="sb-submenu">
+                    
+                    <li><a href="http://go.kieran.top/" class="animsition-link">Kieran</a></li>
+                    
+                    <li><a href="http://www.xiaonanbobo.com/" class="animsition-link">Bobo</a></li>
+                    
+                </ul>
+            </li>
+            
+        </ul>
+        <!-- Lists in Slidebars -->
+        <ul class="sb-menu secondary">
+            <li><a href="/about.html" class="animsition-link" title="about">About</a></li>
+            <li><a href="/atom.xml" class="animsition-link" title="rss">RSS</a></li>
+        </ul>
+    </div>
+    
+    <!-- ============================ END Off-canvas navigation =========================== -->
+
+    <!-- ============================ #sb-site Main Page Wrapper =========================== -->
+
+    <div id="sb-site">
+        <!-- #sb-site - All page content should be contained within this id, except the off-canvas navigation itself -->
+
+        <!-- ============================ Header & Logo bar =========================== -->
+
+        <div id="navigation" class="navbar navbar-fixed-top">
+            <div class="navbar-inner">
+                <div class="container">
+                    <!-- Nav logo -->
+                    <div class="logo">
+                        <a href="/" title="Logo" class="animsition-link">
+                         <img src="/img/logo.png" alt="Logo" width="35px;"/> 
+                        </a>
+                    </div>
+                    <!-- // Nav logo -->
+                    <!-- Info-bar -->
+                    <nav>
+                        <ul class="nav">
+                            <li><a href="/" class="animsition-link">ZY's Blog</a></li>
+                            <li class="nolink"><span>Always </span>Creative.</li>
+                            
+                            <li><a href="https://github.com/" title="Github" target="_blank"><i class="icon-github"></i></a></li>
+                            
+                            
+                            
+                            
+                            <li><a href="https://google.com/" title="Google-Plus" target="_blank"><i class="icon-google-plus"></i></a></li>
+                            
+                            
+                            <li><a href="http://weibo.com/" title="Sina-Weibo" target="_blank"><i class="icon-sina-weibo"></i></a></li>
+                            
+                            <li class="nolink"><span>Welcome!</span></li>
+                        </ul>
+                    </nav>
+                    <!--// Info-bar -->
+                </div>
+                <!-- // .container -->
+                <div class="learnmore sb-toggle-right">More</div>
+                <button type="button" class="navbar-toggle menu-icon sb-toggle-right" title="More">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar before"></span>
+                <span class="icon-bar main"></span>
+                <span class="icon-bar after"></span>
+                </button>
+            </div>
+            <!-- // .navbar-inner -->
+        </div>
+
+        <!-- ============================ Header & Logo bar =========================== -->
+
+
+      
+<section id="intro">
+    <div class="container">
+        <div class="row col-md-offset-2">
+            <div class="col-md-8">
+    			<span class="post-meta">
+      <time datetime="2017-10-17T13:40:19.000Z" itemprop="datePublished">
+          2017-10-17
+      </time>
+    
+    
+    | 
+    <a href='/tags/并发/'>并发</a>,
+    
+    <a href='/tags/Lock/'>Lock</a>
+    
+    
+</span>
+                <h1>Lock接口的介绍及使用</h1>
+            </div>
+        </div>
+        <div class="col-md-8 col-md-offset-2">
+      		<h3 id="一、Lock的介绍"><a href="#一、Lock的介绍" class="headerlink" title="一、Lock的介绍"></a>一、Lock的介绍</h3><p>我们知道，在Java中锁的实现可以由synchronized关键字来完成，但在Java5之后，出现了一种新的方式来实现——Lock接口。</p>
+<p>那么为什么提出这种新的方式呢？<br>在多线程的情况下，当一段代码被synchronized修饰之后，同一时刻只能被一个线程访问，其他线程都必须等到该线程释放锁之后才能有机会获取锁访问这段代码，占用锁的线程只有在两种情况下才能释放锁：  </p>
+<ol>
+<li>线程执行完了这段代码，释放锁；</li>
+<li>线程执行发生异常，释放锁；  </li>
+</ol>
+<p>考虑一下，如果该线程由于IO操作或者其他原因（调用Sleep方法）被阻塞了，那么其他线程就会一直无期限地等待下去，后果可想而知。<br>那么能否用一种方式来防止等待的线程无限等待呢？（等待一段时间或者响应中断）通过Lock就可以实现。</p>
+<p>再如：当用多线程对文件进行读写时，读与写是互斥的，写与写是互斥的，但读与读却不是互斥的。如果用synchronized来实现同步，就会有这样的问题：多个线程都只需要读操作，但只能有一个线程进行读操作，其他线程只能等待。<br>那么能不能让线程不用等待，多线程都能进行读操作呢？通过Lock就可以实现。</p>
+<h3 id="二、Lock的用法"><a href="#二、Lock的用法" class="headerlink" title="二、Lock的用法"></a>二、Lock的用法</h3><p>Lock是一个接口，包含以下方法：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">public interface Lock &#123;</div><div class="line">void lock();      //获取锁</div><div class="line">void lockInterruptibly() throws InterruptedException; //可中断的获取锁</div><div class="line">boolean tryLock(); //尝试非阻塞的获取锁</div><div class="line">boolean tryLock(long time, TimeUnit unit) throws InterruptedException; //超时获取锁</div><div class="line">void unlock(); //释放锁</div><div class="line">Condition newCondition(); //获取等待通知组件，和当前的锁绑定</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>可以看到当使用Lock时，获取锁和释放锁都是主动调用执行的，而synchronized则是系统自动释放锁的。<br>前四个方法都是用来获取锁的，但各有区别：  </p>
+<ul>
+<li><strong>lock()</strong>：是最常用的获取锁的方法，若锁被其他线程获取，则等待（阻塞）。</li>
+<li><strong>tryLock()</strong>：尝试非阻塞地获取锁，立即返回。获取成功返回true；获取失败返回false，但不会阻塞。</li>
+<li><strong>tryLock(long time, TimeUnit unit)</strong>：与tryLock()相似，但是会超时等待一段时间，如果未获取到返回false。</li>
+<li><strong>lockInterruptibly()</strong>：可中断地获取锁，该方法会响应中断，在锁的获取过程中可以中断当前线程。  </li>
+</ul>
+<p><strong>注：当使用synchronized关键字时，一个线程在等待获取锁的过程中是无法中断的。而使用lockInterruptibly()方法获取某个锁时，如果不能获取到，在进行等待的情况下是可以响应中断的。</strong></p>
+<p>Lock的使用：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">Lock lock = new ReentrantLock(); //可重入锁（Lock的一种实现）</div><div class="line">lock.lock();</div><div class="line">try&#123;</div><div class="line">    dosomething();</div><div class="line">&#125;finally&#123;</div><div class="line">    lock.unlock();</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p><strong>在finally块中释放锁的目的是保证获取锁之后，最终能被释放。</strong><br>不要将获取锁——lock()放在try中，如果在获取锁时发生了异常，异常抛出的同时，也会导致锁的无故释放（需要主动释放）。</p>
+<h3 id="三、与synchronized的区别"><a href="#三、与synchronized的区别" class="headerlink" title="三、与synchronized的区别"></a>三、与synchronized的区别</h3><p>Lock与synchronized的区别：  </p>
+<ol>
+<li>Lock是一个接口，是代码层面的实现；synchronized是关键字，是内置的语言实现（JVM层面）。</li>
+<li>Lock是显示地获取释放锁，扩展性更强；synchronized是隐式地获取释放锁，更简捷。</li>
+<li>Lock在发生异常时，如果没有主动通过unlock()去释放锁，则很可能造成死锁现象，因此使用Lock时需要在finally块中释放锁；synchronized在发生异常时，会自动释放线程占有的锁，因此不会导致死锁现象发生。</li>
+<li>Lock可以让等待锁的线程响应中断；而使用synchronized时等待锁的线程会一直等待下去，不能响应中断；</li>
+<li>Lock可以尝试非阻塞、可中断、超时地获取锁；synchronized不可以。</li>
+<li>Lock可以知道是否成功获取锁；synchronized无法知道。  </li>
+</ol>
+<p>总结：在资源竞争不是很激烈的情况下，Synchronized的性能要优于Lock；但是在资源竞争很激烈的情况下，Synchronized的性能会下降几十倍，Lock的性能更优；</p>
+
+            <div class="clearfix"></div>
+            <hr class="nogutter">
+        </div>
+        <nav class="pagination" role="pagination">
+    
+    <a class="pull-left" href="/2017/10/18/Lock实现之AQS——AbstractQueuedSynchronizer/" style="float: left;">
+        ← Lock实现之AQS——AbstractQueuedSynchronizer
+    </a>
+    
+    
+    <a class="pull-right" href="/2017/10/14/深入理解synchronized/">
+        深入理解synchronized关键字 →
+    </a>
+    
+</nav>
+
+        <div class="duoshuo">
+
+
+</div>
+    </div>
+</section>
+
+
+      
+<!-- ============================ Footer =========================== -->
+
+<footer>
+    <div class="container">
+            <div class="copy">
+                <p>
+                    &copy; 2014<script>new Date().getFullYear()>2010&&document.write("-"+new Date().getFullYear());</script>, Content By Z Yong. All Rights Reserved.
+                </p>
+                <p>Theme By <a href="//go.kieran.top" style="color: #767D84">Kieran</a></p>
+            </div>
+            <div class="social">
+                <ul>
+                    
+                    <li><a href="https://github.com/" title="Github" target="_blank"><i class="icon-github"></i></a>&nbsp;</li>
+                    
+                    
+                    
+                    
+                    <li><a href="https://google.com/" title="Google-Plus" target="_blank"><i class="icon-google-plus"></i></a>&nbsp;</li>
+                    
+                    
+                    <li><a href="http://weibo.com/" title="Sina-Weibo" target="_blank"><i class="icon-sina-weibo"></i></a>&nbsp;</li>
+                    
+                </ul>
+            </div>
+            <div class="clearfix"> </div>
+        </div>
+</footer>
+
+<!-- ============================ END Footer =========================== -->
+      <!-- Load our scripts -->
+<!-- Resizable 'on-demand' full-height hero -->
+<script type="text/javascript">
+    var resizeHero = function () {
+        var hero = $(".cover,.heightblock"),
+            window1 = $(window);
+        hero.css({
+            "height": window1.height()
+        });
+    };
+
+    resizeHero();
+
+    $(window).resize(function () {
+        resizeHero();
+    });
+</script>
+<script src="/js/plugins.min.js"></script><!-- Bootstrap core and concatenated plugins always load here -->
+<script src="/js/jquery.flexslider-min.js"></script><!-- Flexslider plugin -->
+<script src="/js/scripts.js"></script><!-- Theme scripts -->
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+$('#intro').find('img').each(function(){
+  var alt = this.alt;
+
+  if (alt){
+    $(this).after('<span class="caption" style="display:none">' + alt + '</span>');
+  }
+
+  $(this).wrap('<a href="' + this.src + '" title="' + alt + '" class="fancybox" rel="gallery" />');
+});
+(function($){
+  $('.fancybox').fancybox();
+})(jQuery);
+</script>
+
+<!-- Initiate flexslider plugin -->
+<script type="text/javascript">
+    $(document).ready(function($) {
+      (function(){
+        console.log('font');
+        var getCss = function(path) {
+          var head = document.getElementsByTagName('head')[0];
+          link = document.createElement('link');
+          link.href = path;
+          link.rel = 'stylesheet';
+          link.type = 'text/css';
+          head.appendChild(link);
+        };
+        getCss('https://fonts.googleapis.com/css?family=Montserrat:400,700');
+        getCss('https://fonts.googleapis.com/css?family=Open+Sans:400,600');
+      })();
+      $('.flexslider').flexslider({
+        animation: "fade",
+        prevText: "",
+        nextText: "",
+        directionNav: true
+      });
+    });
+</script>
+
+</body>
+</html>
