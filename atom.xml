@@ -70,6 +70,60 @@
   </entry>
   
   <entry>
+    <title>ActiveMQ的简单使用</title>
+    <link href="http://yoursite.com/2018/02/12/ActiveMQ%E7%9A%84%E7%AE%80%E5%8D%95%E4%BD%BF%E7%94%A8/"/>
+    <id>http://yoursite.com/2018/02/12/ActiveMQ的简单使用/</id>
+    <published>2018-02-12T07:12:12.000Z</published>
+    <updated>2018-04-14T16:37:00.716Z</updated>
+    
+    <content type="html"><![CDATA[<h3 id="ActiveMQ的简单使用"><a href="#ActiveMQ的简单使用" class="headerlink" title="ActiveMQ的简单使用"></a>ActiveMQ的简单使用</h3><p>ActiveMQ 是一种消息队列，是Apache提供的一个开源消息系统，完全采用Java实现，因此，它能很好地支持J2EE提出的JMS（Java Message Service,即Java消息服务）规范。</p>
+<h4 id="第一种方式（点对点）——Queue"><a href="#第一种方式（点对点）——Queue" class="headerlink" title="第一种方式（点对点）——Queue"></a>第一种方式（点对点）——Queue</h4><h5 id="生产者"><a href="#生产者" class="headerlink" title="生产者"></a>生产者</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div></pre></td><td class="code"><pre><div class="line">import org.apache.activemq.ActiveMQConnectionFactory;</div><div class="line">import javax.jms.*;</div><div class="line"></div><div class="line">public class Producer &#123;</div><div class="line"></div><div class="line">    public static void main(String[] args) &#123;</div><div class="line"></div><div class="line">        //连接工厂</div><div class="line">        ConnectionFactory connectionFactory;</div><div class="line">        //连接</div><div class="line">        Connection connection = null;</div><div class="line">        //会话</div><div class="line">        Session session;</div><div class="line">        //目的地</div><div class="line">        Destination destination;</div><div class="line">        //消息生产者</div><div class="line">        MessageProducer messageProducer;</div><div class="line"></div><div class="line">        try &#123;</div><div class="line">            connectionFactory = new ActiveMQConnectionFactory(ActiveMQConnectionFactory.DEFAULT_USER,ActiveMQConnectionFactory.DEFAULT_PASSWORD,</div><div class="line">                    ActiveMQConnectionFactory.DEFAULT_BROKER_URL);</div><div class="line">            connection = connectionFactory.createConnection();</div><div class="line">            connection.start();</div><div class="line">            session = connection.createSession(false,Session.AUTO_ACKNOWLEDGE);   //不开启事务</div><div class="line"></div><div class="line">            destination = session.createQueue(&quot;Queue-zy&quot;);</div><div class="line">            messageProducer = session.createProducer(destination);</div><div class="line">            messageProducer.setDeliveryMode(DeliveryMode.NON_PERSISTENT);       //是否持久化（默认持久化）</div><div class="line"></div><div class="line">            for(int i = 1; i&lt;11; i++)&#123;</div><div class="line">                System.out.println(&quot;生产者成功发出消息——Queue-zy：序号---&quot;+i);</div><div class="line">                TextMessage message = session.createTextMessage(&quot;消息-----&quot;+i+&quot;-------hello,MQ!&quot;);</div><div class="line">                messageProducer.send(message);</div><div class="line">            &#125;</div><div class="line"></div><div class="line">        &#125; catch (JMSException e) &#123;</div><div class="line">            e.printStackTrace();</div><div class="line">        &#125; finally&#123;</div><div class="line">            try &#123;</div><div class="line">                connection.close();</div><div class="line">            &#125; catch (JMSException e) &#123;</div><div class="line">                e.printStackTrace();</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line"></div><div class="line"></div><div class="line">    &#125;</div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>控制台打印出发送消息成功的语句，总计10条消息：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">生产者成功发出消息——Queue-zy：序号---1</div><div class="line">生产者成功发出消息——Queue-zy：序号---2</div><div class="line">生产者成功发出消息——Queue-zy：序号---3</div><div class="line">生产者成功发出消息——Queue-zy：序号---4</div><div class="line">生产者成功发出消息——Queue-zy：序号---5</div><div class="line">生产者成功发出消息——Queue-zy：序号---6</div><div class="line">生产者成功发出消息——Queue-zy：序号---7</div><div class="line">生产者成功发出消息——Queue-zy：序号---8</div><div class="line">生产者成功发出消息——Queue-zy：序号---9</div><div class="line">生产者成功发出消息——Queue-zy：序号---10</div></pre></td></tr></table></figure>
+<p><img src="http://osuskkx7k.bkt.clouddn.com/Queue1%20%282%29.jpg" alt="image"><br>此时，打开ActiveMQ的管理页面，点击Queues，便可看到一个名为 Queue-zy 的队列：<br>Number Of Pending Messages ：表示等待被消费的消息数为 10  </p>
+<p>Messages Enqueued：  表示进入队列的消息数为 10  （可叠加）</p>
+<p>Messages Dequeued：  表示出队列的消息，此时为0  </p>
+<h5 id="消费者"><a href="#消费者" class="headerlink" title="消费者"></a>消费者</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div></pre></td><td class="code"><pre><div class="line">import org.apache.activemq.ActiveMQConnectionFactory;</div><div class="line">import javax.jms.*;</div><div class="line"></div><div class="line">public class Consumer &#123;</div><div class="line"></div><div class="line">    public static void main(String[] args) &#123;</div><div class="line"></div><div class="line">        //连接工厂</div><div class="line">        ConnectionFactory connectionFactory;</div><div class="line">        //连接</div><div class="line">        Connection connection = null;</div><div class="line">        //会话</div><div class="line">        Session session;</div><div class="line">        //目的地</div><div class="line">        Destination destination;</div><div class="line">        //消息生产者</div><div class="line">        MessageConsumer messageConsumer ;</div><div class="line"></div><div class="line">        try &#123;</div><div class="line">            connectionFactory = new ActiveMQConnectionFactory(ActiveMQConnectionFactory.DEFAULT_USER,ActiveMQConnectionFactory.DEFAULT_PASSWORD,</div><div class="line">                    ActiveMQConnectionFactory.DEFAULT_BROKER_URL);</div><div class="line">            connection = connectionFactory.createConnection();</div><div class="line">            connection.start();</div><div class="line"></div><div class="line">            session = connection.createSession(false,Session.AUTO_ACKNOWLEDGE);</div><div class="line">            destination = session.createQueue(&quot;Queue-zy&quot;);</div><div class="line">            messageConsumer = session.createConsumer(destination);</div><div class="line"></div><div class="line">            while(true)&#123;</div><div class="line">                TextMessage textMessage = (TextMessage) messageConsumer.receive(10000);</div><div class="line">                if(textMessage != null)&#123;</div><div class="line">                    System.out.println(&quot;消费者成功接收到消息： &quot;+textMessage.getText());</div><div class="line">                &#125;else&#123;</div><div class="line">                    break;</div><div class="line">                &#125;</div><div class="line">            &#125;</div><div class="line">        &#125; catch (Exception e) &#123;</div><div class="line">            e.printStackTrace();</div><div class="line">        &#125; finally&#123;</div><div class="line">            try &#123;</div><div class="line">                connection.close();</div><div class="line">            &#125; catch (JMSException e) &#123;</div><div class="line">                e.printStackTrace();</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>点击Run启动消费者Main()，可以看到控制台输出，成功接收10条消息：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">消费者成功接收到消息： 消息-----1-------hello,MQ!</div><div class="line">消费者成功接收到消息： 消息-----2-------hello,MQ!</div><div class="line">消费者成功接收到消息： 消息-----3-------hello,MQ!</div><div class="line">消费者成功接收到消息： 消息-----4-------hello,MQ!</div><div class="line">消费者成功接收到消息： 消息-----5-------hello,MQ!</div><div class="line">消费者成功接收到消息： 消息-----6-------hello,MQ!</div><div class="line">消费者成功接收到消息： 消息-----7-------hello,MQ!</div><div class="line">消费者成功接收到消息： 消息-----8-------hello,MQ!</div><div class="line">消费者成功接收到消息： 消息-----9-------hello,MQ!</div><div class="line">消费者成功接收到消息： 消息-----10-------hello,MQ!</div></pre></td></tr></table></figure></p>
+<p><img src="http://osuskkx7k.bkt.clouddn.com/Queue-2.jpg" alt="image"></p>
+<p>再次查看ActiveMQ的管理页面，点击Queues  </p>
+<p>Number Of Pending Messages ：等待被消费的消息数变为 0，此时消息已经全部被消费  </p>
+<p>Messages Enqueued： 进入队列的消息数为 10  （叠加）  </p>
+<p>Messages Dequeued： 出队列的消息，此时为10  </p>
+<h4 id="第二种方式（发布-订阅）——Topic"><a href="#第二种方式（发布-订阅）——Topic" class="headerlink" title="第二种方式（发布/订阅）——Topic"></a>第二种方式（发布/订阅）——Topic</h4><p><strong>两种方式的代码只有一处区别：由Session创建的目的地不同</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">//Queue</div><div class="line">destination = session.createQueue(&quot;Queue-zy&quot;);</div><div class="line">//Topic</div><div class="line">destination = session.createTopic(&quot;Topic-zy&quot;);</div></pre></td></tr></table></figure>
+<p>注意：<strong>先启动订阅者（消费者），再启动发布者（生产者）————因为在没有实现订阅消息持久化的情况下，只能在订阅者上线后才能接收到发布者发布的消息。</strong></p>
+<h5 id="生产者-1"><a href="#生产者-1" class="headerlink" title="生产者"></a>生产者</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div></pre></td><td class="code"><pre><div class="line">import org.apache.activemq.ActiveMQConnectionFactory;</div><div class="line">import javax.jms.*;</div><div class="line"></div><div class="line">public class Producer &#123;</div><div class="line"></div><div class="line">    public static void main(String[] args) &#123;</div><div class="line"></div><div class="line">        //连接工厂</div><div class="line">        ConnectionFactory connectionFactory;</div><div class="line">        //连接</div><div class="line">        Connection connection = null;</div><div class="line">        //会话</div><div class="line">        Session session;</div><div class="line">        //目的地</div><div class="line">        Destination destination;</div><div class="line">        //消息生产者</div><div class="line">        MessageProducer messageProducer;</div><div class="line"></div><div class="line">        try &#123;</div><div class="line">            connectionFactory = new ActiveMQConnectionFactory(ActiveMQConnectionFactory.DEFAULT_USER,ActiveMQConnectionFactory.DEFAULT_PASSWORD,</div><div class="line">                    ActiveMQConnectionFactory.DEFAULT_BROKER_URL);</div><div class="line">            connection = connectionFactory.createConnection();</div><div class="line">            connection.start();</div><div class="line">            session = connection.createSession(false,Session.AUTO_ACKNOWLEDGE);   //不开启事务</div><div class="line"></div><div class="line">            //destination = session.createQueue(&quot;Queue-zy&quot;);</div><div class="line">            destination = session.createTopic(&quot;Topic-zy&quot;);</div><div class="line">            messageProducer = session.createProducer(destination);</div><div class="line">            messageProducer.setDeliveryMode(DeliveryMode.NON_PERSISTENT);       //是否持久化（默认持久化）</div><div class="line"></div><div class="line">            for(int i = 1; i&lt;11; i++)&#123;</div><div class="line">                System.out.println(&quot;生产者成功发出消息——Topic-zy：序号---&quot;+i);</div><div class="line">                TextMessage message = session.createTextMessage(&quot;消息-----&quot;+i+&quot;-------hello,MQ!&quot;);</div><div class="line">                messageProducer.send(message);</div><div class="line">            &#125;</div><div class="line">        &#125; catch (JMSException e) &#123;</div><div class="line">            e.printStackTrace();</div><div class="line">        &#125; finally&#123;</div><div class="line">            try &#123;</div><div class="line">                connection.close();</div><div class="line">            &#125; catch (JMSException e) &#123;</div><div class="line">                e.printStackTrace();</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h5 id="消费者-1"><a href="#消费者-1" class="headerlink" title="消费者 1"></a>消费者 1</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div></pre></td><td class="code"><pre><div class="line">import org.apache.activemq.ActiveMQConnectionFactory;</div><div class="line"></div><div class="line">import javax.jms.*;</div><div class="line"></div><div class="line">public class Consumer &#123;</div><div class="line"></div><div class="line">    public static void main(String[] args) &#123;</div><div class="line"></div><div class="line">        //连接工厂</div><div class="line">        ConnectionFactory connectionFactory;</div><div class="line">        //连接</div><div class="line">        Connection connection = null;</div><div class="line">        //会话</div><div class="line">        Session session;</div><div class="line">        //目的地</div><div class="line">        Destination destination;</div><div class="line">        //消息生产者</div><div class="line">        MessageConsumer messageConsumer ;</div><div class="line"></div><div class="line">        try &#123;</div><div class="line">            connectionFactory = new ActiveMQConnectionFactory(ActiveMQConnectionFactory.DEFAULT_USER,ActiveMQConnectionFactory.DEFAULT_PASSWORD,</div><div class="line">                    ActiveMQConnectionFactory.DEFAULT_BROKER_URL);</div><div class="line">            connection = connectionFactory.createConnection();</div><div class="line">            connection.start();</div><div class="line">            session = connection.createSession(false,Session.AUTO_ACKNOWLEDGE);</div><div class="line"></div><div class="line">            //destination = session.createQueue(&quot;Queue-zy&quot;);</div><div class="line">            destination = session.createTopic(&quot;Topic-zy&quot;);</div><div class="line">            messageConsumer = session.createConsumer(destination);</div><div class="line"></div><div class="line">            while(true)&#123;</div><div class="line">                TextMessage textMessage = (TextMessage) messageConsumer.receive(10000);</div><div class="line">                if(textMessage != null)&#123;</div><div class="line">                    System.out.println(&quot;消费者 1 成功接收到消息： &quot;+textMessage.getText());</div><div class="line">                &#125;else&#123;</div><div class="line">                    break;</div><div class="line">                &#125;</div><div class="line">            &#125;</div><div class="line">        &#125; catch (Exception e) &#123;</div><div class="line">            e.printStackTrace();</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h5 id="消费者-2"><a href="#消费者-2" class="headerlink" title="消费者 2"></a>消费者 2</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div></pre></td><td class="code"><pre><div class="line">import org.apache.activemq.ActiveMQConnectionFactory;</div><div class="line">import javax.jms.*;</div><div class="line"></div><div class="line">public class Consumer2 &#123;</div><div class="line">    public static void main(String[] args) &#123;</div><div class="line"></div><div class="line">        //连接工厂</div><div class="line">        ConnectionFactory connectionFactory;</div><div class="line">        //连接</div><div class="line">        Connection connection = null;</div><div class="line">        //会话</div><div class="line">        Session session;</div><div class="line">        //目的地</div><div class="line">        Destination destination;</div><div class="line">        //消息生产者</div><div class="line">        MessageConsumer messageConsumer ;</div><div class="line"></div><div class="line">        try &#123;</div><div class="line">            connectionFactory = new ActiveMQConnectionFactory(ActiveMQConnectionFactory.DEFAULT_USER,ActiveMQConnectionFactory.DEFAULT_PASSWORD,</div><div class="line">                    ActiveMQConnectionFactory.DEFAULT_BROKER_URL);</div><div class="line">            connection = connectionFactory.createConnection();</div><div class="line">            connection.start();</div><div class="line">            session = connection.createSession(false,Session.AUTO_ACKNOWLEDGE);</div><div class="line"></div><div class="line">            //destination = session.createQueue(&quot;Queue-zy&quot;);</div><div class="line">            destination = session.createTopic(&quot;Topic-zy&quot;);</div><div class="line">            messageConsumer = session.createConsumer(destination);</div><div class="line"></div><div class="line">            while(true)&#123;</div><div class="line">                TextMessage textMessage = (TextMessage) messageConsumer.receive(10000);</div><div class="line">                if(textMessage != null)&#123;</div><div class="line">                    System.out.println(&quot;消费者 2 成功接收到消息： &quot;+textMessage.getText());</div><div class="line">                &#125;else&#123;</div><div class="line">                    break;</div><div class="line">                &#125;</div><div class="line">            &#125;</div><div class="line">        &#125; catch (Exception e) &#123;</div><div class="line">            e.printStackTrace();</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>先启动消费者 1 和 2，再启动生产者，可以看到控制台输出，消费者 1 、2都接收到了消息:</p>
+<p><img src="http://osuskkx7k.bkt.clouddn.com/c1.jpg" alt="image"></p>
+<p><img src="http://osuskkx7k.bkt.clouddn.com/c2.jpg" alt="image"></p>
+<p><img src="http://osuskkx7k.bkt.clouddn.com/Topic-2.jpg" alt="image"></p>
+<p>查看ActiveMQ的管理页面，点击Topics，查看名为 Topic-zy 的主题：    </p>
+<p>Number Of Consumers ：表示消费者数目为 2    </p>
+<p>Messages Enqueued： 进入队列的消息数为 10    </p>
+<p>Messages Dequeued： 出队列的消息，为20 （因为2个消费者） </p>
+<p>以上就是直接使用 ActiveMQ 在<strong>点对点</strong>和<strong>发布订阅</strong> 两种模式下收发消息的过程。</p>
+<p>下一篇，将介绍<a href="http://youngforzy.top/2018/02/15/ActiveMQ%E7%BB%93%E5%90%88Spring%E6%94%B6%E5%8F%91%E6%B6%88%E6%81%AF/" target="_blank" rel="external">ActiveMQ结合Spring收发消息</a>的过程。</p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h3 id=&quot;ActiveMQ的简单使用&quot;&gt;&lt;a href=&quot;#ActiveMQ的简单使用&quot; class=&quot;headerlink&quot; title=&quot;ActiveMQ的简单使用&quot;&gt;&lt;/a&gt;ActiveMQ的简单使用&lt;/h3&gt;&lt;p&gt;ActiveMQ 是一种消息队列，是Apache提供
+    
+    </summary>
+    
+      <category term="技术" scheme="http://yoursite.com/categories/%E6%8A%80%E6%9C%AF/"/>
+    
+    
+      <category term="ActiveMQ" scheme="http://yoursite.com/tags/ActiveMQ/"/>
+    
+      <category term="消息队列" scheme="http://yoursite.com/tags/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97/"/>
+    
+  </entry>
+  
+  <entry>
     <title>Mysql自动还原脚本（.sh文件）</title>
     <link href="http://yoursite.com/2018/01/25/Mysql%E8%87%AA%E5%8A%A8%E8%BF%98%E5%8E%9F%E8%84%9A%E6%9C%AC/"/>
     <id>http://yoursite.com/2018/01/25/Mysql自动还原脚本/</id>
@@ -107,10 +161,10 @@
   
   <entry>
     <title>Map 的4种遍历方式及比较</title>
-    <link href="http://yoursite.com/2017/12/28/Map%20%E7%9A%844%E7%A7%8D%E9%81%8D%E5%8E%86%E6%96%B9%E5%BC%8F%E5%8F%8A%E6%AF%94%E8%BE%83/"/>
-    <id>http://yoursite.com/2017/12/28/Map 的4种遍历方式及比较/</id>
-    <published>2017-12-28T07:12:12.000Z</published>
-    <updated>2018-04-14T16:06:38.295Z</updated>
+    <link href="http://yoursite.com/2018/01/07/Map%20%E7%9A%844%E7%A7%8D%E9%81%8D%E5%8E%86%E6%96%B9%E5%BC%8F%E5%8F%8A%E6%AF%94%E8%BE%83/"/>
+    <id>http://yoursite.com/2018/01/07/Map 的4种遍历方式及比较/</id>
+    <published>2018-01-07T07:12:12.000Z</published>
+    <updated>2018-04-14T16:37:56.168Z</updated>
     
     <content type="html"><![CDATA[<h3 id="Map-的4种遍历方式及比较"><a href="#Map-的4种遍历方式及比较" class="headerlink" title="Map 的4种遍历方式及比较"></a>Map 的4种遍历方式及比较</h3><h4 id="KeySet"><a href="#KeySet" class="headerlink" title="KeySet"></a>KeySet</h4><p>第一种方式：   <strong>keySet 其实遍历了两次，第一次获取Iterator，第二次根据key获取value，因此性能较差。</strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">public void testKetSet(Map&lt;String, String&gt; map) &#123;</div><div class="line">    Set&lt;String&gt; keys = map.keySet();</div><div class="line">    for (String key : keys) &#123;</div><div class="line">        String value =  map.get(key);</div><div class="line">        System.out.println(&quot;key: &quot;+ key + &quot;  value: &quot; + value );</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
 <h4 id="EntrySet"><a href="#EntrySet" class="headerlink" title="EntrySet"></a>EntrySet</h4><p>第二种方式: <strong>entrySet 优于keySet，因为一次就把key和value放入了entry)</strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">public void testEntrySet(Map&lt;String, String&gt; map) &#123;</div><div class="line">      Set&lt;Map.Entry&lt;String, String&gt;&gt; entry = map.entrySet();</div><div class="line">      for (Map.Entry&lt;String, String&gt; stringEntry : entry) &#123;</div><div class="line">          System.out.println(&quot;key: &quot;+ stringEntry.getKey() + &quot;  value: &quot; + stringEntry.getValue());</div><div class="line">      &#125;</div><div class="line">  &#125;</div></pre></td></tr></table></figure></p>
@@ -1222,118 +1276,6 @@
       <category term="JVM" scheme="http://yoursite.com/tags/JVM/"/>
     
       <category term="类加载机制" scheme="http://yoursite.com/tags/%E7%B1%BB%E5%8A%A0%E8%BD%BD%E6%9C%BA%E5%88%B6/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>JVM之垃圾收集器</title>
-    <link href="http://yoursite.com/2017/10/23/JVM%E4%B9%8B%E5%9E%83%E5%9C%BE%E6%94%B6%E9%9B%86%E5%99%A8/"/>
-    <id>http://yoursite.com/2017/10/23/JVM之垃圾收集器/</id>
-    <published>2017-10-23T11:28:13.000Z</published>
-    <updated>2018-02-24T06:43:07.465Z</updated>
-    
-    <content type="html"><![CDATA[<h3 id="一、垃圾收集器概述"><a href="#一、垃圾收集器概述" class="headerlink" title="一、垃圾收集器概述"></a>一、垃圾收集器概述</h3><p><strong>垃圾收集器是内存垃圾回收算法的具体实现。</strong><br>Java虚拟机规范中对垃圾收集器应该如何实现并没有任何规定，因此出现了7种收集器：Serial、ParNew、Parallel Scavenge、Serial Old、Parallel Old、CMS、G1。<br>它们以组合的形式配合工作来完成不同分代的垃圾收集工作。</p>
-<p><strong>常用组合</strong>：</p>
-<ol>
-<li>Serial/Serial Old</li>
-<li>ParNew/Serial Old</li>
-<li>ParNew/CMS</li>
-<li>Parallel Scavenge/Parallel Old</li>
-<li>G1</li>
-</ol>
-<p><img src="http://osuskkx7k.bkt.clouddn.com/JVMtool2.png" alt="image"></p>
-<h4 id="Minor-GC和Full-GC"><a href="#Minor-GC和Full-GC" class="headerlink" title="Minor GC和Full GC"></a>Minor GC和Full GC</h4><p>Minor GC（新生代GC）：发生在新生代的GC动作，频率高，回收速度块。</p>
-<p>Full GC（老年代GC）：发生在老年代的GC动作，老年代满了后才进行，一般伴随至少一次Minor GC，频率低，回收速度慢。</p>
-<h4 id="垃圾收集器种类"><a href="#垃圾收集器种类" class="headerlink" title="垃圾收集器种类"></a>垃圾收集器种类</h4><p>目前的收集器主要有以下三种：  </p>
-<p><strong>串行收集器：</strong> 只有一条垃圾收集线程工作  </p>
-<p><strong>并行收集器：</strong> 多条垃圾收集线程并行工作，用户线程等待</p>
-<p><strong>并发收集器：</strong> 垃圾收集线程与用户线程同时执行（不一定并行，可能交替执行）</p>
-<h3 id="二、垃圾收集器详述"><a href="#二、垃圾收集器详述" class="headerlink" title="二、垃圾收集器详述"></a>二、垃圾收集器详述</h3><h4 id="新生代收集器（3种）"><a href="#新生代收集器（3种）" class="headerlink" title="新生代收集器（3种）"></a>新生代收集器（3种）</h4><h5 id="Serial-收集器（串行）"><a href="#Serial-收集器（串行）" class="headerlink" title="Serial 收集器（串行）"></a>Serial 收集器（串行）</h5><p>Serial收集器是一个单线程的收集器。<br>“单线程”：不仅只是有一条收集线程，而且必须暂停用户工作线程。 </p>
-<p>工作过程：  </p>
-<p><img src="http://osuskkx7k.bkt.clouddn.com/seria.png" alt="image"></p>
-<p><strong>特点：</strong> 单线程，无线程切换，简单高效，（管理内存小，停顿可以接受）<br><strong>缺点：</strong>  暂停工作线程<br><strong>应用场景：</strong> 适用于运行在Client模式下的虚拟机</p>
-<h5 id="ParNew-收集器（并行）"><a href="#ParNew-收集器（并行）" class="headerlink" title="ParNew 收集器（并行）"></a>ParNew 收集器（并行）</h5><p>ParNew收集器是Serial收集器的多线程版本。</p>
-<p>工作过程：  </p>
-<p><img src="http://osuskkx7k.bkt.clouddn.com/ParNew.png" alt="image"></p>
-<p><strong>特点：</strong> 多线程，除Serial外唯一能和CMS收集器配合<br><strong>缺点：</strong>  暂停工作线程，单线程下不如Serial<br><strong>应用场景：</strong> 适用于运行在Server模式下的虚拟机</p>
-<h5 id="Parallel-Scavenge-收集器（并行）"><a href="#Parallel-Scavenge-收集器（并行）" class="headerlink" title="Parallel Scavenge 收集器（并行）"></a>Parallel Scavenge 收集器（并行）</h5><p>Parallel Scavenge收集器被称为“吞吐量优先”收集器。</p>
-<p>工作过程：  </p>
-<p><img src="http://osuskkx7k.bkt.clouddn.com/parallel%20scavenge.png" alt="image"></p>
-<p><strong>特点：</strong> </p>
-<ul>
-<li><strong>可控制吞吐量。</strong><br>吞吐量 = 用户代码时间/（用户代码时间+垃圾收集时间）<br>吞吐量越高，表示越高效地利用CPU，适合后台运算任务。  </li>
-<li><strong>GC 自适应调节策略</strong><br>JVM可以根据当前系统的运行情况自适应调节参数，以提供最合适的停顿时间和最大的吞吐量。</li>
-</ul>
-<p><strong>缺点：</strong> 相比停顿时间更注重吞吐量<br><strong>应用场景：</strong> 主要用于后台计算，不需要与用户进行太多交互，对暂停时间没有特别高的要求等场景，如批量处理；</p>
-<h4 id="老年代收集器（3种）"><a href="#老年代收集器（3种）" class="headerlink" title="老年代收集器（3种）"></a>老年代收集器（3种）</h4><h5 id="Serial-Old-收集器（串行）"><a href="#Serial-Old-收集器（串行）" class="headerlink" title="Serial Old 收集器（串行）"></a>Serial Old 收集器（串行）</h5><p>Serial Old是Serial的老年代版本，同样是一个单线程收集器。  </p>
-<p>工作过程：  </p>
-<p><img src="http://osuskkx7k.bkt.clouddn.com/seria.png" alt="image"></p>
-<p><strong>特点：</strong> 单线程，“标记-整理”算法<br><strong>缺点：</strong>  暂停工作线程<br><strong>应用场景：</strong> 适用于运行在Client模式下的虚拟机</p>
-<h5 id="Parallel-Old-收集器（并行）"><a href="#Parallel-Old-收集器（并行）" class="headerlink" title="Parallel Old 收集器（并行）"></a>Parallel Old 收集器（并行）</h5><p>Parallel Old是Parallel Scavenge收集器的老年代版本，多线程收集器。（JDK1.6之后出现）</p>
-<p>工作过程：  </p>
-<p><img src="http://osuskkx7k.bkt.clouddn.com/parallel%20old.png" alt="image"></p>
-<p><strong>特点：</strong> 多线程，“标记-整理”算法，唯一能和Parallel Scavenge收集器配合<br><strong>缺点：</strong>  暂停工作线程<br><strong>应用场景：</strong> 适用于注重吞吐量及CPU资源敏感的场合</p>
-<h5 id="CMS-收集器（并发）"><a href="#CMS-收集器（并发）" class="headerlink" title="CMS 收集器（并发）"></a>CMS 收集器（并发）</h5><p><strong>CMS（Concurrent Mark Sweep）是一种以获取最短回收停顿时间为目标的收集器。<br>第一次实现了让垃圾收集线程与用户线程（基本上）同时工作。</strong>  </p>
-<p>工作过程分为<strong>4个步骤</strong>：  </p>
-<ol>
-<li><strong>初始标记</strong>：标记“GC-Roots”关联的对象（Stop the World）</li>
-<li><strong>并发标记</strong>： 进行GC-Roots Tracing的过程，在刚才产生的集合中标记出存活对象；</li>
-<li><strong>重新标记</strong>：修正并发标记期间因用户程序继续运作而导致标记变动的那一部分对象的标记记录（Stop the World）</li>
-<li><strong>并发清除</strong>：回收所有垃圾对象</li>
-</ol>
-<p>所以，<strong>在初始标记和重新标记阶段，还是只有垃圾收集线程工作；并发标记和并发清除阶段是和用户线程并发执行的</strong>。</p>
-<p><img src="http://osuskkx7k.bkt.clouddn.com/CMS.png" alt="image"></p>
-<p><strong>特点：</strong> 多线程并发执行，停顿时间短<br><strong>缺点：</strong>  </p>
-<ul>
-<li>对CPU资源十分敏感</li>
-<li>无法处理浮动垃圾</li>
-<li>产生大量空间碎片（由于是“标记-清除”算法）  </li>
-</ul>
-<p><strong>应用场景：</strong> 适用于大型网站或B/S的服务端，注重响应速度和用户体验。</p>
-<h4 id="通用收集器"><a href="#通用收集器" class="headerlink" title="通用收集器"></a>通用收集器</h4><h5 id="G1-收集器（并发）"><a href="#G1-收集器（并发）" class="headerlink" title="G1 收集器（并发）"></a>G1 收集器（并发）</h5><p>G1是目前最前沿的收集器，可处理整个GC堆，JDK1.7之后出现。  </p>
-<p><strong>G1是如何处理整个堆</strong>？<br>G1将整个堆划分为多个大小相等的独立区域Region（不再是新生代老年代），然后跟踪各个Region获得其垃圾收集价值大小，并在后台维护一个优先列表，根据允许的收集时间，优先回收价值最大的Region（名称Garbage-First的由来）。这个过程保证了在有限的时间内可以回收更多的垃圾。</p>
-<p>工作过程分为<strong>4个步骤</strong>： </p>
-<ol>
-<li><strong>初始标记</strong>：标记“GC-Roots”关联的对象，并修改TAMS的值，让下一阶段用户程序并发运行时，能在正确可用的Region中创建新对象</li>
-<li><strong>并发标记</strong>：根据GC-Roots进行可达性分析，找出存活对象</li>
-<li><strong>最终标记</strong>：为了修正并发标记期间由于用户程序继续运作而导致标记产生变动的那一部分对象的标示记录</li>
-<li><strong>筛选回收</strong>：根据各个Region的价值回收</li>
-</ol>
-<p><img src="http://osuskkx7k.bkt.clouddn.com/G1.png" alt="image"></p>
-<p><strong>特点：</strong> </p>
-<ul>
-<li>并行且并发  </li>
-<li>独立处理整个GC堆，不需要配合其他收集器</li>
-<li>可预测停顿时间</li>
-<li>不产生空间碎片</li>
-</ul>
-<p><strong>应用场景：</strong> 面向服务器，适用于多CPU及大容量内存的机器。</p>
-<h3 id="三、常见的参数配置"><a href="#三、常见的参数配置" class="headerlink" title="三、常见的参数配置"></a>三、常见的参数配置</h3><ul>
-<li><strong>Xms</strong>：堆的最小值（初始）</li>
-<li><strong>Xmx</strong>：堆的最大值<br>（Xms、Xmx二者一样时，可避免自动扩展）</li>
-<li><strong>Xmn</strong>：堆中新生代的大小</li>
-<li><strong>Xss</strong>：每个线程的堆栈大小</li>
-<li><strong>XX:PermSize</strong>：永久代的大小（初始）</li>
-<li><strong>XX:MaxPermSize</strong>：永久代的最大值</li>
-<li><p><strong>XX:NewRatio</strong>：年轻代（包括Eden和两个Survivor区）与年老代的比值，设置为3，则年轻代与年老代所占比值为1：3，年轻代占整个堆栈的1/4</p>
-</li>
-<li><p><strong>XX:SurvivorRatio</strong>：年轻代中Eden区与Survivor区的大小比值。设置为4，则两个Survivor区与一个Eden区的比值为2:4，一个Survivor区占整个年轻代的1/6</p>
-</li>
-</ul>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;h3 id=&quot;一、垃圾收集器概述&quot;&gt;&lt;a href=&quot;#一、垃圾收集器概述&quot; class=&quot;headerlink&quot; title=&quot;一、垃圾收集器概述&quot;&gt;&lt;/a&gt;一、垃圾收集器概述&lt;/h3&gt;&lt;p&gt;&lt;strong&gt;垃圾收集器是内存垃圾回收算法的具体实现。&lt;/strong&gt;&lt;br&gt;J
-    
-    </summary>
-    
-      <category term="技术" scheme="http://yoursite.com/categories/%E6%8A%80%E6%9C%AF/"/>
-    
-    
-      <category term="JVM" scheme="http://yoursite.com/tags/JVM/"/>
-    
-      <category term="垃圾收集器" scheme="http://yoursite.com/tags/%E5%9E%83%E5%9C%BE%E6%94%B6%E9%9B%86%E5%99%A8/"/>
     
   </entry>
   
