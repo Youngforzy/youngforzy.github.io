@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yoursite.com/"/>
-  <updated>2018-02-24T18:19:31.342Z</updated>
+  <updated>2018-04-14T16:29:31.778Z</updated>
   <id>http://yoursite.com/</id>
   
   <author>
@@ -14,6 +14,125 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>ActiveMQ结合Spring收发消息</title>
+    <link href="http://yoursite.com/2018/02/15/ActiveMQ%E7%BB%93%E5%90%88Spring%E6%94%B6%E5%8F%91%E6%B6%88%E6%81%AF/"/>
+    <id>http://yoursite.com/2018/02/15/ActiveMQ结合Spring收发消息/</id>
+    <published>2018-02-15T07:12:12.000Z</published>
+    <updated>2018-04-14T16:29:31.778Z</updated>
+    
+    <content type="html"><![CDATA[<h3 id="ActiveMQ结合Spring收发消息"><a href="#ActiveMQ结合Spring收发消息" class="headerlink" title="ActiveMQ结合Spring收发消息"></a>ActiveMQ结合Spring收发消息</h3><p>直接使用ActiveMQ的方式需要重复写很多代码，且不利于管理，Spring 提供了一种更加简便的方式————Spring JMS ，通过它可以更加方便地使用ActiveMQ。</p>
+<h4 id="Maven-依赖"><a href="#Maven-依赖" class="headerlink" title="Maven 依赖"></a>Maven 依赖</h4><p>结合Spring使用ActiveMQ的依赖如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line">&lt;!-- Spring JMS --&gt;</div><div class="line">&lt;dependency&gt;</div><div class="line">    &lt;groupId&gt;org.springframework&lt;/groupId&gt;</div><div class="line">    &lt;artifactId&gt;spring-jms&lt;/artifactId&gt;</div><div class="line">    &lt;version&gt;$&#123;spring.version&#125;&lt;/version&gt;</div><div class="line">&lt;/dependency&gt;</div><div class="line">&lt;!-- xbean 如&lt;amq:connectionFactory /&gt; --&gt;</div><div class="line">&lt;dependency&gt;</div><div class="line">    &lt;groupId&gt;org.apache.xbean&lt;/groupId&gt;</div><div class="line">    &lt;artifactId&gt;xbean-spring&lt;/artifactId&gt;</div><div class="line">    &lt;version&gt;3.16&lt;/version&gt;</div><div class="line">&lt;/dependency&gt;</div><div class="line">&lt;!-- ActiiveMQ --&gt;</div><div class="line">&lt;dependency&gt;</div><div class="line">    &lt;groupId&gt;org.apache.activemq&lt;/groupId&gt;</div><div class="line">    &lt;artifactId&gt;activemq-core&lt;/artifactId&gt;</div><div class="line">    &lt;version&gt;5.7.0&lt;/version&gt;</div><div class="line">&lt;/dependency&gt;</div><div class="line">&lt;dependency&gt;</div><div class="line">    &lt;groupId&gt;org.apache.activemq&lt;/groupId&gt;</div><div class="line">    &lt;artifactId&gt;activemq-pool&lt;/artifactId&gt;</div><div class="line">    &lt;version&gt;5.7.0&lt;/version&gt;</div><div class="line">&lt;/dependency&gt;</div></pre></td></tr></table></figure></p>
+<h4 id="ActiveMQ-xml-文件"><a href="#ActiveMQ-xml-文件" class="headerlink" title="ActiveMQ.xml 文件"></a>ActiveMQ.xml 文件</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div></pre></td><td class="code"><pre><div class="line">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;</div><div class="line">&lt;beans xmlns=&quot;http://www.springframework.org/schema/beans&quot;</div><div class="line">       xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</div><div class="line">       xmlns:amq=&quot;http://activemq.apache.org/schema/core&quot;</div><div class="line">       xsi:schemaLocation=&quot;http://www.springframework.org/schema/beans</div><div class="line">        http://www.springframework.org/schema/beans/spring-beans-4.0.xsd</div><div class="line">        http://activemq.apache.org/schema/core</div><div class="line">        http://activemq.apache.org/schema/core/activemq-core-5.12.1.xsd&quot;&gt;</div><div class="line">    &lt;!-- ActiveMQ 连接工厂 --&gt;</div><div class="line">    &lt;amq:connectionFactory id=&quot;amqConnectionFactory&quot;</div><div class="line">                           brokerURL=&quot;tcp://localhost:61616&quot;</div><div class="line">                           userName=&quot;admin&quot;</div><div class="line">                           password=&quot;admin&quot; /&gt;</div><div class="line"></div><div class="line">    &lt;!-- 提高效率，配置JMS连接工厂 --&gt;</div><div class="line">    &lt;bean id=&quot;connectionFactory&quot; class=&quot;org.springframework.jms.connection.CachingConnectionFactory&quot;&gt;</div><div class="line">        &lt;constructor-arg ref=&quot;amqConnectionFactory&quot; /&gt;</div><div class="line">        &lt;property name=&quot;sessionCacheSize&quot; value=&quot;100&quot; /&gt;</div><div class="line">    &lt;/bean&gt;</div><div class="line">    &lt;!-- 定义消息队列（Queue）--&gt;</div><div class="line">   &lt;!-- &lt;bean id=&quot;QueueDestination&quot; class=&quot;org.apache.activemq.command.ActiveMQQueue&quot;&gt;</div><div class="line">        &amp;lt;!&amp;ndash; 设置消息队列的名字 &amp;ndash;&amp;gt;</div><div class="line">        &lt;constructor-arg value=&quot;Queue-zy&quot;/&gt;</div><div class="line">    &lt;/bean&gt;--&gt;</div><div class="line">    &lt;!--定义主题(Topic)--&gt;</div><div class="line">    &lt;bean id=&quot;topicDestination&quot; class=&quot;org.apache.activemq.command.ActiveMQTopic&quot;&gt;</div><div class="line">        &lt;constructor-arg value=&quot;Topic-zy&quot;/&gt;</div><div class="line">    &lt;/bean&gt;</div><div class="line">    &lt;!-- 配置JMS模板（Queue），Spring提供的JMS工具类，利用它发送、接收消息。 --&gt;</div><div class="line">    &lt;bean id=&quot;jmsTemplate&quot; class=&quot;org.springframework.jms.core.JmsTemplate&quot;&gt;</div><div class="line">        &lt;property name=&quot;connectionFactory&quot; ref=&quot;connectionFactory&quot; /&gt;</div><div class="line">        &lt;property name=&quot;defaultDestination&quot; ref=&quot;topicDestination&quot; /&gt;</div><div class="line">        &lt;property name=&quot;receiveTimeout&quot; value=&quot;10000&quot; /&gt;</div><div class="line">        &lt;!-- true是topic，false是queue，默认是false --&gt;</div><div class="line">        &lt;property name=&quot;pubSubDomain&quot; value=&quot;true&quot; /&gt;</div><div class="line">    &lt;/bean&gt;</div><div class="line">    &lt;!-- 配置消息队列监听者（Queue or Topic） --&gt;</div><div class="line">    &lt;bean id=&quot;messageListener&quot; class=&quot;com.service.TopicMessageListener&quot; /&gt;</div><div class="line"></div><div class="line">    &lt;!-- 显示注入消息监听容器，配置连接工厂，监听的目标是QueueDestination，监听器是上面定义的监听器 --&gt;</div><div class="line">    &lt;bean id=&quot;ListenerContainer&quot;</div><div class="line">          class=&quot;org.springframework.jms.listener.DefaultMessageListenerContainer&quot;&gt;</div><div class="line">        &lt;property name=&quot;connectionFactory&quot; ref=&quot;connectionFactory&quot; /&gt;</div><div class="line">        &lt;property name=&quot;destination&quot; ref=&quot;topicDestination&quot; /&gt;</div><div class="line">        &lt;property name=&quot;messageListener&quot; ref=&quot;messageListener&quot; /&gt;</div><div class="line">    &lt;/bean&gt;</div><div class="line">&lt;/beans&gt;</div></pre></td></tr></table></figure>
+<h5 id="配置connectionFactory"><a href="#配置connectionFactory" class="headerlink" title="配置connectionFactory"></a>配置connectionFactory</h5><p>connectionFactory是Spring用于创建到JMS服务器链接的，Spring提供了多种connectionFactory.</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">&lt;!-- ActiveMQ 连接工厂 --&gt;</div><div class="line">&lt;amq:connectionFactory id=&quot;amqConnectionFactory&quot;</div><div class="line">                       brokerURL=&quot;tcp://localhost:61616&quot;</div><div class="line">                       userName=&quot;admin&quot;</div><div class="line">                       password=&quot;admin&quot; /&gt;</div><div class="line"></div><div class="line">&lt;!-- 提高效率，配置JMS连接工厂 --&gt;</div><div class="line">&lt;bean id=&quot;connectionFactory&quot; class=&quot;org.springframework.jms.connection.CachingConnectionFactory&quot;&gt;</div><div class="line">    &lt;constructor-arg ref=&quot;amqConnectionFactory&quot; /&gt;</div><div class="line">    &lt;property name=&quot;sessionCacheSize&quot; value=&quot;100&quot; /&gt;</div><div class="line">&lt;/bean&gt;</div></pre></td></tr></table></figure>
+<h5 id="配置Queue"><a href="#配置Queue" class="headerlink" title="配置Queue"></a>配置Queue</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">&lt;bean id=&quot;QueueDestination&quot; class=&quot;org.apache.activemq.command.ActiveMQQueue&quot;&gt;</div><div class="line">       &lt;!-- 设置消息队列的名字 --&gt;</div><div class="line">       &lt;constructor-arg value=&quot;Queue-zy&quot;/&gt;</div><div class="line">&lt;/bean&gt;</div></pre></td></tr></table></figure>
+<h5 id="配置Topic"><a href="#配置Topic" class="headerlink" title="配置Topic"></a>配置Topic</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">&lt;bean id=&quot;topicDestination&quot; class=&quot;org.apache.activemq.command.ActiveMQTopic&quot;&gt;</div><div class="line">        &lt;constructor-arg value=&quot;Topic-zy&quot;/&gt;</div><div class="line">&lt;/bean&gt;</div></pre></td></tr></table></figure>
+<h5 id="配置JMS消息模板——jmsTemplate"><a href="#配置JMS消息模板——jmsTemplate" class="headerlink" title="配置JMS消息模板——jmsTemplate"></a>配置JMS消息模板——jmsTemplate</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">&lt;!-- 配置JMS模板，Spring提供的JMS工具类，利用它发送、接收消息--&gt;</div><div class="line">&lt;bean id=&quot;jmsTemplate&quot; class=&quot;org.springframework.jms.core.JmsTemplate&quot;&gt;</div><div class="line">    &lt;property name=&quot;connectionFactory&quot; ref=&quot;connectionFactory&quot; /&gt;</div><div class="line">    &lt;property name=&quot;defaultDestination&quot; ref=&quot;QueueDestination&quot; /&gt;</div><div class="line">    &lt;!--&lt;property name=&quot;defaultDestination&quot; ref=&quot;topicDestination&quot; /&gt;--&gt;</div><div class="line">    &lt;property name=&quot;receiveTimeout&quot; value=&quot;10000&quot; /&gt;</div><div class="line">    &lt;property name=&quot;pubSubDomain&quot; value=&quot;false&quot; /&gt;&lt;!-- true是topic，false是queue，默认是false --&gt;</div><div class="line">&lt;/bean&gt;</div></pre></td></tr></table></figure>
+<p>最后，在applicationContext.xml中引入配置好的ActiveMQ.xml<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">&lt;import resource=&quot;ActiveMQ.xml&quot; /&gt;</div></pre></td></tr></table></figure></p>
+<p>以上就是配置文件相关的，下面是具体的业务代码。</p>
+<h4 id="消息生产者服务"><a href="#消息生产者服务" class="headerlink" title="消息生产者服务"></a>消息生产者服务</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div></pre></td><td class="code"><pre><div class="line">@Service</div><div class="line">public class ProducerService &#123;</div><div class="line"></div><div class="line">    @Autowired</div><div class="line">    private JmsTemplate jmsTemplate;</div><div class="line"></div><div class="line">    //使用默认目的地</div><div class="line">    public void sendMessageDefault(final String msg)&#123;</div><div class="line">        Destination destination = jmsTemplate.getDefaultDestination();</div><div class="line">        System.out.println(&quot;向队列： &quot; + destination + &quot; 成功发送一条消息&quot;);</div><div class="line">        jmsTemplate.send(new MessageCreator() &#123;</div><div class="line">            public Message createMessage(Session session) throws JMSException &#123;</div><div class="line">                return session.createTextMessage(msg);</div><div class="line">            &#125;</div><div class="line">        &#125;);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    //可指定目的地</div><div class="line">    public void sendMessage(Destination destination,final String msg)&#123;</div><div class="line"></div><div class="line">        jmsTemplate.send(destination, new MessageCreator() &#123;</div><div class="line">            public Message createMessage(Session session) throws JMSException &#123;</div><div class="line">                return session.createTextMessage(msg);</div><div class="line">            &#125;</div><div class="line">        &#125;);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h4 id="消息消费者服务"><a href="#消息消费者服务" class="headerlink" title="消息消费者服务"></a>消息消费者服务</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div></pre></td><td class="code"><pre><div class="line">@Service</div><div class="line">public class ConsumerService &#123;</div><div class="line"></div><div class="line">    @Autowired</div><div class="line">    private JmsTemplate jmsTemplate;</div><div class="line"></div><div class="line">    //从指定的Destination接收消息</div><div class="line">    public TextMessage recive(Destination destination)&#123;</div><div class="line">        TextMessage message = (TextMessage) jmsTemplate.receive(destination);</div><div class="line">        try &#123;</div><div class="line">            System.out.println(&quot;从队列&quot; + destination.toString() + &quot;收到了消息&quot; + message.getText());</div><div class="line">        &#125; catch (JMSException e) &#123;</div><div class="line">            e.printStackTrace();</div><div class="line">        &#125;</div><div class="line">        return message;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    //从默认的Destination接收消息</div><div class="line">    public void reciveDefault()&#123;</div><div class="line">    </div><div class="line">        Destination destination = jmsTemplate.getDefaultDestination();</div><div class="line">        jmsTemplate.setReceiveTimeout(5000);</div><div class="line">        while(true)&#123;</div><div class="line">            TextMessage message = (TextMessage) jmsTemplate.receive(destination);</div><div class="line">            try &#123;</div><div class="line">                //这里还是同一个消费者</div><div class="line">                System.out.println(&quot;消费者  从目的地 &quot; + destination.toString() + &quot; 收到了消息&quot; + message.getText());</div><div class="line">            &#125; catch (JMSException e) &#123;</div><div class="line">                e.printStackTrace();</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h4 id="生产者"><a href="#生产者" class="headerlink" title="生产者"></a>生产者</h4><p>直接在main方法中获取ApplicationContext运行，便于测试。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line">@Component</div><div class="line">public class MsgProducer &#123;</div><div class="line"></div><div class="line">    @Autowired</div><div class="line">    private ProducerService producerService;</div><div class="line"></div><div class="line">    public void send()&#123;</div><div class="line">        System.out.println(&quot;生产者开始发送消息：&quot;);</div><div class="line">        for(int i = 1; i &lt; 11; i++)&#123;</div><div class="line">            String msg = &quot;生产者发出的消息&quot;;</div><div class="line">            producerService.sendMessageDefault(msg + &quot;-----&quot; + i);</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    public static void main(String[] args) &#123;</div><div class="line">        ApplicationContext context = new ClassPathXmlApplicationContext(&quot;classpath:/applicationContext.xml&quot;);</div><div class="line">        MsgProducer msgProducer = context.getBean(MsgProducer.class);</div><div class="line">        msgProducer.send();</div><div class="line">    &#125;</div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<h4 id="消费者"><a href="#消费者" class="headerlink" title="消费者"></a>消费者</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line">@Component</div><div class="line">public class MsgConsumer &#123;</div><div class="line"></div><div class="line">    @Autowired</div><div class="line">    private ConsumerService consumerService;</div><div class="line"></div><div class="line">    public void recive()&#123;</div><div class="line">        System.out.println(&quot;消费者 1 开始接收消息：&quot;);</div><div class="line">        consumerService.reciveDefault();</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    public static void main(String[] args) &#123;</div><div class="line"></div><div class="line">        ApplicationContext context = new ClassPathXmlApplicationContext(&quot;classpath:/applicationContext.xml&quot;);</div><div class="line">        MsgConsumer msgConsumer = context.getBean(MsgConsumer.class);</div><div class="line">        msgConsumer.recive();</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>接下来就可以启动项目。同样是使用两种方式测试。</p>
+<h4 id="第一种方式————点对点（Queue）"><a href="#第一种方式————点对点（Queue）" class="headerlink" title="第一种方式————点对点（Queue）"></a>第一种方式————点对点（Queue）</h4><h4 id="同步的方式"><a href="#同步的方式" class="headerlink" title="同步的方式"></a>同步的方式</h4><p>先启动生产者  发送10条消息， 再启动消费者，可以看到控制台显示成功收到10条消息  </p>
+<p><img src="http://osuskkx7k.bkt.clouddn.com/%E7%82%B9%E5%AF%B9%E7%82%B9%E7%94%9F%E4%BA%A7.png" alt="image"></p>
+<p><img src="http://osuskkx7k.bkt.clouddn.com/%E7%82%B9%E5%AF%B9%E7%82%B9%E6%B6%88%E8%B4%B9.jpg" alt="image"></p>
+<h4 id="异步监听的方式"><a href="#异步监听的方式" class="headerlink" title="异步监听的方式"></a>异步监听的方式</h4><p>通过监听器即可实现异步接收消息的效果，而不是像上面使用while()轮询同步的方式。<br>项目中一般都是使用异步监听的方式，<strong>在A服务中发送了一条消息，B服务可以利用消息监听器监听，当收到消息后，进行相应的操作</strong>。</p>
+<h5 id="消息监听器（3种）"><a href="#消息监听器（3种）" class="headerlink" title="消息监听器（3种）"></a>消息监听器（3种）</h5><p>通过继承JMS中的<strong>MessageListener接口</strong>，实现onMessage()方法，就可以自定义监听器。这是最基本的监听器。（可根据业务实现自定义的功能）</p>
+<p>另外spring也给我们提供了其他类型的消息监听器，比如 <strong>SessionAwareMessageListener</strong>，它的作用不仅可以接收消息，还可以发送一条消息通知对方表示自己收到了消息。（还有一种是<strong>MessageListenerAdapter</strong>）</p>
+<p>一个简单的自定义监听器如下:收到消息后打印消息<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">public class QueueMessageListener implements MessageListener &#123;</div><div class="line"></div><div class="line">    public void onMessage(Message message) &#123;</div><div class="line">        //如果有消息</div><div class="line">        TextMessage tmessage = (TextMessage) message;</div><div class="line">        try &#123;</div><div class="line">            if(tmessage != null)&#123;</div><div class="line">                System.out.println(&quot;监听器监听消息：&quot;+tmessage.getText());</div><div class="line">            &#125;</div><div class="line">        &#125; catch (JMSException e) &#123;</div><div class="line">            e.printStackTrace();</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>在ActiveMQ.xml中引入消息监听器：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">&lt;!-- 配置消息队列监听者（Queue） --&gt;</div><div class="line">    &lt;bean id=&quot;queueMessageListener&quot; class=&quot;com.service.QueueMessageListener&quot; /&gt;</div><div class="line">    </div><div class="line"> &lt;!-- 显示注入消息监听容器，配置连接工厂，监听的目标是QueueDestination 或 topicDestination，监听器是上面自定义的监听器 --&gt;</div><div class="line">    &lt;bean id=&quot;queueListenerContainer&quot;</div><div class="line">          class=&quot;org.springframework.jms.listener.DefaultMessageListenerContainer&quot;&gt;</div><div class="line">        &lt;property name=&quot;connectionFactory&quot; ref=&quot;connectionFactory&quot; /&gt;</div><div class="line">        &lt;property name=&quot;destination&quot; ref=&quot;QueueDestination&quot; /&gt;</div><div class="line">        &lt;!--&lt;property name=&quot;destination&quot; ref=&quot;topicDestination&quot; /&gt;--&gt;</div><div class="line">        &lt;property name=&quot;messageListener&quot; ref=&quot;queueMessageListener&quot; /&gt;</div><div class="line">    &lt;/bean&gt;</div></pre></td></tr></table></figure></p>
+<p>可以看到，当使用消息监听器之后，每发送一条消息立马就会被监听到：  </p>
+<p><img src="http://osuskkx7k.bkt.clouddn.com/%E7%82%B9%E5%AF%B9%E7%82%B9%E7%9B%91%E5%90%AC%E5%99%A8.jpg" alt="image"></p>
+<h4 id="第二种方式————发布-订阅（Topic）"><a href="#第二种方式————发布-订阅（Topic）" class="headerlink" title="第二种方式————发布/订阅（Topic）"></a>第二种方式————发布/订阅（Topic）</h4><h4 id="同步的方式-1"><a href="#同步的方式-1" class="headerlink" title="同步的方式"></a>同步的方式</h4><p>类似点对点中同步的方式，只是每个消费者都能收到生产者发出的全部消息，不再赘述。</p>
+<h4 id="异步监听的方式-1"><a href="#异步监听的方式-1" class="headerlink" title="异步监听的方式"></a>异步监听的方式</h4><p>启动两个监听器（两个消费者），对消息进行异步监听。看是否各自能收到生产者发送的消息。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">&lt;!-- 配置两个监听器 --&gt;</div><div class="line">    &lt;bean id=&quot;messageListener&quot; class=&quot;com.service.TopicMessageListener&quot; /&gt;</div><div class="line">    &lt;bean id=&quot;messageListener2&quot; class=&quot;com.service.TopicMessageListener2&quot; /&gt;</div></pre></td></tr></table></figure>
+<p><img src="http://osuskkx7k.bkt.clouddn.com/%E4%B8%A4%E4%B8%AA%E7%9B%91%E5%90%AC%E5%99%A8.jpg" alt="image"></p>
+<p>可以看到，每个监听器各自都收到了生产者发送的10条消息。</p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h3 id=&quot;ActiveMQ结合Spring收发消息&quot;&gt;&lt;a href=&quot;#ActiveMQ结合Spring收发消息&quot; class=&quot;headerlink&quot; title=&quot;ActiveMQ结合Spring收发消息&quot;&gt;&lt;/a&gt;ActiveMQ结合Spring收发消息&lt;/h3&gt;&lt;
+    
+    </summary>
+    
+      <category term="技术" scheme="http://yoursite.com/categories/%E6%8A%80%E6%9C%AF/"/>
+    
+    
+      <category term="ActiveMQ" scheme="http://yoursite.com/tags/ActiveMQ/"/>
+    
+      <category term="消息队列" scheme="http://yoursite.com/tags/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Mysql自动还原脚本（.sh文件）</title>
+    <link href="http://yoursite.com/2018/01/25/Mysql%E8%87%AA%E5%8A%A8%E8%BF%98%E5%8E%9F%E8%84%9A%E6%9C%AC/"/>
+    <id>http://yoursite.com/2018/01/25/Mysql自动还原脚本/</id>
+    <published>2018-01-25T07:12:12.000Z</published>
+    <updated>2018-04-14T16:25:02.165Z</updated>
+    
+    <content type="html"><![CDATA[<h3 id="Mysql自动还原脚本（-sh文件）"><a href="#Mysql自动还原脚本（-sh文件）" class="headerlink" title="Mysql自动还原脚本（.sh文件）"></a>Mysql自动还原脚本（.sh文件）</h3><h4 id="还原数据库的基本指令"><a href="#还原数据库的基本指令" class="headerlink" title="还原数据库的基本指令"></a>还原数据库的基本指令</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">source d:/abc.sql</div></pre></td></tr></table></figure>
+<p>当连接数据库之后，可以直接使用 以上命令来还原指定数据库。</p>
+<h4 id="自动还原脚本"><a href="#自动还原脚本" class="headerlink" title="自动还原脚本"></a>自动还原脚本</h4><p>那么能不能使用脚本的方式自动还原呢？<br><strong>当每次都是还原同一个数据库，或者还原同一个数据库中的指定表时，便可以采用脚本的方式执行。</strong></p>
+<p>当数据库备份文件存储在云端时，可采用以下脚本：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div></pre></td><td class="code"><pre><div class="line">#!/bin/bash</div><div class="line"></div><div class="line">HOSTNAME = &quot;bd.gameplat2dev.w.qiyi.db&quot;         #数据库信息    </div><div class="line">PORT = &quot;1516&quot;                                  #端口</div><div class="line">USERNAME = &quot;username&quot;                          #用户名</div><div class="line">PASSWORD = &quot;123456&quot;                            #密码</div><div class="line"></div><div class="line">DBNAME = &quot;game_product&quot;                        #数据库名称</div><div class="line">#TABLENAME1 = &quot;t_approve&quot;                      #表名</div><div class="line">#TABLENAME2 = &quot;t_approve_role&quot;  </div><div class="line"></div><div class="line">#sql文件下载路径</div><div class="line">URL = &quot;http://osuskkx7k.bkt.clouddn.com/ab.sql&quot;</div><div class="line"></div><div class="line">#定义文件名（自定义）</div><div class="line">FILE = &quot;sqlfile.sql&quot;</div><div class="line"></div><div class="line">#下载sql文件</div><div class="line">wget $&#123;URL&#125; -O $&#123;FILE&#125;</div><div class="line"></div><div class="line">#输出(可无)</div><div class="line">echo $&#123;FILE&#125;</div><div class="line"></div><div class="line">#定义 source 命令</div><div class="line">restore_sql = &quot;source  $&#123;FILE&#125;&quot;</div><div class="line"></div><div class="line">#还原指令</div><div class="line">mysql -h$&#123;HOSTNAME&#125;  -P$&#123;PORT&#125;  -u$&#123;USERNAME&#125; -p$&#123;PASSWORD&#125; $&#123;DBNAME&#125; -e&quot;$&#123;restore_sql&#125;&quot;</div></pre></td></tr></table></figure>
+<p><strong>记得另存为时，后缀是 .sh，双击即可运行</strong></p>
+<h5 id="注意："><a href="#注意：" class="headerlink" title="注意："></a>注意：</h5><ul>
+<li>若为本地数据库可将数据库名改为 localhost ，端口无需指定</li>
+<li>脚本中 wget 工具需要安装</li>
+<li>若sql文件不是存储云端，可直接指定路径</li>
+<li>FILE文件名可自定义</li>
+</ul>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h3 id=&quot;Mysql自动还原脚本（-sh文件）&quot;&gt;&lt;a href=&quot;#Mysql自动还原脚本（-sh文件）&quot; class=&quot;headerlink&quot; title=&quot;Mysql自动还原脚本（.sh文件）&quot;&gt;&lt;/a&gt;Mysql自动还原脚本（.sh文件）&lt;/h3&gt;&lt;h4 id=&quot;还
+    
+    </summary>
+    
+      <category term="技术" scheme="http://yoursite.com/categories/%E6%8A%80%E6%9C%AF/"/>
+    
+    
+      <category term="Mysql" scheme="http://yoursite.com/tags/Mysql/"/>
+    
+      <category term="自动还原脚本" scheme="http://yoursite.com/tags/%E8%87%AA%E5%8A%A8%E8%BF%98%E5%8E%9F%E8%84%9A%E6%9C%AC/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Map 的4种遍历方式及比较</title>
+    <link href="http://yoursite.com/2017/12/28/Map%20%E7%9A%844%E7%A7%8D%E9%81%8D%E5%8E%86%E6%96%B9%E5%BC%8F%E5%8F%8A%E6%AF%94%E8%BE%83/"/>
+    <id>http://yoursite.com/2017/12/28/Map 的4种遍历方式及比较/</id>
+    <published>2017-12-28T07:12:12.000Z</published>
+    <updated>2018-04-14T16:06:38.295Z</updated>
+    
+    <content type="html"><![CDATA[<h3 id="Map-的4种遍历方式及比较"><a href="#Map-的4种遍历方式及比较" class="headerlink" title="Map 的4种遍历方式及比较"></a>Map 的4种遍历方式及比较</h3><h4 id="KeySet"><a href="#KeySet" class="headerlink" title="KeySet"></a>KeySet</h4><p>第一种方式：   <strong>keySet 其实遍历了两次，第一次获取Iterator，第二次根据key获取value，因此性能较差。</strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">public void testKetSet(Map&lt;String, String&gt; map) &#123;</div><div class="line">    Set&lt;String&gt; keys = map.keySet();</div><div class="line">    for (String key : keys) &#123;</div><div class="line">        String value =  map.get(key);</div><div class="line">        System.out.println(&quot;key: &quot;+ key + &quot;  value: &quot; + value );</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<h4 id="EntrySet"><a href="#EntrySet" class="headerlink" title="EntrySet"></a>EntrySet</h4><p>第二种方式: <strong>entrySet 优于keySet，因为一次就把key和value放入了entry)</strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">public void testEntrySet(Map&lt;String, String&gt; map) &#123;</div><div class="line">      Set&lt;Map.Entry&lt;String, String&gt;&gt; entry = map.entrySet();</div><div class="line">      for (Map.Entry&lt;String, String&gt; stringEntry : entry) &#123;</div><div class="line">          System.out.println(&quot;key: &quot;+ stringEntry.getKey() + &quot;  value: &quot; + stringEntry.getValue());</div><div class="line">      &#125;</div><div class="line">  &#125;</div></pre></td></tr></table></figure></p>
+<h4 id="Iterator"><a href="#Iterator" class="headerlink" title="Iterator"></a>Iterator</h4><p>第三种方式：<strong>Iterator （可用 it.remove()在遍历时删除）</strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"> public void testIterator(Map&lt;String, String&gt; map) &#123;</div><div class="line">        Iterator&lt;Map.Entry&lt;String, String&gt;&gt; it = map.entrySet().iterator();</div><div class="line">        while (it.hasNext()) &#123;</div><div class="line">            Map.Entry&lt;String, String&gt; entry1 = it.next();</div><div class="line">            System.out.println(&quot;key: &quot;+ entry1.getKey() + &quot;  value: &quot; + entry1.getValue());</div><div class="line">//            if (&quot;1&quot;.equals(entry1.getKey())) &#123;</div><div class="line">//                it.remove();</div><div class="line">//            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div></pre></td></tr></table></figure></p>
+<h4 id="Lambda-（JDK8）"><a href="#Lambda-（JDK8）" class="headerlink" title="Lambda （JDK8）"></a>Lambda （JDK8）</h4><p>第四种方式：Lambda （<strong>本质是 entrySet</strong>）<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">public void testLambda(Map&lt;String, String&gt; map) &#123;</div><div class="line">       map.forEach((key, value) -&gt; &#123;</div><div class="line">           System.out.println(&quot;key: &quot;+ key + &quot;  value: &quot; + value );</div><div class="line">       &#125;);</div><div class="line">   &#125;</div></pre></td></tr></table></figure></p>
+<h4 id="Values"><a href="#Values" class="headerlink" title="Values"></a>Values</h4><p>获取map所有的值，values()返回的是一个集合 <strong>Collection（可转List/Set）</strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">public void testValues(Map&lt;String, String&gt; map) &#123;</div><div class="line">       Collection&lt;String&gt; collection = map.values();</div><div class="line">       for (String s : collection) &#123;</div><div class="line">           System.out.println(&quot;value: &quot; + s);</div><div class="line">       &#125;</div><div class="line">   &#125;</div></pre></td></tr></table></figure></p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h3 id=&quot;Map-的4种遍历方式及比较&quot;&gt;&lt;a href=&quot;#Map-的4种遍历方式及比较&quot; class=&quot;headerlink&quot; title=&quot;Map 的4种遍历方式及比较&quot;&gt;&lt;/a&gt;Map 的4种遍历方式及比较&lt;/h3&gt;&lt;h4 id=&quot;KeySet&quot;&gt;&lt;a href=&quot;
+    
+    </summary>
+    
+      <category term="技术" scheme="http://yoursite.com/categories/%E6%8A%80%E6%9C%AF/"/>
+    
+    
+      <category term="HashMap" scheme="http://yoursite.com/tags/HashMap/"/>
+    
+      <category term="Java" scheme="http://yoursite.com/tags/Java/"/>
+    
+  </entry>
   
   <entry>
     <title>Java(spring)实现Mysql的定时备份与还原</title>
@@ -1215,256 +1334,6 @@
       <category term="JVM" scheme="http://yoursite.com/tags/JVM/"/>
     
       <category term="垃圾收集器" scheme="http://yoursite.com/tags/%E5%9E%83%E5%9C%BE%E6%94%B6%E9%9B%86%E5%99%A8/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>JVM之垃圾收集算法</title>
-    <link href="http://yoursite.com/2017/10/21/JVM%E4%B9%8B%E5%9E%83%E5%9C%BE%E6%94%B6%E9%9B%86%E7%AE%97%E6%B3%95/"/>
-    <id>http://yoursite.com/2017/10/21/JVM之垃圾收集算法/</id>
-    <published>2017-10-21T11:48:18.000Z</published>
-    <updated>2017-10-23T13:58:22.016Z</updated>
-    
-    <content type="html"><![CDATA[<h3 id="一、对象的死亡判定"><a href="#一、对象的死亡判定" class="headerlink" title="一、对象的死亡判定"></a>一、对象的死亡判定</h3><p><strong>JVM垃圾回收针对哪些区域？回收的是什么？</strong><br><strong>答：</strong><br><strong>1. 主要针对Java堆。</strong><br><strong>2. 回收“死亡”的对象，即没有引用的对象。</strong></p>
-<p>那么如何判断对象是否“死亡”呢？<br>两种方法，引用计数法和可达性分析算法。</p>
-<h4 id="引用计数法"><a href="#引用计数法" class="headerlink" title="引用计数法"></a>引用计数法</h4><p><strong>原理：给每个对象添加一个引用计数器。</strong></p>
-<ul>
-<li>每当有一个地方引用它，引用计数器+1；</li>
-<li>每当一个引用失效，引用计数器-1；</li>
-<li>当引用计数器为0时，表示该对象无引用，即可回收。</li>
-</ul>
-<p>缺点：无法解决对象之间循环引用的问题。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">GCobject A = new GCobject();</div><div class="line">GCobject B = new GCobject();</div><div class="line">A.instance = B;</div><div class="line">B.instance = A;</div><div class="line">...</div><div class="line">A = null;</div><div class="line">B = null;</div></pre></td></tr></table></figure>
-<p>可以看到，A、B对象都为null，已经不可能再访问，但由于A、B都有字段引用着对方，引用计数器不为0，因此不会被回收。</p>
-<h4 id="可达性分析算法"><a href="#可达性分析算法" class="headerlink" title="可达性分析算法"></a>可达性分析算法</h4><p><strong>原理：通过一系列称为“GC Roots”的对象作为起始点，从这些节点开始向下搜索，搜索所走过的路径称为“引用链”，当一个对象到 GC Roots没有任何引用链相连时, 则说明此对象是不可用的。</strong>  </p>
-<p><img src="http://osuskkx7k.bkt.clouddn.com/gc1.jpg.png" alt="image"></p>
-<p>如图，Object5、Object6、Object7这三个对象就是不可用的。</p>
-<p><strong>“GC Roots”对象：</strong></p>
-<ul>
-<li>虚拟机栈(栈帧中的本地变量表)中引用的对象；</li>
-<li>方法区中类静态引用的对象；</li>
-<li>方法区中常量引用的对象；</li>
-<li>本地方法栈中JNI（Native方法）引用的对象；</li>
-</ul>
-<hr>
-<p>然而，在可达性分析算法中不可达的对象，也并不是“非死不可”。<strong>一个对象真正死亡，至少要经历两次标记过程：</strong></p>
-<ol>
-<li><strong>第一次标记：</strong> 对象无GC Roots的引用链，筛选是否执行finalize()方法：  </li>
-</ol>
-<ul>
-<li>对象没有覆盖finalize()或finalize()被JVM调用过，则不需要执行；</li>
-<li>若执行finalize()，则将对象放入F-Queue队列中，会由JVM自动建立的线程执行该方法；</li>
-</ul>
-<ol>
-<li><strong>第二次标记</strong>：对F-Queue队列中的对象进行小规模的标记：</li>
-</ol>
-<ul>
-<li>对象在finalize()中拯救自己（重新与引用链相连），则不会回收；</li>
-<li>对象没有在finalize()中逃脱；</li>
-</ul>
-<p><strong>注：任何一个对象的finalize()方法只能被调用一次。</strong></p>
-<h3 id="二、垃圾收集算法"><a href="#二、垃圾收集算法" class="headerlink" title="二、垃圾收集算法"></a>二、垃圾收集算法</h3><p>主要有4种垃圾收集算法。<br><strong>Java堆从GC的角度可以细分为: 新生代(Eden区、From Survivor区和To Survivor区)和老年代。</strong></p>
-<h4 id="标记-清除算法（老年代）"><a href="#标记-清除算法（老年代）" class="headerlink" title="标记-清除算法（老年代）"></a>标记-清除算法（老年代）</h4><p>它是最基础的收集算法，<strong>算法分为标记和清除两个阶段：</strong></p>
-<ol>
-<li>首先标记出所有可回收的对象</li>
-<li>统一回收被标记对象</li>
-</ol>
-<p><img src="http://osuskkx7k.bkt.clouddn.com/%E6%A0%87%E8%AE%B0%E6%B8%85%E9%99%A4.jpg" alt="image">  </p>
-<p>不足：</p>
-<ol>
-<li>效率问题，标记和清除的效率不高；</li>
-<li>空间问题，标记清除后容易产生不连续的空间碎片（不利于大对象的内存分配）</li>
-</ol>
-<h4 id="复制算法（新生代）"><a href="#复制算法（新生代）" class="headerlink" title="复制算法（新生代）"></a>复制算法（新生代）</h4><p><strong>算法的核心是将可用内存按容量划分为大小相等的两块，每次只用其中一块，当这一块的内存用完，就将还存活的对象复制到另外一块上面，然后把已使用过的内存空间一次清理掉。</strong>（如图）</p>
-<p><img src="http://osuskkx7k.bkt.clouddn.com/%E5%A4%8D%E5%88%B6%E7%AE%97%E6%B3%95.jpg" alt="image"></p>
-<p>优点：无内存碎片；<br>不足：可用内存减小；  </p>
-<p>针对以上不足，就有了<strong>现代复制算法</strong>：<br>不需完全按照1∶1的比例划分新生代空间，<br>将<strong>新生代划分为一块较大的Eden区和两块较小的Survivor区(from和to)</strong>(HotSpot默认Eden和Survivor的大小为8∶1)，每次只用Eden和其中一块Survivor（from）。</p>
-<ul>
-<li>当发生MinorGC时, 将Eden和Survivor(from)中还存活着的对象一次性地拷贝到另外一块Survivor(to)上，最后清理掉Eden和刚才用过的Survivor(from)空间。</li>
-<li>当Survivor(to)空间不够用(不足以保存尚存活的对象)时, 需要依赖老年代进行空间分配担保机制，这部分内存直接进入老年代。</li>
-</ul>
-<p><strong>注：现代的商业虚拟机都是采用这种收集算法回收新生代。</strong></p>
-<h4 id="标记-整理算法（老年代）"><a href="#标记-整理算法（老年代）" class="headerlink" title="标记-整理算法（老年代）"></a>标记-整理算法（老年代）</h4><p>标记-清除算法会产生内存碎片问题，而复制算法需要有额外的内存担保空间，于是针对老年代的特点，又有了标记整理算法。<br><strong>标记整理算法：标记过程与标记-清除算法相同， 但后续步骤不再对可回收对象直接清理， 而是让所有存活的对象都向一端移动，然后清理掉端边界以外的内存。</strong> （如图）  </p>
-<p><img src="http://osuskkx7k.bkt.clouddn.com/%E6%A0%87%E8%AE%B0%E6%95%B4%E7%90%86.jpg" alt="image"></p>
-<h4 id="分代收集算法"><a href="#分代收集算法" class="headerlink" title="分代收集算法"></a>分代收集算法</h4><p>当前主流JVM垃圾收集都采用”分代收集”(Generational Collection)算法。 这种算法会根据对象存活周期的不同将内存划分为几块， 如JVM中的<strong>新生代、老年代、永久代</strong>。 这样就可以根据各年代特点分别采用最适当的GC算法：</p>
-<ul>
-<li><strong>新生代</strong>：每次垃圾收集都能发现大批对象已死， 只有少量存活。因此选用<strong>复制算法</strong>，只需要付出少量存活对象的复制成本就可以完成收集。</li>
-<li><strong>老年代</strong>：因为对象存活率高、没有额外空间对它进行分配担保，就必须采用“<strong>标记—清理”或“标记—整理</strong>”算法来进行回收，不必进行内存复制，且直接腾出空闲内存。</li>
-</ul>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;h3 id=&quot;一、对象的死亡判定&quot;&gt;&lt;a href=&quot;#一、对象的死亡判定&quot; class=&quot;headerlink&quot; title=&quot;一、对象的死亡判定&quot;&gt;&lt;/a&gt;一、对象的死亡判定&lt;/h3&gt;&lt;p&gt;&lt;strong&gt;JVM垃圾回收针对哪些区域？回收的是什么？&lt;/strong&gt;&lt;br&gt;
-    
-    </summary>
-    
-      <category term="技术" scheme="http://yoursite.com/categories/%E6%8A%80%E6%9C%AF/"/>
-    
-    
-      <category term="JVM" scheme="http://yoursite.com/tags/JVM/"/>
-    
-      <category term="垃圾收集算法" scheme="http://yoursite.com/tags/%E5%9E%83%E5%9C%BE%E6%94%B6%E9%9B%86%E7%AE%97%E6%B3%95/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>ReentrantLock重入锁</title>
-    <link href="http://yoursite.com/2017/10/20/ReentrantLock%E9%87%8D%E5%85%A5%E9%94%81/"/>
-    <id>http://yoursite.com/2017/10/20/ReentrantLock重入锁/</id>
-    <published>2017-10-20T11:48:18.000Z</published>
-    <updated>2017-10-23T13:58:54.746Z</updated>
-    
-    <content type="html"><![CDATA[<h3 id="一、ReentrantLock概念"><a href="#一、ReentrantLock概念" class="headerlink" title="一、ReentrantLock概念"></a>一、ReentrantLock概念</h3><h4 id="重入锁概念"><a href="#重入锁概念" class="headerlink" title="重入锁概念"></a>重入锁概念</h4><p>什么是重入锁？   顾名思义，就是支持重复进入的锁。<br><strong>定义：支持一个线程对资源的重复加锁。（注意是一个线程）</strong></p>
-<p>回忆前面有关AQS实现的文章，关于独占锁，当一个线程获取锁后，如果该线程再次调用lock()方法，那么该线程会被自己阻塞。<br>原因是在实现tryAcquire()时没有考虑占有锁的线程再次获取锁的场景。因此这个锁是不支持重入的锁。  </p>
-<p>回顾synchronized的实现原理，我们知道它也是支持重进入的锁，即可以多次获取锁。</p>
-<p>那么Lock能不能实现这个功能呢？当然是可以的。<br>ReentrantLock就是一个支持重进入的锁：<strong>在调用lock()方法时，已经获取到锁的线程，可以再次调用lock()方法获取锁而不被阻塞。</strong></p>
-<h4 id="公平与非公平"><a href="#公平与非公平" class="headerlink" title="公平与非公平"></a>公平与非公平</h4><p>关于锁的获取，还有一个公平性的问题，于是就有了公平锁与非公平锁：  </p>
-<ul>
-<li><strong>公平锁：获取锁是顺序的。先对锁请求的线程先获取；</strong>  </li>
-<li><strong>非公平锁：获取锁是无序的。任意线程都可以获取，无关请求先后；</strong></li>
-</ul>
-<p>来看看ReentrantLock的构造函数：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">public ReentrantLock() &#123;</div><div class="line">        sync = new NonfairSync();</div><div class="line">    &#125;</div><div class="line">public ReentrantLock(boolean fair) &#123;</div><div class="line">        sync = fair ? new FairSync() : new NonfairSync();</div><div class="line">    &#125;</div></pre></td></tr></table></figure>
-<p>可以看到，ReentrantLock默认构造函数是非公平锁，另一个构造函数：  </p>
-<ul>
-<li>传入true：公平锁  </li>
-<li>传入false：非公平锁</li>
-</ul>
-<h3 id="二、ReentrantLock的实现原理"><a href="#二、ReentrantLock的实现原理" class="headerlink" title="二、ReentrantLock的实现原理"></a>二、ReentrantLock的实现原理</h3><h4 id="重进入"><a href="#重进入" class="headerlink" title="重进入"></a>重进入</h4><p><strong>重进入的实现原理是定义了一个获取锁的计数器</strong>。 涉及到以下两个问题：  </p>
-<ol>
-<li><strong>线程再次获取锁。</strong><br>锁需要识别获取锁的线程是否为当前占据锁的线程，如果是，则再次获取锁成功，计数器+1。</li>
-<li><strong>锁的最终释放。</strong><br>线程重复n次获取了锁，在第n次释放锁后，其他线程能够获取到锁。释放锁时，计数器-1，计数器为0时表示锁释放成功。</li>
-</ol>
-<hr>
-<p><strong>ReentrantLock</strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">public class ReentrantLock implements Lock, java.io.Serializable &#123;</div><div class="line">private final Sync sync;</div><div class="line">//AQS</div><div class="line">abstract static class Sync extends AbstractQueuedSynchronizer &#123;...&#125;;</div><div class="line">//非公平锁</div><div class="line">static final class NonfairSync extends Sync &#123;...&#125;;</div><div class="line">//公平锁</div><div class="line">static final class FairSync extends Sync &#123;...&#125;;</div><div class="line"></div><div class="line">....(省略)</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<p>从源码可以看到，<strong>ReentrantLock的实现依旧是依靠队列同步器AQS（Sync继承自AQS），不同的是这里有两个AQS的实现类，NonfairSync和FairSync，分别实现非公平锁和公平锁的功能。</strong></p>
-<h4 id="非公平锁的实现"><a href="#非公平锁的实现" class="headerlink" title="非公平锁的实现"></a>非公平锁的实现</h4><p>非公平锁获取锁的方法：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line">final boolean nonfairTryAcquire(int acquires) &#123;</div><div class="line">            final Thread current = Thread.currentThread();</div><div class="line">            int c = getState();</div><div class="line">            if (c == 0) &#123;</div><div class="line">                if (compareAndSetState(0, acquires)) &#123;</div><div class="line">                    setExclusiveOwnerThread(current);</div><div class="line">                    return true;</div><div class="line">                &#125;</div><div class="line">            &#125;</div><div class="line">            else if (current == getExclusiveOwnerThread()) &#123;  //判断</div><div class="line">                int nextc = c + acquires;</div><div class="line">                if (nextc &lt; 0) // overflow</div><div class="line">                    throw new Error(&quot;Maximum lock count exceeded&quot;);</div><div class="line">                setState(nextc);</div><div class="line">                return true;</div><div class="line">            &#125;</div><div class="line">            return false;</div><div class="line">        &#125;</div></pre></td></tr></table></figure></p>
-<p>该方法是Sync中的方法，NonfairSync通过重写tryAcquire()调用。<br>可以看到，该方法增加了一个判断：如果当前线程是已经获取锁的线程，那么将同步状态值State增加 <strong>（这里不需要CAS操作，因为该线程已经获取了锁，没有竞争——相当于偏向锁）</strong>，并返回true，表示同步状态获取成功。</p>
-<p>非公平锁释放锁的方法：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">protected final boolean tryRelease(int releases) &#123;</div><div class="line">            int c = getState() - releases;</div><div class="line">            if (Thread.currentThread() != getExclusiveOwnerThread())</div><div class="line">                throw new IllegalMonitorStateException();</div><div class="line">            boolean free = false;</div><div class="line">            if (c == 0) &#123;</div><div class="line">                free = true;</div><div class="line">                setExclusiveOwnerThread(null);</div><div class="line">            &#125;</div><div class="line">            setState(c);</div><div class="line">            return free;</div><div class="line">        &#125;</div></pre></td></tr></table></figure>
-<p>该方法也是由Sync实现。</p>
-<p>既然获取锁的时候增加了同步状态值，那么释放时自然要减少。<br>可以看到，只有当State值减为0的时候，才返回true，表示释放锁成功，并将占有线程设置为null。</p>
-<h4 id="公平锁的实现"><a href="#公平锁的实现" class="headerlink" title="公平锁的实现"></a>公平锁的实现</h4><p>公平锁获取锁的方法：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line">protected final boolean tryAcquire(int acquires) &#123;</div><div class="line">            final Thread current = Thread.currentThread();</div><div class="line">            int c = getState();</div><div class="line">            if (c == 0) &#123;</div><div class="line">                if (!hasQueuedPredecessors() &amp;&amp;</div><div class="line">                    compareAndSetState(0, acquires)) &#123;</div><div class="line">                    setExclusiveOwnerThread(current);</div><div class="line">                    return true;</div><div class="line">                &#125;</div><div class="line">            &#125;</div><div class="line">            else if (current == getExclusiveOwnerThread()) &#123;</div><div class="line">                int nextc = c + acquires;</div><div class="line">                if (nextc &lt; 0)</div><div class="line">                    throw new Error(&quot;Maximum lock count exceeded&quot;);</div><div class="line">                setState(nextc);</div><div class="line">                return true;</div><div class="line">            &#125;</div><div class="line">            return false;</div><div class="line">        &#125;</div><div class="line">    &#125;</div></pre></td></tr></table></figure>
-<p>该方法是FairSync重写的tryAcquire()方法。<br>对比非公平锁的获取，<strong>唯一不同的是该方法在判断时增加了一个条件——hasQueuedPredecessors()方法，该方法判断同步队列中当前节点是否有前驱节点，如果有，表示有线程比当前线程更早请求，则需要等待前面的线程获取释放锁之后才能获取锁。</strong></p>
-<p>公平锁释放锁的方法：  </p>
-<p>同样也是调用Sync中的tryRelease()方法，这里不再赘述。</p>
-<h4 id="公平锁与非公平锁的对比"><a href="#公平锁与非公平锁的对比" class="headerlink" title="公平锁与非公平锁的对比"></a>公平锁与非公平锁的对比</h4><p><strong>公平锁：</strong></p>
-<ul>
-<li>保证了锁的获取顺序，FIFO原则</li>
-<li>不足是需要进行大量的线程切换</li>
-</ul>
-<p><strong>非公平锁</strong>：  </p>
-<ul>
-<li>保证了更大的吞吐量（极少的线程切换）</li>
-<li>不足是可能造成线程“饥饿”（等待很久）</li>
-</ul>
-<p><strong>频繁的线程切换对性能有很大的影响，因此ReentrantLock的默认实现是非公平锁。</strong></p>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;h3 id=&quot;一、ReentrantLock概念&quot;&gt;&lt;a href=&quot;#一、ReentrantLock概念&quot; class=&quot;headerlink&quot; title=&quot;一、ReentrantLock概念&quot;&gt;&lt;/a&gt;一、ReentrantLock概念&lt;/h3&gt;&lt;h4 id=&quot;重入锁概念
-    
-    </summary>
-    
-      <category term="技术" scheme="http://yoursite.com/categories/%E6%8A%80%E6%9C%AF/"/>
-    
-    
-      <category term="并发" scheme="http://yoursite.com/tags/%E5%B9%B6%E5%8F%91/"/>
-    
-      <category term="ReentrantLock" scheme="http://yoursite.com/tags/ReentrantLock/"/>
-    
-      <category term="重入锁" scheme="http://yoursite.com/tags/%E9%87%8D%E5%85%A5%E9%94%81/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>AQS共享锁的实现原理</title>
-    <link href="http://yoursite.com/2017/10/19/AQS%E5%85%B1%E4%BA%AB%E9%94%81%E7%9A%84%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86/"/>
-    <id>http://yoursite.com/2017/10/19/AQS共享锁的实现原理/</id>
-    <published>2017-10-19T11:48:18.000Z</published>
-    <updated>2017-10-23T13:55:46.632Z</updated>
-    
-    <content type="html"><![CDATA[<h3 id="一、AQS共享锁的实现原理"><a href="#一、AQS共享锁的实现原理" class="headerlink" title="一、AQS共享锁的实现原理"></a>一、AQS共享锁的实现原理</h3><p>前面的文章Lock的实现中分析了AQS独占锁的实现原理，那么接下来就分析下AQS是如何实现共享锁的。</p>
-<h4 id="共享锁的介绍"><a href="#共享锁的介绍" class="headerlink" title="共享锁的介绍"></a>共享锁的介绍</h4><p><strong>共享锁：同一时刻有多个线程能够获取到同步状态。</strong></p>
-<p>那么它是如何做到让多个线程获取到同步状态呢？<br>来看一下获取共享锁的过程：</p>
-<ol>
-<li>线程调用AQS的acquireShared()申请获取锁（可有多个线程获取到，根据重写的tryAcquireShared()方法决定），如果成功则进入临界区。</li>
-<li>如果失败，创建一个共享型的节点进入FIFO等待队列，阻塞然后等待唤醒。</li>
-<li>等待队列中的线程被唤醒重新尝试获取锁，<strong>获取成功后根据state变量值决定是否继续唤醒后续节点（如果state值为0，表示没有可用的锁，不唤醒后继节点；如果state的值&gt;0，表示有可用的锁，唤醒后继节点）</strong>，获取失败则继续等待，直到成功。</li>
-</ol>
-<p>释放共享锁的过程：</p>
-<ol>
-<li>线程调用releaseShared()进行锁资源释放，如果释放成功则唤醒队列中等待的节点（如果有）。</li>
-</ol>
-<h4 id="共享式获取锁"><a href="#共享式获取锁" class="headerlink" title="共享式获取锁"></a>共享式获取锁</h4><p>线程调用acquireShared()方法获取锁：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">public final void acquireShared(int arg) &#123;</div><div class="line">        if (tryAcquireShared(arg) &lt; 0)</div><div class="line">            doAcquireShared(arg); //获取失败进入该方法</div><div class="line">    &#125;</div></pre></td></tr></table></figure></p>
-<p>分析如下：</p>
-<ul>
-<li>当tryAcquireShared(arg)返回值&gt;=0时（可以在重写该方法时自定义锁的数量），表示获取锁成功，不会进入doAcquireShared。</li>
-<li>当tryAcquireShared(arg)返回值&lt;0时,进入doAcquireShared(arg)方法，可以猜想这里应该是构造节点放入等待队列，看如下代码：</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div></pre></td><td class="code"><pre><div class="line">private void doAcquireShared(int arg) &#123;</div><div class="line">        final Node node = addWaiter(Node.SHARED);  //构造等待队列，和独占锁类似</div><div class="line">        boolean failed = true;</div><div class="line">        try &#123;</div><div class="line">            boolean interrupted = false;</div><div class="line">            for (;;) &#123;       //自旋</div><div class="line">                final Node p = node.predecessor(); //获取前驱节点</div><div class="line">                if (p == head) &#123;</div><div class="line">                    int r = tryAcquireShared(arg); //再次尝试获取</div><div class="line">                    if (r &gt;= 0) &#123;</div><div class="line">                        setHeadAndPropagate(node, r);</div><div class="line">                        p.next = null; // help GC</div><div class="line">                        if (interrupted)</div><div class="line">                            selfInterrupt();</div><div class="line">                        failed = false;</div><div class="line">                        return;</div><div class="line">                    &#125;</div><div class="line">                &#125;</div><div class="line">                if (shouldParkAfterFailedAcquire(p, node) &amp;&amp;</div><div class="line">                    parkAndCheckInterrupt())</div><div class="line">                    interrupted = true;</div><div class="line">            &#125;</div><div class="line">        &#125; finally &#123;</div><div class="line">            if (failed)</div><div class="line">                cancelAcquire(node);</div><div class="line">        &#125;</div><div class="line">    &#125;</div></pre></td></tr></table></figure>
-<p>可以看到，当前驱节点是头节点head时，线程尝试获取锁，此时注意返回值r，有以下三种可能：</p>
-<ul>
-<li>r<0，表示获取锁失败，继续自旋直到r>=0；</0，表示获取锁失败，继续自旋直到r></li>
-<li>r=0，表示获取锁成功，但刚好是最后一把锁，不会唤醒后继节点，在setHeadAndPropagate(node, r)方法中可以体现出来，后面会分析到；</li>
-<li>r&gt;0，表示获取锁成功，而且还有锁资源，会唤醒后继节点，同样在setHeadAndPropagate(node, r)方法中可以体现。  </li>
-</ul>
-<p>那么就来看一下setHeadAndPropagate(node, r)这个方法：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">private void setHeadAndPropagate(Node node, int propagate) &#123;</div><div class="line">        Node h = head; // 记录原来的头节点</div><div class="line">        setHead(node);  // 将当前节点设置为头节点</div><div class="line">        if (propagate &gt; 0 || h == null || h.waitStatus &lt; 0 ||</div><div class="line">        (h = head) == null || h.waitStatus &lt; 0) &#123;</div><div class="line">            Node s = node.next;</div><div class="line">            if (s == null || s.isShared())</div><div class="line">                doReleaseShared();</div><div class="line">        &#125;</div><div class="line">    &#125;</div></pre></td></tr></table></figure>
-<p>注意这里propagate的值就是上一个方法中的r，首先将当前节点设置为头节点，然后if中的判断表示以下两种情况需要执行唤醒操作：</p>
-<ol>
-<li>根据r的值判断，r&gt;0时，表示可以唤醒后继节点，执行doReleaseShared()方法；而当r=0时，不会直接执行doReleaseShared()方法，而是进入第二种情况继续判断；</li>
-<li>头节点后面的节点需要被唤醒（waitStatus&lt;0），不论是老的头结点还是新的头结点</li>
-</ol>
-<p>接下来看看doReleaseShared()这个方法：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line">private void doReleaseShared() &#123;</div><div class="line">        for (;;) &#123; //自旋</div><div class="line">            Node h = head;</div><div class="line">            if (h != null &amp;&amp; h != tail) &#123;</div><div class="line">                int ws = h.waitStatus;</div><div class="line">                if (ws == Node.SIGNAL) &#123; //表示后继节点需要被唤醒</div><div class="line">                    if (!compareAndSetWaitStatus(h, Node.SIGNAL, 0))</div><div class="line">                        continue;            // loop to recheck cases</div><div class="line">                    unparkSuccessor(h); //唤醒</div><div class="line">                &#125;</div><div class="line">                else if (ws == 0 &amp;&amp;</div><div class="line">                         !compareAndSetWaitStatus(h, 0, Node.PROPAGATE))</div><div class="line">                    continue;    //如果后继节点暂时不需要唤醒，则把当前节点状态设置为PROPAGATE确保以后可以传递下去</div><div class="line">            &#125;</div><div class="line">            if (h == head)                   // loop if head changed</div><div class="line">                break;</div><div class="line">        &#125;</div><div class="line">    &#125;</div></pre></td></tr></table></figure>
-<p>这里有两个入口可以进入该方法，一个是直接释放锁releaseShared()一个是上述setHeadAndPropagate()方法，因此在释放锁的过程中需要使用CAS操作保证线程安全。</p>
-<ol>
-<li>进入第一个if语句，表示后继节点需要被唤醒，采用CAS循环操作直到成功；</li>
-<li>进入else if语句，表示暂时不需要唤醒，将状态传递；</li>
-<li>最后判断头节点是否变化，没有变化则退出循环；如果头结点发生变化，比如说其他线程获取到了锁，为了使自己的唤醒动作可以传递，必须进行重试</li>
-</ol>
-<p>以上就是获取共享锁的大致过程。</p>
-<h4 id="共享式释放锁"><a href="#共享式释放锁" class="headerlink" title="共享式释放锁"></a>共享式释放锁</h4><p>调用releaseShared()方法主动释放锁：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">public final boolean releaseShared(int arg) &#123;</div><div class="line">        if (tryReleaseShared(arg)) &#123;</div><div class="line">            doReleaseShared();</div><div class="line">            return true;</div><div class="line">        &#125;</div><div class="line">        return false;</div><div class="line">    &#125;</div></pre></td></tr></table></figure></p>
-<p>可以看到，当重写的tryReleaseShared(arg)方法返回true,成功释放锁资源，进入doReleaseShared()唤醒等待的线程，这个方法上面已经分析过，这里不再赘述。</p>
-<h3 id="二、AQS共享锁与独占锁的对比"><a href="#二、AQS共享锁与独占锁的对比" class="headerlink" title="二、AQS共享锁与独占锁的对比"></a>二、AQS共享锁与独占锁的对比</h3><p>共享锁的实现稍比独占锁复杂，但大同小异。二者对比如下：</p>
-<ul>
-<li><strong>独占锁：</strong>  </li>
-</ul>
-<ol>
-<li><p>独占锁是只有头节点获取锁，其余节点的线程继续等待，等待锁被释放后，才会唤醒下一个节点的线程；</p>
-</li>
-<li><p>同步状态state值在0和1之间切换，保证同一时间只能有一个线程是处于活动的，其他线程都被阻塞，参考ReentranLock。</p>
-</li>
-<li>独占锁是一种悲观锁。 </li>
-</ol>
-<ul>
-<li><strong>共享锁：</strong>  </li>
-</ul>
-<ol>
-<li>共享锁是只要头节点获取锁成功，就在唤醒自身节点对应的线程的同时，继续唤醒AQS队列中的下一个节点的线程，每个节点在唤醒自身的同时还会唤醒下一个节点对应的线程，以实现共享状态的“向后传播”，从而实现共享功能。</li>
-<li>同步状态state值在整数区间内（自定义实现），如果state值&lt;0则阻塞，否则不阻塞。参考ReadWriteLock、Semphore、CountDownLautch等。</li>
-<li>共享锁是一种乐观锁，允许多个线程同时访问共享资源。</li>
-</ol>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;h3 id=&quot;一、AQS共享锁的实现原理&quot;&gt;&lt;a href=&quot;#一、AQS共享锁的实现原理&quot; class=&quot;headerlink&quot; title=&quot;一、AQS共享锁的实现原理&quot;&gt;&lt;/a&gt;一、AQS共享锁的实现原理&lt;/h3&gt;&lt;p&gt;前面的文章Lock的实现中分析了AQS独占锁的实现原
-    
-    </summary>
-    
-      <category term="技术" scheme="http://yoursite.com/categories/%E6%8A%80%E6%9C%AF/"/>
-    
-    
-      <category term="并发" scheme="http://yoursite.com/tags/%E5%B9%B6%E5%8F%91/"/>
-    
-      <category term="AQS" scheme="http://yoursite.com/tags/AQS/"/>
-    
-      <category term="共享锁" scheme="http://yoursite.com/tags/%E5%85%B1%E4%BA%AB%E9%94%81/"/>
     
   </entry>
   

@@ -95,7 +95,7 @@
         		<a class="sb-toggle-submenu">Categories<span class="sb-caret"></span></a>
             	<ul class="sb-submenu">
 				  	
-				    <li><a href="/categories/技术/" class="animsition-link">技术<small>(31)</small></a></li>
+				    <li><a href="/categories/技术/" class="animsition-link">技术<small>(34)</small></a></li>
 				    
 				    <li><a href="/categories/芭乐/" class="animsition-link">芭乐<small>(1)</small></a></li>
 				    
@@ -218,6 +218,137 @@
 
 <section id="intro">
     <div class="container">
+        
+        <div class="row">
+            <div class="col-md-8 col-md-offset-2 opening-statement">
+                <div class="col-md-4">
+                    <h3><a href="/2017/10/21/JVM之垃圾收集算法/">JVM之垃圾收集算法</a></h3>
+                    <span>
+                        <span class="post-meta">
+      <time datetime="2017-10-21T11:48:18.000Z" itemprop="datePublished">
+          2017-10-21
+      </time>
+    
+    
+    | 
+    <a href='/tags/JVM/'>JVM</a>,
+    
+    <a href='/tags/垃圾收集算法/'>垃圾收集算法</a>
+    
+    
+</span>
+                    </span>
+                </div>
+                <div class="col-md-8">
+                    <p class="index-excerpt">
+                      
+                        一、对象的死亡判定JVM垃圾回收针对哪些区域？回收的是什么？答：1. 主要针对Java堆。2. 回收“死亡”的对象，即没有引用的对象。
+那么如何判断对象是否“死亡”呢？两种方法，引用计数法和可达性分析算法。
+引用计数法原理：给每个对象添加一个引用计数器。
+
+每当有一个地方引用它，引用计数器+1；
+每当一个引用失效，引用计数器-1；
+当引用计数器为0时，表示该对象无引用，即可回收。
+
+缺点：无法解决对象之间循环引用的问题。
+1234567
+                      
+                    </p>
+                    
+                    <p class="pull-right readMore">
+                        <a href="/2017/10/21/JVM之垃圾收集算法/">Read More...</a>
+                    </p>
+                    
+                </div>
+                <div class="clearfix"></div>
+                <hr class="nogutter">
+            </div>
+        </div>
+        
+        <div class="row">
+            <div class="col-md-8 col-md-offset-2 opening-statement">
+                <div class="col-md-4">
+                    <h3><a href="/2017/10/20/ReentrantLock重入锁/">ReentrantLock重入锁</a></h3>
+                    <span>
+                        <span class="post-meta">
+      <time datetime="2017-10-20T11:48:18.000Z" itemprop="datePublished">
+          2017-10-20
+      </time>
+    
+    
+    | 
+    <a href='/tags/并发/'>并发</a>,
+    
+    <a href='/tags/ReentrantLock/'>ReentrantLock</a>,
+    
+    <a href='/tags/重入锁/'>重入锁</a>
+    
+    
+</span>
+                    </span>
+                </div>
+                <div class="col-md-8">
+                    <p class="index-excerpt">
+                      
+                        一、ReentrantLock概念重入锁概念什么是重入锁？   顾名思义，就是支持重复进入的锁。定义：支持一个线程对资源的重复加锁。（注意是一个线程）
+回忆前面有关AQS实现的文章，关于独占锁，当一个线程获取锁后，如果该线程再次调用lock()方法，那么该线程会被自己阻塞。原因是在实现tryAcquire()时没有考虑占有锁的线程再次获取锁的场景。因此这个锁是不支持重入的锁。  
+回顾synchronized的实现原理，我们知道它也是支
+                      
+                    </p>
+                    
+                    <p class="pull-right readMore">
+                        <a href="/2017/10/20/ReentrantLock重入锁/">Read More...</a>
+                    </p>
+                    
+                </div>
+                <div class="clearfix"></div>
+                <hr class="nogutter">
+            </div>
+        </div>
+        
+        <div class="row">
+            <div class="col-md-8 col-md-offset-2 opening-statement">
+                <div class="col-md-4">
+                    <h3><a href="/2017/10/19/AQS共享锁的实现原理/">AQS共享锁的实现原理</a></h3>
+                    <span>
+                        <span class="post-meta">
+      <time datetime="2017-10-19T11:48:18.000Z" itemprop="datePublished">
+          2017-10-19
+      </time>
+    
+    
+    | 
+    <a href='/tags/并发/'>并发</a>,
+    
+    <a href='/tags/AQS/'>AQS</a>,
+    
+    <a href='/tags/共享锁/'>共享锁</a>
+    
+    
+</span>
+                    </span>
+                </div>
+                <div class="col-md-8">
+                    <p class="index-excerpt">
+                      
+                        一、AQS共享锁的实现原理前面的文章Lock的实现中分析了AQS独占锁的实现原理，那么接下来就分析下AQS是如何实现共享锁的。
+共享锁的介绍共享锁：同一时刻有多个线程能够获取到同步状态。
+那么它是如何做到让多个线程获取到同步状态呢？来看一下获取共享锁的过程：
+
+线程调用AQS的acquireShared()申请获取锁（可有多个线程获取到，根据重写的tryAcquireShared()方法决定），如果成功则进入临界区。
+如果失败，创建一个
+                      
+                    </p>
+                    
+                    <p class="pull-right readMore">
+                        <a href="/2017/10/19/AQS共享锁的实现原理/">Read More...</a>
+                    </p>
+                    
+                </div>
+                <div class="clearfix"></div>
+                <hr class="nogutter">
+            </div>
+        </div>
         
         <div class="row">
             <div class="col-md-8 col-md-offset-2 opening-statement">
@@ -482,123 +613,6 @@ Quick StartCreate a new p
                     
                     <p class="pull-right readMore">
                         <a href="/2017/08/07/Hexo发布博客的MarkDown文件中引入JS代码/">Read More...</a>
-                    </p>
-                    
-                </div>
-                <div class="clearfix"></div>
-                <hr class="nogutter">
-            </div>
-        </div>
-        
-        <div class="row">
-            <div class="col-md-8 col-md-offset-2 opening-statement">
-                <div class="col-md-4">
-                    <h3><a href="/2017/08/07/JS特效/">JS特效</a></h3>
-                    <span>
-                        <span class="post-meta">
-      <time datetime="2017-08-07T05:15:25.000Z" itemprop="datePublished">
-          2017-08-07
-      </time>
-    
-</span>
-                    </span>
-                </div>
-                <div class="col-md-8">
-                    <p class="index-excerpt">
-                      
-                        
-
-
-
-
-
-
-
-var bmapChart=echarts.init(document.getElementById("map-wrap"));var data=[{name:"上海",value:299},{name:"厦门",value:245},{name:"丰城",value:120},{name:"南昌",value:160},{name:"张家界",value:128},{name:"长沙",value:75},{name:
-                      
-                    </p>
-                    
-                    <p class="pull-right readMore">
-                        <a href="/2017/08/07/JS特效/">Read More...</a>
-                    </p>
-                    
-                </div>
-                <div class="clearfix"></div>
-                <hr class="nogutter">
-            </div>
-        </div>
-        
-        <div class="row">
-            <div class="col-md-8 col-md-offset-2 opening-statement">
-                <div class="col-md-4">
-                    <h3><a href="/2017/07/28/Redis—Pipline/">使用Redis的管道（Pipeline）进行批量操作</a></h3>
-                    <span>
-                        <span class="post-meta">
-      <time datetime="2017-07-28T06:55:55.000Z" itemprop="datePublished">
-          2017-07-28
-      </time>
-    
-    
-    | 
-    <a href='/tags/Redis/'>Redis</a>,
-    
-    <a href='/tags/Pipeline/'>Pipeline</a>,
-    
-    <a href='/tags/批量，缓存/'>批量，缓存</a>
-    
-    
-</span>
-                    </span>
-                </div>
-                <div class="col-md-8">
-                    <p class="index-excerpt">
-                      
-                        Redis管道技术简介
-Reids是一个cs模式的Tcp服务，类似于http的请求。 当客户端发送一个请求时，服务器处理之后会将结果通过响应报文返回给客户端 。  
-那么当需要发送多个请求时，难道每次都要等待请求响应，再发送下一个请求吗？
-当然不是，这里就可以采用Redis的管道技术。  
-举个例子，如果说jedis是：request response，request response，…；  
-&emsp;&emsp;&emsp;&e
-                      
-                    </p>
-                    
-                    <p class="pull-right readMore">
-                        <a href="/2017/07/28/Redis—Pipline/">Read More...</a>
-                    </p>
-                    
-                </div>
-                <div class="clearfix"></div>
-                <hr class="nogutter">
-            </div>
-        </div>
-        
-        <div class="row">
-            <div class="col-md-8 col-md-offset-2 opening-statement">
-                <div class="col-md-4">
-                    <h3><a href="/2017/07/20/our01/">You</a></h3>
-                    <span>
-                        <span class="post-meta">
-      <time datetime="2017-07-19T16:00:00.000Z" itemprop="datePublished">
-          2017-07-20
-      </time>
-    
-    
-    | 
-    <a href='/tags/Soul/'>Soul</a>
-    
-    
-</span>
-                    </span>
-                </div>
-                <div class="col-md-8">
-                    <p class="index-excerpt">
-                      
-                        概述
-                      
-                    </p>
-                    
-                    <p class="pull-right readMore">
-                        <a href="/2017/07/20/our01/">Read More...</a>
                     </p>
                     
                 </div>
