@@ -3,7 +3,17 @@
 <html class="ie" xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-US" lang="en-US">
 <![endif]-->
 <!--[if (gte IE 9)|!(IE)]><!-->
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="zh-CN" lang="zh-CN">
+<!--
+***************  *      *     *
+      8          *    *       *
+      8          *  *         *
+      8          **           *
+      8          *  *         *
+      8          *    *       *
+      8          *      *     *
+      8          *        *   ***********    -----Theme By Kieran(http://go.kieran.top)
+-->
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-US" lang="en-US">
 <!--<![endif]-->
 
 <head>
@@ -23,7 +33,7 @@
     <link rel="alternate" href="/atom.xml" title="ZY&#39;s Blog" type="application/atom+xml">
     <link rel="stylesheet" href="/css/all.css" media="screen" type="text/css">
     
-    <link rel="stylesheet" href="/highlightjs/vs.css" type="text/css">
+    <link rel="stylesheet" href="/highlightjs/xcode.css" type="text/css">
     
 
     <!--[if IE 8]>
@@ -80,12 +90,27 @@
         	</li>
 			
             
+            <li>
+                <a class="sb-toggle-submenu">Links<span class="sb-caret"></span></a>
+                <ul class="sb-submenu">
+                    
+                    <li><a href="http://www.xiaonanbobo.com/" class="animsition-link">Bobo</a></li>
+                    
+                    <li><a href="http://xxgblog.com/" class="animsition-link">Wucao</a></li>
+                    
+                    <li><a href="http://www.importnew.com/" class="animsition-link">importnew</a></li>
+                    
+                    <li><a href="http://www.hollischuang.com/" class="animsition-link">Holis</a></li>
+                    
+                </ul>
+            </li>
+            
         </ul>
         <!-- Lists in Slidebars -->
         <ul class="sb-menu secondary">
-            
             <li><a href="/about.html" class="animsition-link" title="about">About</a></li>
-            <li><a href="/tagCloud.html" class="animsition-link" title="rss">tagcloud</a></li>
+			<li><a href="/tagCloud.html" class="animsition-link" title="tagCloud">Tag</a></li>
+            <li><a href="/atom.xml" class="animsition-link" title="rss">RSS</a></li>
         </ul>
     </div>
     
@@ -114,19 +139,9 @@
                             <li><a href="/" class="animsition-link">ZY's Blog</a></li>
                             <li class="nolink"><span>Always </span>Creative.</li>
                             
-                            <li><a href="https://github.com/" title="Github" target="_blank"><i class="icon-github"></i></a></li>
                             
                             
-                            <li><a href="https://twitter.com/" title="Twitter" target="_blank"><i class="icon-twitter"></i></a></li>
                             
-                            
-                            <li><a href="https://www.facebook.com/" title="Facebook" target="_blank"><i class="icon-facebook"></i></a></li>
-                            
-                            
-                            <li><a href="https://google.com/" title="Google-Plus" target="_blank"><i class="icon-google-plus"></i></a></li>
-                            
-                            
-                            <li><a href="http://weibo.com/" title="Sina-Weibo" target="_blank"><i class="icon-sina-weibo"></i></a></li>
                             
                             <li class="nolink"><span>Welcome!</span></li>
                         </ul>
@@ -151,7 +166,7 @@
       <!-- ============================ Hero Image =========================== -->
 
 <section id="hero" class="scrollme">
-    <div class="container-fluid element-img" style="background: url(/img/bg_img.jpg) no-repeat center center fixed;background-size: cover">
+    <div class="container-fluid element-img" style="background: url(/img/m1.jpeg) no-repeat center center fixed;background-size: cover">
         <div class="row">
             <div class="col-xs-12 col-sm-8 col-sm-offset-2 col-md-8 col-md-offset-2 vertical-align cover boost text-center">
                 <div class="center-me animateme" data-when="exit" data-from="0" data-to="0.6" data-opacity="0" data-translatey="100">
@@ -204,7 +219,7 @@
                     </span>
                 </div>
                 <div class="col-md-8">
-                    <p>
+                    <p class="index-excerpt">
                       
                         一、垃圾收集器概述垃圾收集器是内存垃圾回收算法的具体实现。Java虚拟机规范中对垃圾收集器应该如何实现并没有任何规定，因此出现了7种收集器：Serial、ParNew、Parallel Scavenge、Serial Old、Parallel Old、CMS、G1。它们以组合的形式配合工作来完成不同分代的垃圾收集工作。
 常用组合：
@@ -247,7 +262,7 @@ Paral
                     </span>
                 </div>
                 <div class="col-md-8">
-                    <p>
+                    <p class="index-excerpt">
                       
                         一、对象的死亡判定JVM垃圾回收针对哪些区域？回收的是什么？答：1. 主要针对Java堆。2. 回收“死亡”的对象，即没有引用的对象。
 那么如何判断对象是否“死亡”呢？两种方法，引用计数法和可达性分析算法。
@@ -295,7 +310,7 @@ Paral
                     </span>
                 </div>
                 <div class="col-md-8">
-                    <p>
+                    <p class="index-excerpt">
                       
                         一、ReentrantLock概念重入锁概念什么是重入锁？   顾名思义，就是支持重复进入的锁。定义：支持一个线程对资源的重复加锁。（注意是一个线程）
 回忆前面有关AQS实现的文章，关于独占锁，当一个线程获取锁后，如果该线程再次调用lock()方法，那么该线程会被自己阻塞。原因是在实现tryAcquire()时没有考虑占有锁的线程再次获取锁的场景。因此这个锁是不支持重入的锁。  
@@ -336,7 +351,7 @@ Paral
                     </span>
                 </div>
                 <div class="col-md-8">
-                    <p>
+                    <p class="index-excerpt">
                       
                         一、AQS共享锁的实现原理前面的文章Lock的实现中分析了AQS独占锁的实现原理，那么接下来就分析下AQS是如何实现共享锁的。
 共享锁的介绍共享锁：同一时刻有多个线程能够获取到同步状态。
@@ -380,7 +395,7 @@ Paral
                     </span>
                 </div>
                 <div class="col-md-8">
-                    <p>
+                    <p class="index-excerpt">
                       
                         一、AQS的介绍队列同步器AbstractQueuedSynchronizer（AQS）是构建锁或者其他同步组件的基础框架，是实现Lock的基础。它使用了一个volatile修饰的int变量来表示同步状态，并维护了一个FIFO队列来完成资源获取线程的排队。
 12345678910111213141516public abstract class AbstractQueuedSynchronizer extends AbstractOwn
@@ -418,7 +433,7 @@ Paral
                     </span>
                 </div>
                 <div class="col-md-8">
-                    <p>
+                    <p class="index-excerpt">
                       
                         一、Lock的介绍我们知道，在Java中锁的实现可以由synchronized关键字来完成，但在Java5之后，出现了一种新的方式来实现——Lock接口。
 那么为什么提出这种新的方式呢？在多线程的情况下，当一段代码被synchronized修饰之后，同一时刻只能被一个线程访问，其他线程都必须等到该线程释放锁之后才能有机会获取锁访问这段代码，占用锁的线程只有在两种情况下才能释放锁：  
@@ -459,7 +474,7 @@ Paral
                     </span>
                 </div>
                 <div class="col-md-8">
-                    <p>
+                    <p class="index-excerpt">
                       
                         一、synchronized的基本介绍谈到synchronized关键字，想必大家都不陌生，对它的初次印象如果用两个字来概括，无非就是 “同步” 。小小的一个词，蕴含了大道理，那么就让我们来探索一下。  
 1.简介synchronized实现同步的基础是：java中的任何一个对象都可以作为锁。  
@@ -501,7 +516,7 @@ Paral
                     </span>
                 </div>
                 <div class="col-md-8">
-                    <p>
+                    <p class="index-excerpt">
                       
                         一、volatile的特性1. volatile的可见性 可见性的意思是：当一个线程修改一个共享变量时，另一个线程能读到这个修改的值。 volatile在多线程的开发中，保证了共享变量的可见性（立即）。1234567891011//全局变量boolean open=true;//线程Aresource.close();open = false;//线程Bwhile(open) &#123;doSomething(resource);&#
                       
@@ -531,7 +546,7 @@ Paral
                     </span>
                 </div>
                 <div class="col-md-8">
-                    <p>
+                    <p class="index-excerpt">
                       
                         Welcome to Hexo! This is your very first post. Check documentation for more info. If you get any problems when using Hexo, you can find the answer in troubleshooting or you can ask me on GitHub.
 Quick StartCreate a new p
@@ -569,7 +584,7 @@ Quick StartCreate a new p
                     </span>
                 </div>
                 <div class="col-md-8">
-                    <p>
+                    <p class="index-excerpt">
                       
                         前言有时候，需要在数据库中查询一些字段的具体信息，而这些字段又存在于不同的表中，那么我们如何来查询呢？
 在每一个数据库链接的information_schema数据库中，存在这样一张表——COLUMNS，它记录了这个数据库中所有表的字段信息。
@@ -597,39 +612,29 @@ Quick StartCreate a new p
 <section id="statement">
     <div class="container text-center wow fadeInUp" data-wow-delay="0.5s">
         <div class="row">
-            <p>虽然还没想好写点什么，但是总觉得这里放句话比较和谐。</p>
+            <p>人生如逆旅，我亦是行人。</p>
         </div>
     </div>
 </section>
 <!-- ============================ END Content =========================== -->
 
-      
+	  
 <!-- ============================ Footer =========================== -->
 
 <footer>
     <div class="container">
             <div class="copy">
                 <p>
-                    &copy; 2014<script>new Date().getFullYear()>2010&&document.write("-"+new Date().getFullYear());</script>, Content By Z Yong. All Rights Reserved.
+                    &copy; 2017<script>new Date().getFullYear()>2010&&document.write("-"+new Date().getFullYear());</script>, Content By Z Yong. All Rights Reserved.
                 </p>
-                <p>Theme By <a href="//go.kieran.top" style="color: #767D84">Kieran</a></p>
+                <p>Theme By <a href="#" style="color: #767D84">Kieran</a></p>
             </div>
             <div class="social">
                 <ul>
                     
-                    <li><a href="https://github.com/" title="Github" target="_blank"><i class="icon-github"></i></a>&nbsp;</li>
                     
                     
-                    <li><a href="https://twitter.com/" title="Twitter" target="_blank"><i class="icon-twitter"></i></a>&nbsp;</li>
                     
-                    
-                    <li><a href="https://www.facebook.com/" title="Facebook" target="_blank"><i class="icon-facebook"></i></a>&nbsp;</li>
-                    
-                    
-                    <li><a href="https://google.com/" title="Google-Plus" target="_blank"><i class="icon-google-plus"></i></a>&nbsp;</li>
-                    
-                    
-                    <li><a href="http://weibo.com/" title="Sina-Weibo" target="_blank"><i class="icon-sina-weibo"></i></a>&nbsp;</li>
                     
                 </ul>
             </div>
@@ -656,6 +661,7 @@ Quick StartCreate a new p
     });
 </script>
 <script src="/js/plugins.min.js"></script><!-- Bootstrap core and concatenated plugins always load here -->
+<script src="/js/jquery.flexslider-min.js"></script><!-- Flexslider plugin -->
 <script src="/js/scripts.js"></script><!-- Theme scripts -->
 
 
@@ -676,8 +682,30 @@ $('#intro').find('img').each(function(){
 })(jQuery);
 </script>
 
+<!-- Initiate flexslider plugin -->
+<script type="text/javascript">
+    $(document).ready(function($) {
+      (function(){
+        console.log('font');
+        var getCss = function(path) {
+          var head = document.getElementsByTagName('head')[0];
+          link = document.createElement('link');
+          link.href = path;
+          link.rel = 'stylesheet';
+          link.type = 'text/css';
+          head.appendChild(link);
+        };
+        getCss('https://fonts.googleapis.com/css?family=Montserrat:400,700');
+        getCss('https://fonts.googleapis.com/css?family=Open+Sans:400,600');
+      })();
+      $('.flexslider').flexslider({
+        animation: "fade",
+        prevText: "",
+        nextText: "",
+        directionNav: true
+      });
+    });
+</script>
 
-
-      
 </body>
 </html>

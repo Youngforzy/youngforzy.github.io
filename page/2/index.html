@@ -3,7 +3,17 @@
 <html class="ie" xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-US" lang="en-US">
 <![endif]-->
 <!--[if (gte IE 9)|!(IE)]><!-->
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="zh-CN" lang="zh-CN">
+<!--
+***************  *      *     *
+      8          *    *       *
+      8          *  *         *
+      8          **           *
+      8          *  *         *
+      8          *    *       *
+      8          *      *     *
+      8          *        *   ***********    -----Theme By Kieran(http://go.kieran.top)
+-->
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-US" lang="en-US">
 <!--<![endif]-->
 
 <head>
@@ -23,7 +33,7 @@
     <link rel="alternate" href="/atom.xml" title="ZY&#39;s Blog" type="application/atom+xml">
     <link rel="stylesheet" href="/css/all.css" media="screen" type="text/css">
     
-    <link rel="stylesheet" href="/highlightjs/vs.css" type="text/css">
+    <link rel="stylesheet" href="/highlightjs/xcode.css" type="text/css">
     
 
     <!--[if IE 8]>
@@ -80,12 +90,27 @@
         	</li>
 			
             
+            <li>
+                <a class="sb-toggle-submenu">Links<span class="sb-caret"></span></a>
+                <ul class="sb-submenu">
+                    
+                    <li><a href="http://www.xiaonanbobo.com/" class="animsition-link">Bobo</a></li>
+                    
+                    <li><a href="http://xxgblog.com/" class="animsition-link">Wucao</a></li>
+                    
+                    <li><a href="http://www.importnew.com/" class="animsition-link">importnew</a></li>
+                    
+                    <li><a href="http://www.hollischuang.com/" class="animsition-link">Holis</a></li>
+                    
+                </ul>
+            </li>
+            
         </ul>
         <!-- Lists in Slidebars -->
         <ul class="sb-menu secondary">
-            
             <li><a href="/about.html" class="animsition-link" title="about">About</a></li>
-            <li><a href="/tagCloud.html" class="animsition-link" title="rss">tagcloud</a></li>
+			<li><a href="/tagCloud.html" class="animsition-link" title="tagCloud">Tag</a></li>
+            <li><a href="/atom.xml" class="animsition-link" title="rss">RSS</a></li>
         </ul>
     </div>
     
@@ -114,19 +139,9 @@
                             <li><a href="/" class="animsition-link">ZY's Blog</a></li>
                             <li class="nolink"><span>Always </span>Creative.</li>
                             
-                            <li><a href="https://github.com/" title="Github" target="_blank"><i class="icon-github"></i></a></li>
                             
                             
-                            <li><a href="https://twitter.com/" title="Twitter" target="_blank"><i class="icon-twitter"></i></a></li>
                             
-                            
-                            <li><a href="https://www.facebook.com/" title="Facebook" target="_blank"><i class="icon-facebook"></i></a></li>
-                            
-                            
-                            <li><a href="https://google.com/" title="Google-Plus" target="_blank"><i class="icon-google-plus"></i></a></li>
-                            
-                            
-                            <li><a href="http://weibo.com/" title="Sina-Weibo" target="_blank"><i class="icon-sina-weibo"></i></a></li>
                             
                             <li class="nolink"><span>Welcome!</span></li>
                         </ul>
@@ -151,7 +166,7 @@
       <!-- ============================ Hero Image =========================== -->
 
 <section id="hero" class="scrollme">
-    <div class="container-fluid element-img" style="background: url(/img/bg_img.jpg) no-repeat center center fixed;background-size: cover">
+    <div class="container-fluid element-img" style="background: url(/img/m1.jpeg) no-repeat center center fixed;background-size: cover">
         <div class="row">
             <div class="col-xs-12 col-sm-8 col-sm-offset-2 col-md-8 col-md-offset-2 vertical-align cover boost text-center">
                 <div class="center-me animateme" data-when="exit" data-from="0" data-to="0.6" data-opacity="0" data-translatey="100">
@@ -204,7 +219,7 @@
                     </span>
                 </div>
                 <div class="col-md-8">
-                    <p>
+                    <p class="index-excerpt">
                       
                         一、Executor框架的介绍Java中的线程既是工作单元又是执行机制。JDK1.5开始，把工作单元与执行机制分离开来。工作单元为Runnable（Thread实现该接口）和Callable，执行机制就是Executor框架。 使用Executor框架时不用显式的创建线程Thread。
 Executor框架由三部分组成：  
@@ -246,7 +261,7 @@ Executor框架由三部分组成：
                     </span>
                 </div>
                 <div class="col-md-8">
-                    <p>
+                    <p class="index-excerpt">
                       
                         一、线程池的介绍线程池是一种并发框架。
 优势：
@@ -291,7 +306,7 @@ ThreadPoolExecutor是线程池的核心实现类。可以通过ThreadPoolExecuto
                     </span>
                 </div>
                 <div class="col-md-8">
-                    <p>
+                    <p class="index-excerpt">
                       
                         一、ConcurrentHashMap的介绍ConcurrentHashMap在JDK8中进行了巨大改动，它舍弃了锁分段的技术，大量引入了CAS操作，以此来实现并发操作。   
 回忆JDK1.7中的ConcurrentHashmap，当hash碰撞频繁时，链表长度会拉长，而链表的增改删查操作都会消耗很长的时间，影响性能，因此和JDK1.8中的HashMap一样，当链表过长时，将其结构转化为红黑树，由此提高性能。
@@ -330,7 +345,7 @@ ThreadPoolExecutor是线程池的核心实现类。可以通过ThreadPoolExecuto
                     </span>
                 </div>
                 <div class="col-md-8">
-                    <p>
+                    <p class="index-excerpt">
                       
                         一、ConcurrentHashMap的介绍ConcurrentHashMap是线程安全且高效的HashMap，可以在多线程的环境下使用。ConcurrentHashMap允许多个线程并发访问，其关键在于使用了锁分段技术。锁分段：首先将数据分成一段一段地存储，然后给每一段数据配一把锁，当一个线程占用锁访问其中一个数据段的时候，其他数据段也能被其他线程访问。
 二、ConcurrentHashMap的实现原理ConcurrentHashMa
@@ -368,7 +383,7 @@ ThreadPoolExecutor是线程池的核心实现类。可以通过ThreadPoolExecuto
                     </span>
                 </div>
                 <div class="col-md-8">
-                    <p>
+                    <p class="index-excerpt">
                       
                         一、线程安全性我们知道，HashMap是非线程安全的，只能在单线程的情况下使用。那么为什么不能在并发的情况下使用呢？因为在并发时，HashMap的扩容会产生错误而形成环形链表，导致读取数据时发生死循环。
 回忆前面描述的扩容过程，调用了transfer()方法将旧链表转化为新链表：
@@ -407,7 +422,7 @@ ThreadPoolExecutor是线程池的核心实现类。可以通过ThreadPoolExecuto
                     </span>
                 </div>
                 <div class="col-md-8">
-                    <p>
+                    <p class="index-excerpt">
                       
                         HashMap的实现分析介绍通过前面JDK1.7的分析，我们知道，当负载因子和Hash算法设计的很好时，可以降低hash碰撞的概率，但在数据量过大时也避免不了会出现链表变长的情况，一旦出现链表过长，查找元素变慢，则会严重影响HashMap的性能。于是，在JDK1.8中，对数据结构做了进一步的优化，引入了红黑树。而当链表长度太长（默认超过8）时，链表就转换为红黑树，利用红黑树快速增删改查的特点提高HashMap的性能，其中会用到红黑树的插
                       
@@ -444,7 +459,7 @@ ThreadPoolExecutor是线程池的核心实现类。可以通过ThreadPoolExecuto
                     </span>
                 </div>
                 <div class="col-md-8">
-                    <p>
+                    <p class="index-excerpt">
                       
                         一、HashMap的介绍HashMap是存储键值对（key，value）的一种数据结构。每一个元素都是一个key-value。HashMap最多只允许一个key为null，允许多个key的value值为null。HashMap是非线程安全的，只适用于单线程环境。HashMap实现了Serializable、Cloneable接口，因此它支持序列化和克隆。
 二、HashMap的实现原理从底层结构、put和get方法、hash数组索引、扩容
@@ -484,7 +499,7 @@ ThreadPoolExecutor是线程池的核心实现类。可以通过ThreadPoolExecuto
                     </span>
                 </div>
                 <div class="col-md-8">
-                    <p>
+                    <p class="index-excerpt">
                       
                         一、ReentrantReadWriteLock的概念介绍前面提到的锁（独占锁、ReentrantLock）等都是排他锁，这些锁在同一时刻只允许一个线程访问。而读写锁在同一时刻可以允许多个读线程访问，但在写线程访问时，所有读线程和其他写线程都阻塞。
 ReadWriteLock并不是继承自Lock接口，而是一个单独的接口。
@@ -523,7 +538,7 @@ ReadWriteLock并不是继承自Lock接口，而是一个单独的接口。
                     </span>
                 </div>
                 <div class="col-md-8">
-                    <p>
+                    <p class="index-excerpt">
                       
                         一、Java对象的创建过程在Java程序中，通常都是通过 new 关键字来创建对象，那么在虚拟机中对象是如何创建的？（普通Java对象，不包含数组和Class对象）
 虚拟机创建对象主要经历5个步骤：类加载检查、为对象分配内存、内存空间初始化、对象设置、执行对象方法。
@@ -562,7 +577,7 @@ ReadWriteLock并不是继承自Lock接口，而是一个单独的接口。
                     </span>
                 </div>
                 <div class="col-md-8">
-                    <p>
+                    <p class="index-excerpt">
                       
                         一、类加载机制虚拟机把描述类的数据从Class文件加载到内存，并对数据进行校验、转换解析和初始化，最终形成可以被JVM直接使用的Java类型，这就是虚拟机的类加载机制。
 类加载的时机那么类到底什么时候会加载呢？（初始化）当对一个类进行主动引用的时候。
@@ -593,39 +608,29 @@ new实例化对象、读取或设置一个类的静态字段时、调用一个�
 <section id="statement">
     <div class="container text-center wow fadeInUp" data-wow-delay="0.5s">
         <div class="row">
-            <p>虽然还没想好写点什么，但是总觉得这里放句话比较和谐。</p>
+            <p>人生如逆旅，我亦是行人。</p>
         </div>
     </div>
 </section>
 <!-- ============================ END Content =========================== -->
 
-      
+	  
 <!-- ============================ Footer =========================== -->
 
 <footer>
     <div class="container">
             <div class="copy">
                 <p>
-                    &copy; 2014<script>new Date().getFullYear()>2010&&document.write("-"+new Date().getFullYear());</script>, Content By Z Yong. All Rights Reserved.
+                    &copy; 2017<script>new Date().getFullYear()>2010&&document.write("-"+new Date().getFullYear());</script>, Content By Z Yong. All Rights Reserved.
                 </p>
-                <p>Theme By <a href="//go.kieran.top" style="color: #767D84">Kieran</a></p>
+                <p>Theme By <a href="#" style="color: #767D84">Kieran</a></p>
             </div>
             <div class="social">
                 <ul>
                     
-                    <li><a href="https://github.com/" title="Github" target="_blank"><i class="icon-github"></i></a>&nbsp;</li>
                     
                     
-                    <li><a href="https://twitter.com/" title="Twitter" target="_blank"><i class="icon-twitter"></i></a>&nbsp;</li>
                     
-                    
-                    <li><a href="https://www.facebook.com/" title="Facebook" target="_blank"><i class="icon-facebook"></i></a>&nbsp;</li>
-                    
-                    
-                    <li><a href="https://google.com/" title="Google-Plus" target="_blank"><i class="icon-google-plus"></i></a>&nbsp;</li>
-                    
-                    
-                    <li><a href="http://weibo.com/" title="Sina-Weibo" target="_blank"><i class="icon-sina-weibo"></i></a>&nbsp;</li>
                     
                 </ul>
             </div>
@@ -652,6 +657,7 @@ new实例化对象、读取或设置一个类的静态字段时、调用一个�
     });
 </script>
 <script src="/js/plugins.min.js"></script><!-- Bootstrap core and concatenated plugins always load here -->
+<script src="/js/jquery.flexslider-min.js"></script><!-- Flexslider plugin -->
 <script src="/js/scripts.js"></script><!-- Theme scripts -->
 
 
@@ -672,8 +678,30 @@ $('#intro').find('img').each(function(){
 })(jQuery);
 </script>
 
+<!-- Initiate flexslider plugin -->
+<script type="text/javascript">
+    $(document).ready(function($) {
+      (function(){
+        console.log('font');
+        var getCss = function(path) {
+          var head = document.getElementsByTagName('head')[0];
+          link = document.createElement('link');
+          link.href = path;
+          link.rel = 'stylesheet';
+          link.type = 'text/css';
+          head.appendChild(link);
+        };
+        getCss('https://fonts.googleapis.com/css?family=Montserrat:400,700');
+        getCss('https://fonts.googleapis.com/css?family=Open+Sans:400,600');
+      })();
+      $('.flexslider').flexslider({
+        animation: "fade",
+        prevText: "",
+        nextText: "",
+        directionNav: true
+      });
+    });
+</script>
 
-
-      
 </body>
 </html>
