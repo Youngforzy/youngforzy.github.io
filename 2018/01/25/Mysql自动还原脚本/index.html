@@ -185,39 +185,11 @@
             </div>
         </div>
         <div class="col-md-8 col-md-offset-2">
-      		<h3 id="Mysql自动还原脚本（-sh文件）"><a href="#Mysql自动还原脚本（-sh文件）" class="headerlink" title="Mysql自动还原脚本（.sh文件）"></a>Mysql自动还原脚本（.sh文件）</h3><h4 id="还原数据库的基本指令"><a href="#还原数据库的基本指令" class="headerlink" title="还原数据库的基本指令"></a>还原数据库的基本指令</h4><pre><code>source d:/abc.sql
-</code></pre><p>当连接数据库之后，可以直接使用 以上命令来还原指定数据库。</p>
+      		<h3 id="Mysql自动还原脚本（-sh文件）"><a href="#Mysql自动还原脚本（-sh文件）" class="headerlink" title="Mysql自动还原脚本（.sh文件）"></a>Mysql自动还原脚本（.sh文件）</h3><h4 id="还原数据库的基本指令"><a href="#还原数据库的基本指令" class="headerlink" title="还原数据库的基本指令"></a>还原数据库的基本指令</h4><figure class="highlight vim"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">source</span> d:/<span class="keyword">abc</span>.sql</div></pre></td></tr></table></figure>
+<p>当连接数据库之后，可以直接使用 以上命令来还原指定数据库。</p>
 <h4 id="自动还原脚本"><a href="#自动还原脚本" class="headerlink" title="自动还原脚本"></a>自动还原脚本</h4><p>那么能不能使用脚本的方式自动还原呢？<br><strong>当每次都是还原同一个数据库，或者还原同一个数据库中的指定表时，便可以采用脚本的方式执行。</strong></p>
 <p>当数据库备份文件存储在云端时，可采用以下脚本：</p>
-<pre><code class="java">#!/bin/bash
-
-HOSTNAME = &quot;bd.gameplat2dev.w.qiyi.db&quot;         #数据库信息    
-PORT = &quot;1516&quot;                                  #端口
-USERNAME = &quot;username&quot;                          #用户名
-PASSWORD = &quot;123456&quot;                            #密码
-
-DBNAME = &quot;game_product&quot;                        #数据库名称
-#TABLENAME1 = &quot;t_approve&quot;                      #表名
-#TABLENAME2 = &quot;t_approve_role&quot;  
-
-#sql文件下载路径
-URL = &quot;http://osuskkx7k.bkt.clouddn.com/ab.sql&quot;
-
-#定义文件名（自定义）
-FILE = &quot;sqlfile.sql&quot;
-
-#下载sql文件
-wget ${URL} -O ${FILE}
-
-#输出(可无)
-echo ${FILE}
-
-#定义 source 命令
-restore_sql = &quot;source  ${FILE}&quot;
-
-#还原指令
-mysql -h${HOSTNAME}  -P${PORT}  -u${USERNAME} -p${PASSWORD} ${DBNAME} -e&quot;${restore_sql}&quot;
-</code></pre>
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div></pre></td><td class="code"><pre><div class="line">#!/bin/bash</div><div class="line"></div><div class="line">HOSTNAME = "bd.gameplat2dev.db"         #数据库信息    </div><div class="line">PORT = "1516"                                  #端口</div><div class="line">USERNAME = "username"                          #用户名</div><div class="line">PASSWORD = "123456"                            #密码</div><div class="line"></div><div class="line">DBNAME = "game_product"                        #数据库名称</div><div class="line">#TABLENAME1 = "t_approve"                      #表名</div><div class="line">#TABLENAME2 = "t_approve_role"  </div><div class="line"></div><div class="line">#sql文件下载路径</div><div class="line">URL = "http://osuskkx7k.bkt.clouddn.com/ab.sql"</div><div class="line"></div><div class="line">#定义文件名（自定义）</div><div class="line">FILE = "sqlfile.sql"</div><div class="line"></div><div class="line">#下载sql文件</div><div class="line">wget $&#123;URL&#125; -O $&#123;FILE&#125;</div><div class="line"></div><div class="line">#输出(可无)</div><div class="line">echo $&#123;FILE&#125;</div><div class="line"></div><div class="line">#定义 source 命令</div><div class="line">restore_sql = "source  $&#123;FILE&#125;"</div><div class="line"></div><div class="line">#还原指令</div><div class="line">mysql -h$&#123;HOSTNAME&#125;  -P$&#123;PORT&#125;  -u$&#123;USERNAME&#125; -p$&#123;PASSWORD&#125; $&#123;DBNAME&#125; -e"$&#123;restore_sql&#125;"</div></pre></td></tr></table></figure>
 <p><strong>记得另存为时，后缀是 .sh，双击即可运行</strong></p>
 <h5 id="注意："><a href="#注意：" class="headerlink" title="注意："></a>注意：</h5><ul>
 <li>若为本地数据库可将数据库名改为 localhost ，端口无需指定</li>
