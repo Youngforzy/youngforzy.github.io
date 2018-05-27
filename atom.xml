@@ -128,7 +128,7 @@
     <link href="http://yoursite.com/2018/01/25/Mysql%E8%87%AA%E5%8A%A8%E8%BF%98%E5%8E%9F%E8%84%9A%E6%9C%AC/"/>
     <id>http://yoursite.com/2018/01/25/Mysql自动还原脚本/</id>
     <published>2018-01-25T07:12:12.000Z</published>
-    <updated>2018-05-26T12:24:22.556Z</updated>
+    <updated>2018-05-27T02:44:12.397Z</updated>
     
     <content type="html"><![CDATA[<h3 id="Mysql自动还原脚本（-sh文件）"><a href="#Mysql自动还原脚本（-sh文件）" class="headerlink" title="Mysql自动还原脚本（.sh文件）"></a>Mysql自动还原脚本（.sh文件）</h3><h4 id="还原数据库的基本指令"><a href="#还原数据库的基本指令" class="headerlink" title="还原数据库的基本指令"></a>还原数据库的基本指令</h4><figure class="highlight vim"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">source</span> d:/<span class="keyword">abc</span>.sql</div></pre></td></tr></table></figure>
 <p>当连接数据库之后，可以直接使用 以上命令来还原指定数据库。</p>
