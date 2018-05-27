@@ -813,9 +813,9 @@
       <category term="技术" scheme="http://yoursite.com/categories/%E6%8A%80%E6%9C%AF/"/>
     
     
-      <category term="JDK1.7" scheme="http://yoursite.com/tags/JDK1-7/"/>
-    
       <category term="ConcurrentHashMap" scheme="http://yoursite.com/tags/ConcurrentHashMap/"/>
+    
+      <category term="JDK1.7" scheme="http://yoursite.com/tags/JDK1-7/"/>
     
   </entry>
   
@@ -939,9 +939,9 @@
       <category term="技术" scheme="http://yoursite.com/categories/%E6%8A%80%E6%9C%AF/"/>
     
     
-      <category term="HashMap" scheme="http://yoursite.com/tags/HashMap/"/>
-    
       <category term="JDK1.8" scheme="http://yoursite.com/tags/JDK1-8/"/>
+    
+      <category term="HashMap" scheme="http://yoursite.com/tags/HashMap/"/>
     
   </entry>
   
@@ -1023,9 +1023,9 @@
       <category term="技术" scheme="http://yoursite.com/categories/%E6%8A%80%E6%9C%AF/"/>
     
     
-      <category term="HashMap" scheme="http://yoursite.com/tags/HashMap/"/>
-    
       <category term="JDK1.7" scheme="http://yoursite.com/tags/JDK1-7/"/>
+    
+      <category term="HashMap" scheme="http://yoursite.com/tags/HashMap/"/>
     
   </entry>
   
