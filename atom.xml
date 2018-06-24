@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yoursite.com/"/>
-  <updated>2018-06-24T06:22:02.159Z</updated>
+  <updated>2018-06-24T06:28:43.863Z</updated>
   <id>http://yoursite.com/</id>
   
   <author>
@@ -20,7 +20,7 @@
     <link href="http://yoursite.com/2018/06/24/%E5%9F%BA%E6%95%B0%E6%8E%92%E5%BA%8F/"/>
     <id>http://yoursite.com/2018/06/24/基数排序/</id>
     <published>2018-06-24T05:48:18.000Z</published>
-    <updated>2018-06-24T06:22:02.159Z</updated>
+    <updated>2018-06-24T06:28:43.863Z</updated>
     
     <content type="html"><![CDATA[<h3 id="基数排序"><a href="#基数排序" class="headerlink" title="基数排序"></a>基数排序</h3><p><strong>基数排序是一种基于分配的排序（空间换时间）</strong>，不同于常见的基于比较的排序（冒泡、快排、归并…等）。  </p>
 <p><strong>基于比较的排序时间复杂度通常是O（n^2）或者O（nlogn），下限是O（nlogn）；</strong>  </p>
@@ -31,7 +31,7 @@
 <h4 id="实例分析"><a href="#实例分析" class="headerlink" title="实例分析"></a>实例分析</h4><p>通过基数排序对一个无序数组进行排序{53, 542, 3, 63, 14, 214, 154, 748, 616}，它的示意图如下：</p>
 <p><img src="http://osuskkx7k.bkt.clouddn.com/%E5%9F%BA%E6%95%B0%E6%8E%92%E5%BA%8F.jpg" alt="image"></p>
 <h5 id="比较过程"><a href="#比较过程" class="headerlink" title="比较过程"></a>比较过程</h5><p>结合上图分析比较过程。<br><strong>每次比较，根据相应位数上的值，将元素放入对应的桶（0-10）中。</strong></p>
-<p>![image](<a href="http://osuskkx7k.bkt.clouddn.com/%E5%9F%BA%E6%95%B0%E6%8E%92%E5%BA%8F.png）" target="_blank" rel="external">http://osuskkx7k.bkt.clouddn.com/%E5%9F%BA%E6%95%B0%E6%8E%92%E5%BA%8F.png）</a></p>
+<p><img src="http://osuskkx7k.bkt.clouddn.com/%E5%9F%BA%E6%95%B0%E6%8E%92%E5%BA%8F%E8%A1%A8.png" alt=""></p>
 <p>经过第三次排序，如图一，得到一个有序的数组。</p>
 <h4 id="实现"><a href="#实现" class="headerlink" title="实现"></a>实现</h4><h5 id="计算排序的次数"><a href="#计算排序的次数" class="headerlink" title="计算排序的次数"></a>计算排序的次数</h5><p>排序的次数即数组统一的位数（也是最大元素的位数），在这里是 3 位，总共需要比较3次。</p>
 <figure class="highlight glsl"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//获取最大值</span></div><div class="line"><span class="type">int</span> <span class="built_in">max</span> = a[<span class="number">0</span>];</div><div class="line"><span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; a.<span class="built_in">length</span>; i++) &#123;</div><div class="line">    <span class="keyword">if</span> (<span class="built_in">max</span> &lt; a[i]) &#123;</div><div class="line">        <span class="built_in">max</span> = a[i];</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"><span class="comment">//根据最大值确定排序的遍数（如369三位数，就是3遍）</span></div><div class="line"><span class="type">int</span> time = <span class="number">0</span>;</div><div class="line"><span class="keyword">while</span> (<span class="built_in">max</span> &gt; <span class="number">0</span>) &#123;</div><div class="line">    <span class="built_in">max</span> = <span class="built_in">max</span> / <span class="number">10</span>;</div><div class="line">    time ++;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
