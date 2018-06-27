@@ -1,0 +1,793 @@
+<!DOCTYPE html>
+<!--[if lte IE 8 ]>
+<html class="ie" xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-US" lang="en-US">
+<![endif]-->
+<!--[if (gte IE 9)|!(IE)]><!-->
+<!--
+***************  *      *     *
+      8          *    *       *
+      8          *  *         *
+      8          **           *
+      8          *  *         *
+      8          *    *       *
+      8          *      *     *
+      8          *        *   ***********    -----Theme By Kieran(http://go.kieran.top)
+-->
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="zh-CN" lang="zh-CN">
+<!--<![endif]-->
+
+<head>
+  <title>JDK动态代理的实现原理浅析 | ZY&#39;s Blog</title>
+  <!-- Meta data -->
+    <meta http-equiv="Content-Type" content="text/html" charset="UTF-8" >
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="generator" content="ZY's Blog">
+    <meta name="author" content="Z Yong">
+    <meta name="description" content="Young for you." />
+    <meta name="keywords" content="" />
+
+    <!-- Favicon, (keep icon in root folder) -->
+    <link rel="Shortcut Icon" href="/img/xfavicon.ico" type="image/ico">
+
+    <link rel="alternate" href="/atom.xml" title="ZY&#39;s Blog" type="application/atom+xml">
+    <link rel="stylesheet" href="/css/all.css" media="screen" type="text/css">
+    
+    <link rel="stylesheet" href="/highlightjs/tomorrow-night-eighties.css" type="text/css">
+    
+
+    <!--[if IE 8]>
+    <link rel="stylesheet" type="text/css" href="/css/ie8.css" />
+    <![endif]-->
+
+    <!-- jQuery | Load our jQuery, with an alternative source fallback to a local version if request is unavailable -->
+    <script src="/js/jquery-1.11.1.min.js"></script>
+    <script>window.jQuery || document.write('<script src="js/jquery-1.11.1.min.js"><\/script>')</script>
+
+    <!-- Load these in the <head> for quicker IE8+ load times -->
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+    <script src="/js/html5shiv.min.js"></script>
+    <script src="/js/respond.min.js"></script>
+    <![endif]-->
+
+  
+  
+  <link rel="alternate" type="application/atom+xml" title="Atom 0.3" href="atom.xml">
+  
+  
+
+  <style>.col-md-8.col-md-offset-2.opening-statement img{display:none;}</style>
+</head>
+
+<!--
+<body class="post-template">
+-->
+<body id="index" class="lightnav animsition">
+
+      <!-- ============================ Off-canvas navigation =========================== -->
+
+    <div class="sb-slidebar sb-right sb-style-overlay sb-momentum-scrolling">
+        <div class="sb-close" aria-label="Close Menu" aria-hidden="true">
+            <img src="/img/close.png" alt="Close"/>
+        </div>
+        <!-- Lists in Slidebars -->
+        <ul class="sb-menu">
+            <li><a href="/" class="animsition-link" title="Home">Home</a></li>
+            <li><a href="/archives" class="animsition-link" title="archive">archives</a></li>
+            <!-- Dropdown Menu -->
+			 
+            
+        	<li>
+        		<a class="sb-toggle-submenu">Categories<span class="sb-caret"></span></a>
+            	<ul class="sb-submenu">
+				  	
+				    <li><a href="/categories/技术/" class="animsition-link">技术<small>(37)</small></a></li>
+				    
+				    <li><a href="/categories/芭乐/" class="animsition-link">芭乐<small>(1)</small></a></li>
+				    
+				</ul>
+        	</li>
+			
+            
+            <li>
+                <a class="sb-toggle-submenu">Links<span class="sb-caret"></span></a>
+                <ul class="sb-submenu">
+                    
+                    <li><a href="http://www.xiaonanbobo.com/" class="animsition-link">Bobo</a></li>
+                    
+                    <li><a href="http://xxgblog.com/" class="animsition-link">Wucao</a></li>
+                    
+                    <li><a href="http://www.importnew.com/" class="animsition-link">importnew</a></li>
+                    
+                    <li><a href="http://www.hollischuang.com/" class="animsition-link">Holis</a></li>
+                    
+                </ul>
+            </li>
+            
+        </ul>
+        <!-- Lists in Slidebars -->
+        <ul class="sb-menu secondary">
+			
+            <li><a href="javascript:;" class="popup-trigger" title="Search"><span class="search-icon"></span>Search</a></li>
+            
+            <li><a href="/about.html" class="animsition-link" title="about">About</a></li>
+			<li><a href="/tagCloud.html" class="animsition-link" title="tagCloud">Tag</a></li>
+            <li><a href="/atom.xml" class="animsition-link" title="rss">RSS</a></li>
+        </ul>
+    </div>
+    
+    <!-- ============================ END Off-canvas navigation =========================== -->
+
+    <!-- ============================ #sb-site Main Page Wrapper =========================== -->
+
+    <div id="sb-site">
+        <!-- #sb-site - All page content should be contained within this id, except the off-canvas navigation itself -->
+
+        <!-- ============================ Header & Logo bar =========================== -->
+
+        <div id="navigation" class="navbar navbar-fixed-top">
+            <div class="navbar-inner">
+                <div class="container">
+                    <!-- Nav logo -->
+                    <div class="logo">
+                        <a href="/" title="Logo" class="animsition-link">
+                         <img src="/img/x2.png" alt="Logo" width="60px;"/> 
+                        </a>
+                    </div>
+                    <!-- // Nav logo -->
+                    <!-- Info-bar -->
+                    <nav>
+                        <ul class="nav">
+                            <li><a href="/" class="animsition-link">ZY's Blog</a></li>
+                            <li class="nolink"><span>Always </span>Creative.</li>
+                            
+                            
+                            
+                            
+                            
+                            <li class="nolink"><span>Welcome!</span></li>
+                        </ul>
+                    </nav>
+                    <!--// Info-bar -->
+                </div>
+                <!-- // .container -->
+                <div class="learnmore sb-toggle-right">More</div>
+                <button type="button" class="navbar-toggle menu-icon sb-toggle-right" title="More">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar before"></span>
+                <span class="icon-bar main"></span>
+                <span class="icon-bar after"></span>
+                </button>
+            </div>
+            <!-- // .navbar-inner -->
+        </div>
+
+        <!-- ============================ Header & Logo bar =========================== -->
+
+
+      
+<section id="intro">
+    <div class="container">
+        <div class="row col-md-offset-2">
+            <div class="col-md-8">
+    			<span class="post-meta">
+      <time datetime="2018-06-27T06:12:12.000Z" itemprop="datePublished">
+          2018-06-27
+      </time>
+    
+    
+    | 
+    <a href='/tags/JDK动态代理/'>JDK动态代理</a>,
+    
+    <a href='/tags/代理模式/'>代理模式</a>
+    
+    
+</span>
+                <h1>JDK动态代理的实现原理浅析</h1>
+            </div>
+        </div>
+        <div class="col-md-8 col-md-offset-2">
+      		<h4 id="JDK动态代理简介"><a href="#JDK动态代理简介" class="headerlink" title="JDK动态代理简介"></a>JDK动态代理简介</h4><p>什么是JDK动态代理？<br>先看看代理的概念——<strong>代理：为其他对象提供一种代理以控制对这个对象的访问</strong>。  </p>
+<p>代理在生活中很常见，比如买火车票可以不去火车站，而是通过代售点；想要逃课了，就让同学代签到等等。<br>说白了，就是可以通过代理来完成目标事件。（自我理解）</p>
+<p>不同于静态代理直接采用编码的方式实现，JDK动态代理是<strong>利用反射机制在运行时创建代理类</strong>，进而调用相应的方法。</p>
+<h4 id="JDK动态代理的使用"><a href="#JDK动态代理的使用" class="headerlink" title="JDK动态代理的使用"></a>JDK动态代理的使用</h4><p>通过一个小例子来看看如何使用JDK动态代理。</p>
+<h5 id="目标接口"><a href="#目标接口" class="headerlink" title="目标接口"></a>目标接口</h5><figure class="highlight routeros"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">public<span class="built_in"> interface </span>GameService &#123;</div><div class="line"></div><div class="line">    String beginGame(String s);</div><div class="line"></div><div class="line">    void playGame(String s);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>目标接口中定义了两个目标方法。  </p>
+<h5 id="目标对象"><a href="#目标对象" class="headerlink" title="目标对象"></a>目标对象</h5><figure class="highlight cs"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">GamePlay</span> <span class="title">implements</span> <span class="title">GameService</span> &#123;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">beginGame</span>(<span class="params">String name</span>) </span>&#123;</div><div class="line">        System.<span class="keyword">out</span>.println(<span class="string">"玩家"</span> + name + <span class="string">"进入召唤师峡谷,游戏开始！"</span>);</div><div class="line">        <span class="keyword">return</span> <span class="string">"玩家名字是："</span> + name;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">playGame</span>(<span class="params">String s</span>) </span>&#123;</div><div class="line">        System.<span class="keyword">out</span>.println(<span class="string">"玩家说： "</span> +  s);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>目标对象是目标接口的实现，也是要被代理的对象。</p>
+<h5 id="调用处理器——InvocationHandler"><a href="#调用处理器——InvocationHandler" class="headerlink" title="调用处理器——InvocationHandler"></a>调用处理器——InvocationHandler</h5><figure class="highlight aspectj"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">GameInvocationHandler</span> <span class="keyword">implements</span> <span class="title">InvocationHandler</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="keyword">private</span> Object <span class="keyword">target</span>;</div><div class="line"></div><div class="line">    <span class="comment">//构造方法（可传入目标对象）</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="title">GameInvocationHandler</span><span class="params">(Object <span class="keyword">target</span>)</span> </span>&#123;</div><div class="line">        <span class="keyword">this</span>.<span class="keyword">target</span> = <span class="keyword">target</span>;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="keyword">public</span> <span class="function">Object <span class="title">invoke</span><span class="params">(Object proxy, Method method, Object[] args)</span> <span class="keyword">throws</span> Throwable </span>&#123;</div><div class="line">        <span class="comment">//业务逻辑</span></div><div class="line">        System.out.println(<span class="string">"before-----欢迎来到——动态召唤师峡谷"</span>);</div><div class="line"> </div><div class="line">        <span class="comment">//方法的返回值（可以为空）</span></div><div class="line">        Object object = method.invoke(<span class="keyword">target</span>, args);</div><div class="line"></div><div class="line">        <span class="comment">//业务逻辑</span></div><div class="line">        System.out.println(<span class="string">"after------欢迎离开——动态召唤师峡谷"</span>);</div><div class="line">        <span class="keyword">return</span> object;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>InvocationHandler是调用处理器接口，它只定义了唯一一个 invoke() 方法，通过重写该方法可自定义代理的业务逻辑，该方法三个参数：  </p>
+<ul>
+<li>proxy：代理类对象（$Proxy0），在该方法中一般不会用到</li>
+<li>method：被代理类调用的方法对象</li>
+<li>args：方法对象中的参数</li>
+</ul>
+<h5 id="创建代理类对象——Proxy-newProxyInstance"><a href="#创建代理类对象——Proxy-newProxyInstance" class="headerlink" title="创建代理类对象——Proxy.newProxyInstance()"></a>创建代理类对象——Proxy.newProxyInstance()</h5><figure class="highlight haxe"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">GamePlayDynamicProxy</span> </span>&#123;</div><div class="line"></div><div class="line"></div><div class="line">    <span class="keyword">public</span> <span class="keyword">static</span> void main(<span class="keyword">String</span>[] args) &#123;</div><div class="line"></div><div class="line">        <span class="comment">//目标类（实现类）</span></div><div class="line">        GameService gameService = <span class="keyword">new</span> <span class="type">GamePlay</span>();</div><div class="line">        </div><div class="line">        <span class="comment">//调用处理器</span></div><div class="line">        InvocationHandler invocationHandler = <span class="keyword">new</span> <span class="type">GameInvocationHandler</span>(gameService);</div><div class="line"></div><div class="line">        <span class="comment">//生成代理对象</span></div><div class="line">        GameService GameServiceproxy = (GameService) Proxy.<span class="keyword">new</span><span class="type">ProxyInstance</span>(gameService.getClass().getClassLoader(),</div><div class="line">                gameService.getClass().getInterfaces(), invocationHandler);</div><div class="line"></div><div class="line">        <span class="comment">//调用方法,实际上运行的是真实类的方法（打断点可知）</span></div><div class="line">        GameServiceproxy.playGame(<span class="string">"我要超神啦！"</span>);</div><div class="line">        </div><div class="line">        <span class="comment">//beginGame()可获取返回值</span></div><div class="line">        <span class="comment">//String resultFromInvoke = GameServiceproxy.beginGame("LBJ");</span></div><div class="line">        <span class="comment">//System.out.println("InvocationHandler中的返回值：" + resultFromInvoke);</span></div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>通过Proxy类的静态方法 newProxyInstance() 来创建代理类对象实例，关于其中具体的细节在下面的实现原理中将会提及。</p>
+<h5 id="输出："><a href="#输出：" class="headerlink" title="输出："></a>输出：</h5><figure class="highlight applescript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">before</span><span class="comment">-----欢迎来到——动态召唤师峡谷</span></div><div class="line">玩家说： 我要超神啦！</div><div class="line"><span class="keyword">after</span><span class="comment">------欢迎离开——动态召唤师峡谷</span></div></pre></td></tr></table></figure>
+<p>可见，通过使用动态代理，可以<strong>在目标方法中增加所需要的业务逻辑</strong>（如日志处理、事务管理等）。  </p>
+<h5 id="JDK动态代理使用步骤"><a href="#JDK动态代理使用步骤" class="headerlink" title="JDK动态代理使用步骤"></a>JDK动态代理使用步骤</h5><p><strong>1. 定义目标方法的接口（必须）</strong></p>
+<p><strong>2. 实现接口目标方法的实现类（不是必须，如RPC中客户端代理没有实现类/Mybatis中的mapper接口也没有实现类，可在代理过程中实现 ）</strong></p>
+<p><strong>3. 定义InvocationHandler，在invoke()方法中实现代理的业务逻辑，构造InvocationHandler时可传入必要的参数，以便在invoke()中使用。例如，可传入实现类作为构造参数。</strong></p>
+<p><strong>4. 调用Proxy.newProxyInstance()生成代理类对象。该方法传入三个参数</strong>：</p>
+<ul>
+<li>ClassLoader：代理对象的类加载器；</li>
+<li>Class&lt;?&gt;[] interfaces：代理对象需要实现的接口；</li>
+<li>InvocationHandler：自定义实现的InvocationHandler</li>
+</ul>
+<p>5.通过代理类对象运行目标方法。</p>
+<h4 id="实现原理"><a href="#实现原理" class="headerlink" title="实现原理"></a>实现原理</h4><p>那么 Java 的动态代理是如何实现的？<br>首先开门见山直接进入生成代理类对象的Proxy.newProxyInstance()方法。</p>
+<h5 id="Proxy-newProxyInstance-方法"><a href="#Proxy-newProxyInstance-方法" class="headerlink" title="Proxy.newProxyInstance()方法"></a>Proxy.newProxyInstance()方法</h5><figure class="highlight gradle"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div></pre></td><td class="code"><pre><div class="line">@CallerSensitive</div><div class="line"><span class="keyword">public</span> <span class="keyword">static</span> Object newProxyInstance(ClassLoader loader,</div><div class="line">                                      <span class="keyword">Class</span>&lt;?&gt;[] interfaces,</div><div class="line">                                      InvocationHandler h)</div><div class="line">    <span class="keyword">throws</span> IllegalArgumentException</div><div class="line">&#123;</div><div class="line">    Objects.requireNonNull(h);</div><div class="line">    <span class="comment">//克隆传入的接口</span></div><div class="line">    <span class="keyword">final</span> <span class="keyword">Class</span>&lt;?&gt;[] intfs = interfaces.clone();</div><div class="line">    <span class="keyword">final</span> SecurityManager sm = System.getSecurityManager();</div><div class="line">    <span class="keyword">if</span> (sm != <span class="keyword">null</span>) &#123;</div><div class="line">        checkProxyAccess(Reflection.getCallerClass(), loader, intfs);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="comment">//通过类加载器和指定接口，生成代理类字节码文件，并获取代理类Class对象</span></div><div class="line">    <span class="keyword">Class</span>&lt;?&gt; cl = getProxyClass0(loader, intfs);</div><div class="line"></div><div class="line">    <span class="keyword">try</span> &#123;</div><div class="line">        <span class="keyword">if</span> (sm != <span class="keyword">null</span>) &#123;</div><div class="line">            checkNewProxyPermission(Reflection.getCallerClass(), cl);</div><div class="line">        &#125;</div><div class="line">        </div><div class="line">        <span class="comment">//获取指定构造函数对象(也就是 $Proxy0(InvocationHandler h))</span></div><div class="line">        <span class="keyword">final</span> Constructor&lt;?&gt; cons = cl.getConstructor(constructorParams);</div><div class="line">        <span class="keyword">final</span> InvocationHandler ih = h;</div><div class="line">        <span class="keyword">if</span> (!Modifier.isPublic(cl.getModifiers())) &#123;</div><div class="line">            AccessController.doPrivileged(<span class="keyword">new</span> PrivilegedAction&lt;<span class="keyword">Void</span>&gt;() &#123;</div><div class="line">                <span class="keyword">public</span> <span class="keyword">Void</span> run() &#123;</div><div class="line">                    cons.setAccessible(<span class="keyword">true</span>);</div><div class="line">                    <span class="keyword">return</span> <span class="keyword">null</span>;</div><div class="line">                &#125;</div><div class="line">            &#125;);</div><div class="line">        &#125;</div><div class="line">        <span class="comment">//通过构造函数对象生成代理类对象</span></div><div class="line">        <span class="keyword">return</span> cons.newInstance(<span class="keyword">new</span> Object[]&#123;h&#125;);</div><div class="line">    &#125; <span class="comment">// catch...省略 </span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>在这个方法中主要做了以下工作（如代码中的注释部分）：</p>
+<ol>
+<li><p>通过类加载器和指定接口，生成代理类字节码文件，并获取代理类Class对象cl；</p>
+</li>
+<li><p>通过Class对象cl获取指定的构造函数对象cons；</p>
+</li>
+<li><p>构造函数对象cons，通过方法中传入的InvocationHandler，生成一个实例，这个实例就是代理类对象。</p>
+</li>
+</ol>
+<p>可见<strong>反射</strong>在上述代码中起了重要作用。  </p>
+<p>大致了解了代理类对象是如何生成的，那么被代理的方法是如何调用的呢？ InvocationHandler中重写的invoke()方法又是如何调用的呢？接下来我们就来看看代理类究竟长什么模样。</p>
+<h5 id="反编译"><a href="#反编译" class="headerlink" title="反编译"></a>反编译</h5><p>参考其他文章可知最终生成代理类的字节码是这样一行代码：<br><figure class="highlight arduino"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//生成字节码</span></div><div class="line"><span class="keyword">byte</span>[] proxyClassFile = ProxyGenerator.generateProxyClass(proxyName, interfaces, accessFlags);</div></pre></td></tr></table></figure></p>
+<p>调用了ProxyGenerator.generateProxyClass()方法, 因此我们可以通过该方法测试生成的代理类对象Class文件，并对其进行反编译，查看生成的具体代理类究竟是什么模样。</p>
+<p>先获取代理类Class文件：<br><figure class="highlight gradle"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> main(String[] args) &#123;</div><div class="line"></div><div class="line">        <span class="keyword">byte</span>[] proxyBytes = ProxyGenerator.generateProxyClass(<span class="string">"ProxyObject"</span>, <span class="keyword">new</span> <span class="keyword">Class</span>[]&#123;GameService.<span class="keyword">class</span>&#125;);</div><div class="line">        <span class="keyword">File</span> <span class="keyword">file</span> = <span class="keyword">new</span> <span class="keyword">File</span>(<span class="string">"E:\\ProxyObject.class"</span>);</div><div class="line">        <span class="keyword">try</span> &#123;</div><div class="line">            FileOutputStream out = <span class="keyword">new</span> FileOutputStream(<span class="keyword">file</span>);</div><div class="line">            out.<span class="keyword">write</span>(proxyBytes);</div><div class="line">            out.flush();</div><div class="line">        &#125; <span class="keyword">catch</span> (FileNotFoundException e) &#123;</div><div class="line">            e.printStackTrace();</div><div class="line">        &#125; <span class="keyword">catch</span> (IOException e) &#123;</div><div class="line">            e.printStackTrace();</div><div class="line">        &#125;</div><div class="line">    &#125;</div></pre></td></tr></table></figure></p>
+<p>将获取到的Class文件存入E盘，即ProxyObject.class文件，然后再通过一个<a href="http://www.javadecompilers.com/" target="_blank" rel="external">在线反编译</a>的网站进行反编译，获取代理类的源码：<br><figure class="highlight haxe"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div><div class="line">93</div><div class="line">94</div><div class="line">95</div><div class="line">96</div><div class="line">97</div><div class="line">98</div><div class="line">99</div><div class="line">100</div><div class="line">101</div><div class="line">102</div><div class="line">103</div><div class="line">104</div><div class="line">105</div><div class="line">106</div><div class="line">107</div><div class="line">108</div><div class="line">109</div><div class="line">110</div><div class="line">111</div><div class="line">112</div><div class="line">113</div><div class="line">114</div><div class="line">115</div><div class="line">116</div><div class="line">117</div><div class="line">118</div><div class="line">119</div><div class="line">120</div><div class="line">121</div><div class="line">122</div><div class="line">123</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">import</span> com.proxy.GameService;</div><div class="line"><span class="keyword">import</span> java.lang.reflect.InvocationHandler;</div><div class="line"><span class="keyword">import</span> java.lang.reflect.Method;</div><div class="line"><span class="keyword">import</span> java.lang.reflect.Proxy;</div><div class="line"><span class="keyword">import</span> java.lang.reflect.UndeclaredThrowableException;</div><div class="line"></div><div class="line"><span class="keyword">public</span> final <span class="class"><span class="keyword">class</span> <span class="title">ProxyObject</span></span></div><div class="line">  <span class="keyword"><span class="keyword">extends</span> <span class="type">Proxy</span></span></div><div class="line">  <span class="keyword"><span class="keyword">implements</span> <span class="type">GameService</span></span></div><div class="line">&#123;</div><div class="line">  <span class="keyword">private</span> <span class="keyword">static</span> Method m1;</div><div class="line">  <span class="keyword">private</span> <span class="keyword">static</span> Method m2;</div><div class="line">  <span class="keyword">private</span> <span class="keyword">static</span> Method m4;</div><div class="line">  <span class="keyword">private</span> <span class="keyword">static</span> Method m0;</div><div class="line">  <span class="keyword">private</span> <span class="keyword">static</span> Method m3;</div><div class="line">  </div><div class="line">  <span class="keyword">public</span> ProxyObject(InvocationHandler paramInvocationHandler)</div><div class="line">  &#123;</div><div class="line">    <span class="keyword">super</span>(paramInvocationHandler);</div><div class="line">  &#125;</div><div class="line">  </div><div class="line">  <span class="keyword">public</span> final boolean equals(Object paramObject)</div><div class="line">  &#123;</div><div class="line">    <span class="keyword">try</span></div><div class="line">    &#123;</div><div class="line">      <span class="keyword">return</span> ((Boolean)h.invoke(<span class="built_in">this</span>, m1, <span class="keyword">new</span> <span class="type">Object</span>[] &#123; paramObject &#125;)).booleanValue();</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">catch</span> (Error|RuntimeException localError)</div><div class="line">    &#123;</div><div class="line">      <span class="keyword">throw</span> localError;</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">catch</span> (Throwable localThrowable)</div><div class="line">    &#123;</div><div class="line">      <span class="keyword">throw</span> <span class="keyword">new</span> <span class="type">UndeclaredThrowableException</span>(localThrowable);</div><div class="line">    &#125;</div><div class="line">  &#125;</div><div class="line">  </div><div class="line">  <span class="keyword">public</span> final <span class="keyword">String</span> toString()</div><div class="line">  &#123;</div><div class="line">    <span class="keyword">try</span></div><div class="line">    &#123;</div><div class="line">      <span class="keyword">return</span> (<span class="keyword">String</span>)h.invoke(<span class="built_in">this</span>, m2, <span class="literal">null</span>);</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">catch</span> (Error|RuntimeException localError)</div><div class="line">    &#123;</div><div class="line">      <span class="keyword">throw</span> localError;</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">catch</span> (Throwable localThrowable)</div><div class="line">    &#123;</div><div class="line">      <span class="keyword">throw</span> <span class="keyword">new</span> <span class="type">UndeclaredThrowableException</span>(localThrowable);</div><div class="line">    &#125;</div><div class="line">  &#125;</div><div class="line">  </div><div class="line">  <span class="keyword">public</span> final void playGame(<span class="keyword">String</span> paramString)</div><div class="line">  &#123;</div><div class="line">    <span class="keyword">try</span></div><div class="line">    &#123;</div><div class="line">      h.invoke(<span class="built_in">this</span>, m4, <span class="keyword">new</span> <span class="type">Object</span>[] &#123; paramString &#125;);</div><div class="line">      <span class="keyword">return</span>;</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">catch</span> (Error|RuntimeException localError)</div><div class="line">    &#123;</div><div class="line">      <span class="keyword">throw</span> localError;</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">catch</span> (Throwable localThrowable)</div><div class="line">    &#123;</div><div class="line">      <span class="keyword">throw</span> <span class="keyword">new</span> <span class="type">UndeclaredThrowableException</span>(localThrowable);</div><div class="line">    &#125;</div><div class="line">  &#125;</div><div class="line">  </div><div class="line">  <span class="keyword">public</span> final int hashCode()</div><div class="line">  &#123;</div><div class="line">    <span class="keyword">try</span></div><div class="line">    &#123;</div><div class="line">      <span class="keyword">return</span> ((Integer)h.invoke(<span class="built_in">this</span>, m0, <span class="literal">null</span>)).intValue();</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">catch</span> (Error|RuntimeException localError)</div><div class="line">    &#123;</div><div class="line">      <span class="keyword">throw</span> localError;</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">catch</span> (Throwable localThrowable)</div><div class="line">    &#123;</div><div class="line">      <span class="keyword">throw</span> <span class="keyword">new</span> <span class="type">UndeclaredThrowableException</span>(localThrowable);</div><div class="line">    &#125;</div><div class="line">  &#125;</div><div class="line">  </div><div class="line">  <span class="keyword">public</span> final <span class="keyword">String</span> beginGame(<span class="keyword">String</span> paramString)</div><div class="line">  &#123;</div><div class="line">    <span class="keyword">try</span></div><div class="line">    &#123;</div><div class="line">      <span class="keyword">return</span> (<span class="keyword">String</span>)h.invoke(<span class="built_in">this</span>, m3, <span class="keyword">new</span> <span class="type">Object</span>[] &#123; paramString &#125;);</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">catch</span> (Error|RuntimeException localError)</div><div class="line">    &#123;</div><div class="line">      <span class="keyword">throw</span> localError;</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">catch</span> (Throwable localThrowable)</div><div class="line">    &#123;</div><div class="line">      <span class="keyword">throw</span> <span class="keyword">new</span> <span class="type">UndeclaredThrowableException</span>(localThrowable);</div><div class="line">    &#125;</div><div class="line">  &#125;</div><div class="line">  </div><div class="line">  <span class="keyword">static</span></div><div class="line">  &#123;</div><div class="line">    <span class="keyword">try</span></div><div class="line">    &#123;</div><div class="line">      m1 = Class.forName(<span class="string">"java.lang.Object"</span>).getMethod(<span class="string">"equals"</span>, <span class="keyword">new</span> <span class="type">Class</span>[] &#123; Class.forName(<span class="string">"java.lang.Object"</span>) &#125;);</div><div class="line">      m2 = Class.forName(<span class="string">"java.lang.Object"</span>).getMethod(<span class="string">"toString"</span>, <span class="keyword">new</span> <span class="type">Class</span>[<span class="number">0</span>]);</div><div class="line">      m4 = Class.forName(<span class="string">"com.proxy.GameService"</span>).getMethod(<span class="string">"playGame"</span>, <span class="keyword">new</span> <span class="type">Class</span>[] &#123; Class.forName(<span class="string">"java.lang.String"</span>) &#125;);</div><div class="line">      m0 = Class.forName(<span class="string">"java.lang.Object"</span>).getMethod(<span class="string">"hashCode"</span>, <span class="keyword">new</span> <span class="type">Class</span>[<span class="number">0</span>]);</div><div class="line">      m3 = Class.forName(<span class="string">"com.proxy.GameService"</span>).getMethod(<span class="string">"beginGame"</span>, <span class="keyword">new</span> <span class="type">Class</span>[] &#123; Class.forName(<span class="string">"java.lang.String"</span>) &#125;);</div><div class="line">      <span class="keyword">return</span>;</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">catch</span> (NoSuchMethodException localNoSuchMethodException)</div><div class="line">    &#123;</div><div class="line">      <span class="keyword">throw</span> <span class="keyword">new</span> <span class="type">NoSuchMethodError</span>(localNoSuchMethodException.getMessage());</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">catch</span> (ClassNotFoundException localClassNotFoundException)</div><div class="line">    &#123;</div><div class="line">      <span class="keyword">throw</span> <span class="keyword">new</span> <span class="type">NoClassDefFoundError</span>(localClassNotFoundException.getMessage());</div><div class="line">    &#125;</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>观察上述代理类源码可以发现，包含了GameService接口中定义的两个方法playGame()和beginGame()。并且，<br><strong>当代理类对象调用目标方法时，实际上调用的就是InvocationHandler中的invoke()方法，因此也就解释代理类是如何与invoke()方法相关联的。</strong><br><figure class="highlight oxygene"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">以playGame方法为例：</div><div class="line"><span class="keyword">public</span> <span class="keyword">final</span> void playGame(String paramString) 即调用了</div><div class="line"> h.invoke(this, m4, <span class="keyword">new</span> Object[] <span class="comment">&#123; paramString &#125;</span>);</div><div class="line"> h：构建代理类传入的InvocationHandler</div><div class="line"> m4: <span class="keyword">static</span> 代码块中定义的<span class="function"><span class="keyword">method</span>实例</span></div><div class="line"> <span class="title">paramString</span>：参数</div></pre></td></tr></table></figure></p>
+<h5 id="代理类特性"><a href="#代理类特性" class="headerlink" title="代理类特性"></a>代理类特性</h5><p>观察上述代理类源码，发现动态生成的代理类有以下特点：  </p>
+<p><strong>1. 继承了Proxy类，实现了所代理的接口（不能再继承其他类）;</strong>  </p>
+<p><strong>2. 除了包含所代理的接口方法，还有Object类的equals()、hashCode()、toString()三个方法，目的应该是防止重写保证和目标类一致；</strong>  </p>
+<p><strong>3. 每一个方法都会执行调用处理器的 invoke() 方法（在其中可实现自定义的逻辑）；</strong></p>
+<p><strong>4. 提供了一个使用InvocationHandler作为参数的构造方法，通过前面源码分析也能知道；</strong></p>
+<p><strong>5. 每个代理类实例都会关联一个调用处理器对象。传入不同的调用处理器对象可生成不同的代理类对象。</strong></p>
+
+            <div class="clearfix"></div>
+            <hr class="nogutter">
+        </div>
+        <nav class="pagination" role="pagination">
+    
+    
+    <a class="pull-right" href="/2018/06/24/基数排序/">
+        基数排序的简单实现 →
+    </a>
+    
+</nav>
+
+		<div>
+
+
+
+	
+<!--PC版-->
+<div id="SOHUCS" sid="JDK动态代理的实现原理浅析"></div>
+<script charset="utf-8" type="text/javascript" src="/js/changyan.js" ></script>
+<script type="text/javascript">
+window.changyan.api.config({
+appid: 'cytDpF5Fb',
+conf: 'prod_b338aee7fcca1251a50551682391c6df'
+});
+</script>
+</div>
+    </div>
+</section>
+
+
+	  
+<!-- ============================ Footer =========================== -->
+
+<footer>
+    <div class="container">
+            <div class="copy">
+                <p>
+                    &copy; 2017<script>new Date().getFullYear()>2010&&document.write("-"+new Date().getFullYear());</script>, Content By Z Yong. All Rights Reserved.
+                </p>
+                <p>Theme By <a href="#" style="color: #767D84">Kieran</a></p>
+            </div>
+            <div class="social">
+                <ul>
+                    
+                    
+                    
+                    
+                    
+                </ul>
+            </div>
+            <div class="clearfix"> </div>
+        </div>
+</footer>
+
+<!-- ============================ END Footer =========================== -->
+      <!-- Load our scripts -->
+<!-- Resizable 'on-demand' full-height hero -->
+<script type="text/javascript">
+    var resizeHero = function () {
+        var hero = $(".cover,.heightblock"),
+            window1 = $(window);
+        hero.css({
+            "height": window1.height()
+        });
+    };
+
+    resizeHero();
+
+    $(window).resize(function () {
+        resizeHero();
+    });
+</script>
+<script src="/js/plugins.min.js"></script><!-- Bootstrap core and concatenated plugins always load here -->
+<script src="/js/jquery.flexslider-min.js"></script><!-- Flexslider plugin -->
+<script src="/js/scripts.js"></script><!-- Theme scripts -->
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+$('#intro').find('img').each(function(){
+  var alt = this.alt;
+
+  if (alt){
+    $(this).after('<span class="caption" style="display:none">' + alt + '</span>');
+  }
+
+  $(this).wrap('<a href="' + this.src + '" title="' + alt + '" class="fancybox" rel="gallery" />');
+});
+(function($){
+  $('.fancybox').fancybox();
+})(jQuery);
+</script>
+
+<!-- Initiate flexslider plugin -->
+<script type="text/javascript">
+    $(document).ready(function($) {
+      (function(){
+        console.log('font');
+        var getCss = function(path) {
+          var head = document.getElementsByTagName('head')[0];
+          link = document.createElement('link');
+          link.href = path;
+          link.rel = 'stylesheet';
+          link.type = 'text/css';
+          head.appendChild(link);
+        };
+        getCss('https://fonts.googleapis.com/css?family=Montserrat:400,700');
+        getCss('https://fonts.googleapis.com/css?family=Open+Sans:400,600');
+      })();
+      $('.flexslider').flexslider({
+        animation: "fade",
+        prevText: "",
+        nextText: "",
+        directionNav: true
+      });
+    });
+</script>
+	  
+            <style>
+.local-search-popup {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  background: rgba(255, 255, 255, .9);
+  color: #333;
+  z-index: 9999;
+  border-radius: 5px;
+  overflow: scroll;
+}
+#local-search-input {
+  width: 100%;
+  border: none;
+  outline: none;
+  border-bottom: 1px solid #151515;
+  background-color: initial;
+}
+.search-result-list {
+  list-style: none;
+  padding-left: 0;
+}
+.search-result-list > li {
+  margin-top: 15px;
+  border-bottom: 1px solid #ddd;
+  transition: all ease .3s;
+}
+.search-result-list > li:hover {
+  border-bottom: 1px solid gray;
+}
+.search-result-title {
+  font-size: 16px;
+}
+.search-result {
+  line-height: 20px;
+}
+.search-keyword {
+  font-weight: normal;
+  color: #c00;
+}
+
+@media (min-width: 890px) {
+  .popup-btn-close {
+    position: absolute;
+    top: 15px;
+    left: 35px;
+    border: 1px solid #151515;
+    padding: 0px 10px;
+    border-top-left-radius: 8px;
+    cursor: pointer;
+    transition: all ease .3s;
+  }
+  .popup-btn-close:hover {
+    background: #151515;
+    opacity: .9;
+    color: #fff;
+  }
+}
+@media (max-width: 890px) {
+  .popup-btn-close {
+    font-size: 0;
+    position: fixed;
+    right: 20px;
+    bottom: 50px;
+    width: 50px;
+    height: 50px;
+    background: #fff;
+    border-radius: 50%;
+    box-shadow: 1px 1px 5px #888;
+    cursor: pointer;
+  }
+  .popup-btn-close::after {
+    content: '←';
+    color: #151515;
+    position: absolute;
+    top: 0;
+    left: 0;
+    font-size: 20px;
+    width: 100%;
+    height: 100%;
+    line-height: 50px;
+    text-align: center;
+  }
+}
+</style>
+
+<div class="popup search-popup local-search-popup">
+  <span class="popup-btn-close">
+    ESC
+  </span>
+  <div class="container">
+    <div class="col-md-8 col-md-offset-2">
+      <div class="local-search-header clearfix">
+        <span class="search-icon">
+          <i class="fa fa-search"></i>
+        </span>
+        <div class="local-search-input-wrapper">
+          <input autocomplete="off" placeholder="Search..." type="text" id="local-search-input">
+        </div>
+      </div>
+      <div id="local-search-result"></div>
+    </div>
+  </div>
+</div>
+
+<script src="/js/ziploader.js"></script>
+
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.json";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').fadeOut(300);
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $('.popup').fadeIn(300);
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // get search zip version
+    $.get('/searchVersion.txt?t=' + (+new Date()), function(res) {
+      if (localStorage.getItem('searchVersion') !== res) {
+        localStorage.setItem('searchVersion', res);
+        initSearchJson();
+      }
+    });
+
+    function initSearchJson () {
+      initLoad(['/search.zip'], {
+        loadOptions: {
+          success: function(obj) {
+            localStorage.setItem('searchJson', obj['search.json'])
+          },
+          error: function(e) {
+            return console.log(e)
+          }
+        },
+        returnOptions: {
+          'json': TYPE_TEXT
+        },
+        mimeOptions:{
+          'json':'application/json'
+        }
+      })
+    }
+
+
+    // search function;
+    var searchFunc = function(search_id, content_id) {
+      'use strict';
+
+      isfetched = true;
+      var datas = JSON.parse(localStorage.getItem('searchJson'));
+      console.log(search_id)
+      var input = document.getElementById(search_id);
+      var resultContent = document.getElementById(content_id);
+      var inputEventFunction = function() {
+        var searchText = input.value.trim().toLowerCase();
+        var keywords = searchText.split(/[\s\-]+/);
+        if (keywords.length > 1) {
+          keywords.push(searchText);
+        }
+        var resultItems = [];
+        if (searchText.length > 0) {
+          // perform local searching
+          datas.forEach(function(data) {
+            var isMatch = false;
+            var hitCount = 0;
+            var searchTextCount = 0;
+            var title = data.title ? data.title.trim() : '';
+            var titleInLowerCase = title.toLowerCase();
+            var content = data.content ? data.content.trim().replace(/<[^>]+>/g,"") : '';
+            var contentInLowerCase = content.toLowerCase();
+            var articleUrl = decodeURIComponent(data.url);
+            var indexOfTitle = [];
+            var indexOfContent = [];
+            // only match articles with not empty titles
+            keywords.forEach(function(keyword) {
+              function getIndexByWord(word, text, caseSensitive) {
+                var wordLen = word.length;
+                if (wordLen === 0) {
+                  return [];
+                }
+                var startPosition = 0, position = [], index = [];
+                if (!caseSensitive) {
+                  text = text.toLowerCase();
+                  word = word.toLowerCase();
+                }
+                while ((position = text.indexOf(word, startPosition)) > -1) {
+                  index.push({position: position, word: word});
+                  startPosition = position + wordLen;
+                }
+                return index;
+              }
+
+              indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+              indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+            });
+            if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+              isMatch = true;
+              hitCount = indexOfTitle.length + indexOfContent.length;
+            }
+
+            // show search results
+
+            if (isMatch) {
+              // sort index by position of keyword
+
+              [indexOfTitle, indexOfContent].forEach(function (index) {
+                index.sort(function (itemLeft, itemRight) {
+                  if (itemRight.position !== itemLeft.position) {
+                    return itemRight.position - itemLeft.position;
+                  } else {
+                    return itemLeft.word.length - itemRight.word.length;
+                  }
+                });
+              });
+
+              // merge hits into slices
+
+              function mergeIntoSlice(text, start, end, index) {
+                var item = index[index.length - 1];
+                var position = item.position;
+                var word = item.word;
+                var hits = [];
+                var searchTextCountInSlice = 0;
+                while (position + word.length <= end && index.length != 0) {
+                  if (word === searchText) {
+                    searchTextCountInSlice++;
+                  }
+                  hits.push({position: position, length: word.length});
+                  var wordEnd = position + word.length;
+
+                  // move to next position of hit
+
+                  index.pop();
+                  while (index.length != 0) {
+                    item = index[index.length - 1];
+                    position = item.position;
+                    word = item.word;
+                    if (wordEnd > position) {
+                      index.pop();
+                    } else {
+                      break;
+                    }
+                  }
+                }
+                searchTextCount += searchTextCountInSlice;
+                return {
+                  hits: hits,
+                  start: start,
+                  end: end,
+                  searchTextCount: searchTextCountInSlice
+                };
+              }
+
+              var slicesOfTitle = [];
+              if (indexOfTitle.length != 0) {
+                slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+              }
+
+              var slicesOfContent = [];
+              while (indexOfContent.length != 0) {
+                var item = indexOfContent[indexOfContent.length - 1];
+                var position = item.position;
+                var word = item.word;
+                // cut out 100 characters
+                var start = position - 20;
+                var end = position + 80;
+                if(start < 0){
+                  start = 0;
+                }
+                if (end < position + word.length) {
+                  end = position + word.length;
+                }
+                if(end > content.length){
+                  end = content.length;
+                }
+                slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+              }
+
+              // sort slices in content by search text's count and hits' count
+
+              slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                  return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                  return sliceRight.hits.length - sliceLeft.hits.length;
+                } else {
+                  return sliceLeft.start - sliceRight.start;
+                }
+              });
+
+              // select top N slices in content
+
+              var upperBound = parseInt('2');
+              if (upperBound >= 0) {
+                slicesOfContent = slicesOfContent.slice(0, upperBound);
+              }
+
+              // highlight title and content
+
+              function highlightKeyword(text, slice) {
+                var result = '';
+                var prevEnd = slice.start;
+                slice.hits.forEach(function (hit) {
+                  result += text.substring(prevEnd, hit.position);
+                  var end = hit.position + hit.length;
+                  result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                  prevEnd = end;
+                });
+                result += text.substring(prevEnd, slice.end);
+                return result;
+              }
+
+              var resultItem = '';
+
+              if (slicesOfTitle.length != 0) {
+                resultItem += "<li><a target='_blank' href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+              } else {
+                resultItem += "<li><a target='_blank' href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+              }
+
+              slicesOfContent.forEach(function (slice) {
+                resultItem += "<a target='_blank' href='" + articleUrl + "'>" +
+                  "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                  "...</p>" + "</a>";
+              });
+
+              resultItem += "</li>";
+              resultItems.push({
+                item: resultItem,
+                searchTextCount: searchTextCount,
+                hitCount: hitCount,
+                id: resultItems.length
+              });
+            }
+          })
+        };
+        if (keywords.length === 1 && keywords[0] === "") {
+          resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+        } else if (resultItems.length === 0) {
+          resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+        } else {
+          resultItems.sort(function (resultLeft, resultRight) {
+            if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+              return resultRight.searchTextCount - resultLeft.searchTextCount;
+            } else if (resultLeft.hitCount !== resultRight.hitCount) {
+              return resultRight.hitCount - resultLeft.hitCount;
+            } else {
+              return resultRight.id - resultLeft.id;
+            }
+          });
+          var searchResultList = '<ul class=\"search-result-list\">';
+          resultItems.forEach(function (result) {
+            searchResultList += result.item;
+          })
+          searchResultList += "</ul>";
+          resultContent.innerHTML = searchResultList;
+        }
+      }
+
+      if ('auto' === 'auto') {
+        input.addEventListener('input', inputEventFunction);
+      } else {
+        $('.search-icon').click(inputEventFunction);
+        input.addEventListener('keypress', function (event) {
+          if (event.keyCode === 13) {
+            inputEventFunction();
+          }
+        });
+      }
+
+      // remove loading animation
+      $('body').css('overflow', '');
+
+      proceedsearch();
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        $('.sb-close').click();
+        searchFunc('local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+      
+</body>
+</html>

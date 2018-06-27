@@ -17,7 +17,7 @@
 <!--<![endif]-->
 
 <head>
-  <title>基数排序的简单实现 | ZY&#39;s Blog</title>
+  <title>Tag: 代理模式 | ZY&#39;s Blog</title>
   <!-- Meta data -->
     <meta http-equiv="Content-Type" content="text/html" charset="UTF-8" >
     <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
@@ -61,7 +61,7 @@
 </head>
 
 <!--
-<body class="post-template">
+<body class="home-template">
 -->
 <body id="index" class="lightnav animsition">
 
@@ -166,85 +166,69 @@
         <!-- ============================ Header & Logo bar =========================== -->
 
 
-      
-<section id="intro">
-    <div class="container">
-        <div class="row col-md-offset-2">
-            <div class="col-md-8">
-    			<span class="post-meta">
-      <time datetime="2018-06-24T05:48:18.000Z" itemprop="datePublished">
-          2018-06-24
-      </time>
-    
-    
-    | 
-    <a href='/tags/排序/'>排序</a>,
-    
-    <a href='/tags/基数排序/'>基数排序</a>
-    
-    
-</span>
-                <h1>基数排序的简单实现</h1>
+      <!-- ============================ Hero Image =========================== -->
+
+<section id="hero" class="scrollme">
+    <div class="container-fluid element-img" style="background: url(/img/us.jpg) no-repeat center center fixed;background-size: cover">
+        <div class="row">
+            <div class="col-xs-12 col-sm-8 col-sm-offset-2 col-md-8 col-md-offset-2 vertical-align cover boost text-center">
+                <div class="center-me animateme" data-when="exit" data-from="0" data-to="0.6" data-opacity="0" data-translatey="100">
+                    <div>
+                        
+                        <h2>YOU'VE MADE A <span>BRAVE</span> DECISION, WELCOME.</h2>
+                        <p></p>
+                        
+                        <h2></h2>
+                        <p>每一个不曾起舞的日子都是对生命的辜负。</p>
+                        
+
+                    </div>
+                </div>
             </div>
+            <!-- // .col-md-12 -->
         </div>
-        <div class="col-md-8 col-md-offset-2">
-      		<h3 id="基数排序"><a href="#基数排序" class="headerlink" title="基数排序"></a>基数排序</h3><p><strong>基数排序是一种基于分配的排序（空间换时间）</strong>，不同于常见的基于比较的排序（冒泡、快排、归并…等）。  </p>
-<p><strong>基于比较的排序时间复杂度通常是O（n^2）或者O（nlogn），下限是O（nlogn）；</strong>  </p>
-<p><strong>基于分配的排序算法的时间复杂度可以达到O（n），但需要消耗额外空间；</strong></p>
-<p>在某些时候，基数排序的效率高于其它基于比较的排序算法（快排、归并等）。</p>
-<h4 id="原理"><a href="#原理" class="headerlink" title="原理"></a>原理</h4><p>原理是将整数按位数切割成不同的数字，然后按每个位数分别比较。进行了c次（c是整数的位数）比较之后，得到一个有序的数组。<br>基数排序是桶排序的扩展，每一次排序建立在桶排序的基础上。</p>
-<h5 id="步骤"><a href="#步骤" class="headerlink" title="步骤"></a>步骤</h5><p><strong>1. 将每个数字统一位数长度（数位短的前面补0）；</strong><br><strong>2. 从最低位（个位）开始，依次进行每次排序；</strong><br><strong>3. 最高位排序完成后，数组就变成了有序数组。</strong></p>
-<h4 id="实例分析"><a href="#实例分析" class="headerlink" title="实例分析"></a>实例分析</h4><p>通过基数排序对一个无序数组进行排序{53, 542, 3, 63, 14, 214, 154, 748, 616}，它的示意图如下：</p>
-<p><img src="http://osuskkx7k.bkt.clouddn.com/%E5%9F%BA%E6%95%B0%E6%8E%92%E5%BA%8F.jpg" alt="image"></p>
-<h5 id="比较过程"><a href="#比较过程" class="headerlink" title="比较过程"></a>比较过程</h5><p>结合上图分析比较过程。<br><strong>每次比较，根据相应位数上的值，将元素放入对应的桶（0-10）中。</strong></p>
-<p><img src="http://osuskkx7k.bkt.clouddn.com/%E5%9F%BA%E6%95%B0%E6%8E%92%E5%BA%8F%E8%A1%A8.png" alt=""></p>
-<p>经过第三次排序，如图一，得到一个有序的数组。</p>
-<h4 id="实现"><a href="#实现" class="headerlink" title="实现"></a>实现</h4><h5 id="计算排序的次数"><a href="#计算排序的次数" class="headerlink" title="计算排序的次数"></a>计算排序的次数</h5><p>排序的次数即数组统一的位数（也是最大元素的位数），在这里是 3 位，总共需要比较3次。</p>
-<figure class="highlight glsl"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//获取最大值</span></div><div class="line"><span class="type">int</span> <span class="built_in">max</span> = a[<span class="number">0</span>];</div><div class="line"><span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; a.<span class="built_in">length</span>; i++) &#123;</div><div class="line">    <span class="keyword">if</span> (<span class="built_in">max</span> &lt; a[i]) &#123;</div><div class="line">        <span class="built_in">max</span> = a[i];</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"><span class="comment">//根据最大值确定排序的遍数（如369三位数，就是3遍）</span></div><div class="line"><span class="type">int</span> time = <span class="number">0</span>;</div><div class="line"><span class="keyword">while</span> (<span class="built_in">max</span> &gt; <span class="number">0</span>) &#123;</div><div class="line">    <span class="built_in">max</span> = <span class="built_in">max</span> / <span class="number">10</span>;</div><div class="line">    time ++;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h5 id="排序过程"><a href="#排序过程" class="headerlink" title="排序过程"></a>排序过程</h5><p>每一次排序之后，都要根据排序的结果记录新的顺序，以便下一次排序。<br>思路如下：<br><strong>1. 将桶数组看成是一个只有10个元素（0-9）的队列，建立该队列（父队列）；</strong><br><strong>2. 父队列中的每一个元素都代表一个子队列，用于存放每个桶中的元素，可能0个也可能多个；</strong></p>
-<p>注：采用数组ArrayList来代替子队列，也可以采用链表<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//建立一个主队列，包含10个子队列</span></div><div class="line">List&lt;ArrayList&gt; <span class="built_in">queue</span> = <span class="keyword">new</span> ArrayList&lt;ArrayList&gt;();</div><div class="line"><span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">10</span>; i++) &#123;</div><div class="line">    ArrayList&lt;Integer&gt; subQueue = <span class="keyword">new</span> ArrayList&lt;&gt;();</div><div class="line">    <span class="built_in">queue</span>.add(subQueue);</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<p><strong>3. 分配数组元素</strong></p>
-<p>将每一个数组元素分配进入相应的桶中，即子队列中。<br>每次分配时，i 的值表示获取元素对应位数上的数字：<br>i = 0 ，表示个位；<br>i= 1，表示十位；<br>i = 2， 表示百位；<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//分配数组元素</span></div><div class="line"><span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; a.length; j++) &#123;</div><div class="line">    <span class="keyword">int</span> c = a[j] % (<span class="keyword">int</span>)Math.<span class="built_in">pow</span>(<span class="number">10</span>, i + <span class="number">1</span>); <span class="comment">//当前位上的数字</span></div><div class="line">    <span class="keyword">int</span> x = c / (<span class="keyword">int</span>)Math.<span class="built_in">pow</span>(<span class="number">10</span>, i); <span class="comment">//子队列的序号</span></div><div class="line">    <span class="comment">//System.out.println(x);</span></div><div class="line">    ArrayList&lt;Integer&gt; subQueue = <span class="built_in">queue</span>.get(x);  <span class="comment">//从父队列获取子队列</span></div><div class="line">    subQueue.add(a[j]);</div><div class="line">    <span class="built_in">queue</span>.<span class="built_in">set</span>(x, subQueue);</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<h5 id="代码实现"><a href="#代码实现" class="headerlink" title="代码实现"></a>代码实现</h5><figure class="highlight processing"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div></pre></td><td class="code"><pre><div class="line"> <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> radisSort(<span class="built_in">int</span>[] a) &#123;</div><div class="line"></div><div class="line">        <span class="comment">//获取最大值</span></div><div class="line">        <span class="built_in">int</span> <span class="built_in">max</span> = a[<span class="number">0</span>];</div><div class="line">        <span class="keyword">for</span> (<span class="built_in">int</span> i = <span class="number">0</span>; i &lt; a.length; i++) &#123;</div><div class="line">            <span class="keyword">if</span> (<span class="built_in">max</span> &lt; a[i]) &#123;</div><div class="line">                <span class="built_in">max</span> = a[i];</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">        <span class="comment">//根据最大值确定排序的遍数（如369三位数，3遍）</span></div><div class="line">        <span class="built_in">int</span> time = <span class="number">0</span>;</div><div class="line">        <span class="keyword">while</span> (<span class="built_in">max</span> &gt; <span class="number">0</span>) &#123;</div><div class="line">            <span class="built_in">max</span> = <span class="built_in">max</span> / <span class="number">10</span>;</div><div class="line">            time ++;</div><div class="line">        &#125;</div><div class="line">        <span class="comment">//建立一个主队列，包含10个子队列</span></div><div class="line">        List&lt;ArrayList&gt; queue = <span class="keyword">new</span> ArrayList&lt;ArrayList&gt;();</div><div class="line">        <span class="keyword">for</span> (<span class="built_in">int</span> i = <span class="number">0</span>; i &lt; <span class="number">10</span>; i++) &#123;</div><div class="line">            ArrayList&lt;Integer&gt; subQueue = <span class="keyword">new</span> ArrayList&lt;&gt;();</div><div class="line">            queue.<span class="built_in">add</span>(subQueue);</div><div class="line">        &#125;</div><div class="line">        <span class="comment">//time次排序</span></div><div class="line">        <span class="keyword">for</span> (<span class="built_in">int</span> i = <span class="number">0</span>; i &lt; time; i++) &#123;</div><div class="line"></div><div class="line">            <span class="comment">//分配数组元素</span></div><div class="line">            <span class="keyword">for</span> (<span class="built_in">int</span> j = <span class="number">0</span>; j &lt; a.length; j++) &#123;</div><div class="line">                <span class="built_in">int</span> c = a[j] % (<span class="built_in">int</span>)Math.<span class="built_in">pow</span>(<span class="number">10</span>, i + <span class="number">1</span>); <span class="comment">//当前位上的数字</span></div><div class="line">                <span class="built_in">int</span> x = c / (<span class="built_in">int</span>)Math.<span class="built_in">pow</span>(<span class="number">10</span>, i); <span class="comment">//子队列的序号</span></div><div class="line">                <span class="comment">//System.out.println(x);</span></div><div class="line">                ArrayList&lt;Integer&gt; subQueue = queue.<span class="built_in">get</span>(x);  <span class="comment">//从父队列获取子队列</span></div><div class="line">                subQueue.<span class="built_in">add</span>(a[j]);</div><div class="line">                queue.<span class="built_in">set</span>(x, subQueue);</div><div class="line">            &#125;</div><div class="line">            <span class="comment">//分配结束后，记录新的顺序</span></div><div class="line">            <span class="built_in">int</span> k = <span class="number">0</span>;</div><div class="line">            <span class="keyword">for</span> (<span class="built_in">int</span> n = <span class="number">0</span>; n &lt; <span class="number">10</span>; n++) &#123;</div><div class="line">                <span class="comment">//取出有元素的子队列</span></div><div class="line">                <span class="keyword">while</span> (queue.<span class="built_in">get</span>(n).<span class="built_in">size</span>() &gt; <span class="number">0</span>) &#123;</div><div class="line">                    ArrayList&lt;Integer&gt; subQueue = queue.<span class="built_in">get</span>(n);</div><div class="line">                    a[k ++] = subQueue.<span class="built_in">get</span>(<span class="number">0</span>);  <span class="comment">//头部元素</span></div><div class="line">                    subQueue.remove(<span class="number">0</span>);  <span class="comment">//移除元素</span></div><div class="line">                &#125;</div><div class="line">            &#125;</div><div class="line">            <span class="comment">//打印每次排序后的新数组</span></div><div class="line"><span class="comment">//            for (int m : a) &#123;</span></div><div class="line"><span class="comment">//                System.out.print(m + " ");</span></div><div class="line"><span class="comment">//            &#125;</span></div><div class="line">        &#125;</div><div class="line">        <span class="comment">//打印最终排好序的数组</span></div><div class="line">        <span class="keyword">for</span> (<span class="built_in">int</span> m : a) &#123;</div><div class="line">            System.out.<span class="built_in">print</span>(m + <span class="string">" "</span>);</div><div class="line">        &#125;</div><div class="line"></div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> main(<span class="keyword">String</span>[] args) &#123;</div><div class="line">        <span class="built_in">int</span>[] a = &#123;<span class="number">53</span>, <span class="number">542</span>, <span class="number">3</span>, <span class="number">63</span>, <span class="number">14</span>, <span class="number">214</span>, <span class="number">154</span>, <span class="number">748</span>, <span class="number">616</span>&#125;;</div><div class="line">        radisSort(a);</div><div class="line">    &#125;</div></pre></td></tr></table></figure>
-<p>输出：</p>
-<figure class="highlight basic"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="symbol">3 </span><span class="number">14</span> <span class="number">53</span> <span class="number">63</span> <span class="number">154</span> <span class="number">214</span> <span class="number">542</span> <span class="number">616</span> <span class="number">748</span></div></pre></td></tr></table></figure>
-<p>以上，就是基数排序的大致过程。</p>
-
-            <div class="clearfix"></div>
-            <hr class="nogutter">
-        </div>
-        <nav class="pagination" role="pagination">
-    
-    <a class="pull-left" href="/2018/06/27/jdk动态代理的实现原理浅析/" style="float: left;">
-        ← JDK动态代理的实现原理浅析
-    </a>
-    
-    
-    <a class="pull-right" href="/2018/02/15/ActiveMQ结合Spring收发消息/">
-        ActiveMQ结合Spring收发消息 →
-    </a>
-    
-</nav>
-
-		<div>
-
-
-
-	
-<!--PC版-->
-<div id="SOHUCS" sid="基数排序的简单实现"></div>
-<script charset="utf-8" type="text/javascript" src="/js/changyan.js" ></script>
-<script type="text/javascript">
-window.changyan.api.config({
-appid: 'cytDpF5Fb',
-conf: 'prod_b338aee7fcca1251a50551682391c6df'
-});
-</script>
-</div>
+        <div class="herofade beige-dk"></div>
     </div>
 </section>
 
+<!-- Height spacing helper -->
+<div class="heightblock"></div>
+<!-- // End height spacing helper -->
 
+<!-- ============================ END Hero Image =========================== -->
+
+
+
+
+<section id="services">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-10 col-md-offset-1">
+                <div class="row boxes">
+                    
+                    
+                        
+                        
+                        <div class="col-xs-12 col-sm-3 col-md-3 col-lg-3 wow fadeInUp" data-wow-delay="0.3s">
+                            
+                              <h4 class="title"><a href="/2018/06/27/jdk动态代理的实现原理浅析/">JDK动态代理的实现原理浅析</a></h4>
+                            
+                            <p><time datetime="2018-06-27T06:12:12.000Z"><a href="/2018/06/27/jdk动态代理的实现原理浅析/">2018-06-27</a></time></p>
+                        </div>
+                    
+                </div>
+            </div>    
+        </div>
+    </div>
+</section> 
+
+<section id="statement">
+    <div class="container text-center wow fadeInUp" data-wow-delay="0.5s">
+        <div class="row">
+            <p>人生如逆旅，我亦是行人。</p>
+        </div>
+    </div>
+</section>
 	  
 <!-- ============================ Footer =========================== -->
 
