@@ -82,7 +82,7 @@
         		<a class="sb-toggle-submenu">Categories<span class="sb-caret"></span></a>
             	<ul class="sb-submenu">
 				  	
-				    <li><a href="/categories/技术/" class="animsition-link">技术<small>(37)</small></a></li>
+				    <li><a href="/categories/技术/" class="animsition-link">技术<small>(38)</small></a></li>
 				    
 				    <li><a href="/categories/芭乐/" class="animsition-link">芭乐<small>(1)</small></a></li>
 				    
@@ -200,6 +200,47 @@
 
 <section id="intro">
     <div class="container">
+        
+        <div class="row">
+            <div class="col-md-8 col-md-offset-2 opening-statement">
+                <div class="col-md-4">
+                    <h3><a href="/2017/10/28/ReentrantReadWriteLock可重入读写锁/">ReentrantReadWriteLock可重入读写锁</a></h3>
+                    <span>
+                        <span class="post-meta">
+      <time datetime="2017-10-28T09:48:18.000Z" itemprop="datePublished">
+          2017-10-28
+      </time>
+    
+    
+    | 
+    <a href='/tags/并发/'>并发</a>,
+    
+    <a href='/tags/ReentrantReadWriteLock/'>ReentrantReadWriteLock</a>,
+    
+    <a href='/tags/可重入读写锁/'>可重入读写锁</a>
+    
+    
+</span>
+                    </span>
+                </div>
+                <div class="col-md-8">
+                    <p class="index-excerpt">
+                      
+                        一、ReentrantReadWriteLock的概念介绍前面提到的锁（独占锁、ReentrantLock）等都是排他锁，这些锁在同一时刻只允许一个线程访问。而读写锁在同一时刻可以允许多个读线程访问，但在写线程访问时，所有读线程和其他写线程都阻塞。
+ReadWriteLock并不是继承自Lock接口，而是一个单独的接口。
+1234public interface ReadWriteLock &#123;    Lock readLock
+                      
+                    </p>
+                    
+                    <p class="pull-right readMore">
+                        <a href="/2017/10/28/ReentrantReadWriteLock可重入读写锁/">Read More...</a>
+                    </p>
+                    
+                </div>
+                <div class="clearfix"></div>
+                <hr class="nogutter">
+            </div>
+        </div>
         
         <div class="row">
             <div class="col-md-8 col-md-offset-2 opening-statement">
@@ -572,43 +613,6 @@ Paral
                     
                     <p class="pull-right readMore">
                         <a href="/2017/10/14/深入理解synchronized/">Read More...</a>
-                    </p>
-                    
-                </div>
-                <div class="clearfix"></div>
-                <hr class="nogutter">
-            </div>
-        </div>
-        
-        <div class="row">
-            <div class="col-md-8 col-md-offset-2 opening-statement">
-                <div class="col-md-4">
-                    <h3><a href="/2017/10/12/深入理解volatile关键字(1)/">深入理解volatile关键字</a></h3>
-                    <span>
-                        <span class="post-meta">
-      <time datetime="2017-10-12T07:12:12.000Z" itemprop="datePublished">
-          2017-10-12
-      </time>
-    
-    
-    | 
-    <a href='/tags/并发/'>并发</a>,
-    
-    <a href='/tags/volatile/'>volatile</a>
-    
-    
-</span>
-                    </span>
-                </div>
-                <div class="col-md-8">
-                    <p class="index-excerpt">
-                      
-                        一、volatile的特性1. volatile的可见性 可见性的意思是：当一个线程修改一个共享变量时，另一个线程能读到这个修改的值。 volatile在多线程的开发中，保证了共享变量的可见性（立即）。1234567891011//全局变量boolean open=true;//线程Aresource.close();open = false;//线程Bwhile(open) &#123;doSomething(resource);&#
-                      
-                    </p>
-                    
-                    <p class="pull-right readMore">
-                        <a href="/2017/10/12/深入理解volatile关键字(1)/">Read More...</a>
                     </p>
                     
                 </div>
