@@ -1,0 +1,770 @@
+<!DOCTYPE html>
+<!--[if lte IE 8 ]>
+<html class="ie" xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-US" lang="en-US">
+<![endif]-->
+<!--[if (gte IE 9)|!(IE)]><!-->
+<!--
+***************  *      *     *
+      8          *    *       *
+      8          *  *         *
+      8          **           *
+      8          *  *         *
+      8          *    *       *
+      8          *      *     *
+      8          *        *   ***********    -----Theme By Kieran(http://go.kieran.top)
+-->
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="zh-CN" lang="zh-CN">
+<!--<![endif]-->
+
+<head>
+  <title>多线程经典实例(一) | ZY&#39;s Blog</title>
+  <!-- Meta data -->
+    <meta http-equiv="Content-Type" content="text/html" charset="UTF-8" >
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="generator" content="ZY's Blog">
+    <meta name="author" content="Z Yong">
+    <meta name="description" content="Young for you." />
+    <meta name="keywords" content="" />
+
+    <!-- Favicon, (keep icon in root folder) -->
+    <link rel="Shortcut Icon" href="/img/xfavicon.ico" type="image/ico">
+
+    <link rel="alternate" href="/atom.xml" title="ZY&#39;s Blog" type="application/atom+xml">
+    <link rel="stylesheet" href="/css/all.css" media="screen" type="text/css">
+    
+    <link rel="stylesheet" href="/highlightjs/tomorrow-night-eighties.css" type="text/css">
+    
+
+    <!--[if IE 8]>
+    <link rel="stylesheet" type="text/css" href="/css/ie8.css" />
+    <![endif]-->
+
+    <!-- jQuery | Load our jQuery, with an alternative source fallback to a local version if request is unavailable -->
+    <script src="/js/jquery-1.11.1.min.js"></script>
+    <script>window.jQuery || document.write('<script src="js/jquery-1.11.1.min.js"><\/script>')</script>
+
+    <!-- Load these in the <head> for quicker IE8+ load times -->
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+    <script src="/js/html5shiv.min.js"></script>
+    <script src="/js/respond.min.js"></script>
+    <![endif]-->
+
+  
+  
+  <link rel="alternate" type="application/atom+xml" title="Atom 0.3" href="atom.xml">
+  
+  
+
+  <style>.col-md-8.col-md-offset-2.opening-statement img{display:none;}</style>
+</head>
+
+<!--
+<body class="post-template">
+-->
+<body id="index" class="lightnav animsition">
+
+      <!-- ============================ Off-canvas navigation =========================== -->
+
+    <div class="sb-slidebar sb-right sb-style-overlay sb-momentum-scrolling">
+        <div class="sb-close" aria-label="Close Menu" aria-hidden="true">
+            <img src="/img/close.png" alt="Close"/>
+        </div>
+        <!-- Lists in Slidebars -->
+        <ul class="sb-menu">
+            <li><a href="/" class="animsition-link" title="Home">Home</a></li>
+            <li><a href="/archives" class="animsition-link" title="archive">archives</a></li>
+            <!-- Dropdown Menu -->
+			 
+            
+        	<li>
+        		<a class="sb-toggle-submenu">Categories<span class="sb-caret"></span></a>
+            	<ul class="sb-submenu">
+				  	
+				    <li><a href="/categories/技术/" class="animsition-link">技术<small>(39)</small></a></li>
+				    
+				    <li><a href="/categories/芭乐/" class="animsition-link">芭乐<small>(1)</small></a></li>
+				    
+				</ul>
+        	</li>
+			
+            
+            <li>
+                <a class="sb-toggle-submenu">Links<span class="sb-caret"></span></a>
+                <ul class="sb-submenu">
+                    
+                    <li><a href="http://www.xiaonanbobo.com/" class="animsition-link">Bobo</a></li>
+                    
+                    <li><a href="http://xxgblog.com/" class="animsition-link">Wucao</a></li>
+                    
+                    <li><a href="http://www.ruanyifeng.com/blog/" class="animsition-link">阮一峰</a></li>
+                    
+                    <li><a href="http://www.importnew.com/" class="animsition-link">Importnew</a></li>
+                    
+                    <li><a href="http://www.hollischuang.com/" class="animsition-link">Holis</a></li>
+                    
+                </ul>
+            </li>
+            
+        </ul>
+        <!-- Lists in Slidebars -->
+        <ul class="sb-menu secondary">
+			
+            <li><a href="javascript:;" class="popup-trigger" title="Search"><span class="search-icon"></span>Search</a></li>
+            
+            <li><a href="/about.html" class="animsition-link" title="about">About</a></li>
+			<li><a href="/tagCloud.html" class="animsition-link" title="tagCloud">Tag</a></li>
+            <li><a href="/atom.xml" class="animsition-link" title="rss">RSS</a></li>
+        </ul>
+    </div>
+    
+    <!-- ============================ END Off-canvas navigation =========================== -->
+
+    <!-- ============================ #sb-site Main Page Wrapper =========================== -->
+
+    <div id="sb-site">
+        <!-- #sb-site - All page content should be contained within this id, except the off-canvas navigation itself -->
+
+        <!-- ============================ Header & Logo bar =========================== -->
+
+        <div id="navigation" class="navbar navbar-fixed-top">
+            <div class="navbar-inner">
+                <div class="container">
+                    <!-- Nav logo -->
+                    <div class="logo">
+                        <a href="/" title="Logo" class="animsition-link">
+                         <img src="/img/x2.png" alt="Logo" width="60px;"/> 
+                        </a>
+                    </div>
+                    <!-- // Nav logo -->
+                    <!-- Info-bar -->
+                    <nav>
+                        <ul class="nav">
+                            <li><a href="/" class="animsition-link">ZY's Blog</a></li>
+                            <li class="nolink"><span>Always </span>Creative.</li>
+                            
+                            
+                            
+                            
+                            
+                            <li class="nolink"><span>Welcome!</span></li>
+                        </ul>
+                    </nav>
+                    <!--// Info-bar -->
+                </div>
+                <!-- // .container -->
+                <div class="learnmore sb-toggle-right">More</div>
+                <button type="button" class="navbar-toggle menu-icon sb-toggle-right" title="More">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar before"></span>
+                <span class="icon-bar main"></span>
+                <span class="icon-bar after"></span>
+                </button>
+            </div>
+            <!-- // .navbar-inner -->
+        </div>
+
+        <!-- ============================ Header & Logo bar =========================== -->
+
+
+      
+<section id="intro">
+    <div class="container">
+        <div class="row col-md-offset-2">
+            <div class="col-md-8">
+    			<span class="post-meta">
+      <time datetime="2018-07-20T13:12:12.000Z" itemprop="datePublished">
+          2018-07-20
+      </time>
+    
+    
+    | 
+    <a href='/tags/多线程/'>多线程</a>
+    
+    
+</span>
+                <h1>多线程经典实例(一)</h1>
+            </div>
+        </div>
+        <div class="col-md-8 col-md-offset-2">
+      		<h3 id="多线程经典实例-一"><a href="#多线程经典实例-一" class="headerlink" title="多线程经典实例(一)"></a>多线程经典实例(一)</h3><p>在多线程的学习当中，有许多经典的例子值得学习，比如售票窗口、线程交替执行、生产者消费者等。下面就来看两个有关线程交替执行的案例。</p>
+<h4 id="两个线程轮流打印数字"><a href="#两个线程轮流打印数字" class="headerlink" title="两个线程轮流打印数字"></a>两个线程轮流打印数字</h4><p>这里采用 wait/notify 等待通知和 Lock/Condition 两种方式实现。</p>
+<h5 id="wait-notify-实现"><a href="#wait-notify-实现" class="headerlink" title="wait()/notify()实现"></a>wait()/notify()实现</h5><p>简单介绍一下wait/notify机制的几个方法。<br>以下4个方法都必须在<strong>获取了锁的情况下</strong>才能调用：  </p>
+<p><strong>wait()</strong>: 使当前线程进入阻塞等待状态，直到被唤醒或中断; 调用后立即释放已有的锁；<br><strong>wait(Long times)</strong>: 使当前线程进入阻塞等待状态一段时间，超过时间后自动唤醒；<br><strong>notify()</strong>： 唤醒在该对象上等待的一个线程；<br><strong>notifyAll()</strong>： 唤醒在该对象上等待的所有线程。  </p>
+<p>释放锁的场景主要有3种：</p>
+<ol>
+<li><strong>执行完同步方法/代码块</strong></li>
+<li><strong>执行同步方法/代码块的过程中遇到异常</strong></li>
+<li><strong>执行同步方法/代码块的过程中调用了锁对象的wait()方法</strong></li>
+</ol>
+<figure class="highlight cs"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">TurnsPrintNumber</span> &#123;</div><div class="line"></div><div class="line">    <span class="keyword">private</span> <span class="keyword">static</span> Object <span class="keyword">lock</span> = <span class="keyword">new</span> Object(); <span class="comment">//锁</span></div><div class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">int</span> i = <span class="number">1</span>;</div><div class="line"></div><div class="line">    <span class="keyword">static</span> <span class="keyword">class</span> <span class="title">Print</span> <span class="title">implements</span> <span class="title">Runnable</span>&#123;</div><div class="line">        @<span class="function">Override</span></div><div class="line">        <span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span>(<span class="params"></span>) &#123;</div><div class="line">            <span class="keyword">while</span> (<span class="literal">true</span>) &#123;</div><div class="line">                synchronized (<span class="keyword">lock</span>) &#123;</div><div class="line">                    <span class="keyword">if</span> ( i &gt; <span class="number">20</span>) &#123;</div><div class="line">                        System.<span class="keyword">out</span>.println(<span class="string">"打印完毕！"</span>);</div><div class="line">                        <span class="keyword">lock</span>.notify();</div><div class="line">                        <span class="keyword">return</span>;</div><div class="line">                    &#125;</div><div class="line">                    System.<span class="keyword">out</span>.println(<span class="string">"线程"</span> + Thread.currentThread().getName() + <span class="string">"打印："</span>  + i ++ );</div><div class="line">                    <span class="keyword">lock</span>.notify();</div><div class="line">                    <span class="keyword">try</span> &#123;</div><div class="line">                        Thread.sleep(<span class="number">100</span>);</div><div class="line">                        <span class="keyword">lock</span>.wait();</div><div class="line">                    &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</div><div class="line">                        e.printStackTrace();</div><div class="line">                    &#125;</div><div class="line">                &#125;</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span>(<span class="params">String[] args</span>) </span>&#123;</div><div class="line">        Print print = <span class="keyword">new</span> Print();</div><div class="line">        <span class="keyword">new</span> Thread(print).start();</div><div class="line">        <span class="keyword">new</span> Thread(print).start();</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h5 id="Lock-Condition实现"><a href="#Lock-Condition实现" class="headerlink" title="Lock/Condition实现"></a>Lock/Condition实现</h5><p><strong>对于同一个锁（Lock对象）可以创建多个Condition，以便在不同的情况下使用不同的Condition。意思就是Condition可以明确指定唤醒哪一个线程。</strong><br><figure class="highlight livescript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div></pre></td><td class="code"><pre><div class="line">public <span class="class"><span class="keyword">class</span> <span class="title">TurnsPrintNumber2</span> &#123;</span></div><div class="line"></div><div class="line">    private static ReentrantLock lock = <span class="keyword">new</span> ReentrantLock();</div><div class="line">    private Condition a = lock.newCondition();</div><div class="line">    private Condition b = lock.newCondition();</div><div class="line">    static int i = <span class="number">1</span>;</div><div class="line"></div><div class="line">    private <span class="literal">void</span> <span class="built_in">print</span> () &#123;</div><div class="line">        <span class="keyword">new</span> Thread<span class="function"><span class="params">(() -&gt;&#123;</span></span></div><div class="line">            <span class="keyword">while</span> (i &lt; <span class="number">20</span>) &#123;</div><div class="line">                lock.lock();</div><div class="line">                System.out.println(<span class="string">"线程1打印： "</span> + i++);</div><div class="line">                <span class="keyword">try</span> &#123;</div><div class="line">                    a.await(); <span class="regexp">//将线程1从运行状态-&gt;阻塞等待</span></div><div class="line">                    b.signal();//唤醒线程<span class="number">2</span></div><div class="line">                &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</div><div class="line">                    e.printStackTrace();</div><div class="line">                &#125; <span class="keyword">finally</span> &#123;</div><div class="line">                    lock.unlock();</div><div class="line">                &#125;</div><div class="line">            &#125;</div><div class="line">        &#125;).<span class="title">start</span><span class="params">()</span>;</div><div class="line"></div><div class="line">        <span class="title">new</span> <span class="title">Thread</span><span class="params">(() -&gt;&#123;</span></div><div class="line">            <span class="keyword">while</span> (i &lt; <span class="number">20</span>) &#123;</div><div class="line">                lock.lock();</div><div class="line">                System.out.println(<span class="string">"线程2打印： "</span> + i++);</div><div class="line">                <span class="keyword">try</span> &#123;</div><div class="line">                    a.signal();</div><div class="line">                    b.await();</div><div class="line">                &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</div><div class="line">                    e.printStackTrace();</div><div class="line">                &#125; <span class="keyword">finally</span> &#123;</div><div class="line">                    lock.unlock();</div><div class="line">                &#125;</div><div class="line">            &#125;</div><div class="line">        &#125;).<span class="title">start</span><span class="params">()</span>;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="title">public</span> <span class="title">static</span> <span class="title">void</span> <span class="title">main</span><span class="params">(String[] args)</span> &#123;</div><div class="line">        <span class="title">new</span> <span class="title">TurnsPrintNumber2</span><span class="params">()</span>.<span class="title">print</span><span class="params">()</span>;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<h4 id="三个线程轮流打印-ABC"><a href="#三个线程轮流打印-ABC" class="headerlink" title="三个线程轮流打印 ABC"></a>三个线程轮流打印 ABC</h4><p>线程1 打印 A，线程2 打印 B，线程3 打印 C， 线程1 打印 A………..</p>
+<p>采用以下3种方式实现：</p>
+<ol>
+<li><strong>wait()/notify()方式</strong></li>
+<li><strong>Lock/Condition方式</strong></li>
+<li><strong>Semaphore信号量方式</strong></li>
+</ol>
+<h5 id="思路："><a href="#思路：" class="headerlink" title="思路："></a>思路：</h5><p><strong>要在3个线程间实现轮流打印的操作，最重要的就是要控制3个线程的执行顺序。也就是要确定等待、唤醒的顺序，所以每一个线程必须同时持有两个对象锁，才能继续执行。</strong></p>
+<h5 id="wait-notify-实现-1"><a href="#wait-notify-实现-1" class="headerlink" title="wait()/notify()实现"></a>wait()/notify()实现</h5><figure class="highlight processing"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> class TurnsPrintABCWaitNotify &#123;</div><div class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">Object</span> alock = <span class="keyword">new</span> <span class="keyword">Object</span>();</div><div class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">Object</span> block = <span class="keyword">new</span> <span class="keyword">Object</span>();</div><div class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">Object</span> clock = <span class="keyword">new</span> <span class="keyword">Object</span>();</div><div class="line"></div><div class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> main(<span class="keyword">String</span>[] args) &#123;</div><div class="line"></div><div class="line">        <span class="keyword">new</span> Thread(() -&gt;&#123;</div><div class="line">            <span class="keyword">for</span> (<span class="built_in">int</span> i = <span class="number">0</span>; i &lt; <span class="number">5</span>; i++) &#123;</div><div class="line">            <span class="keyword">synchronized</span> (alock) &#123;  <span class="comment">//先获取 A 的锁</span></div><div class="line">                <span class="keyword">synchronized</span> (block) &#123; <span class="comment">//再获取 B 的锁</span></div><div class="line">                    System.out.<span class="built_in">println</span>(<span class="string">"线程1打印：A"</span>);</div><div class="line">                    block.notify();    <span class="comment">//唤醒 B</span></div><div class="line">                &#125;</div><div class="line">                <span class="keyword">if</span> (i == <span class="number">5</span>)&#123;<span class="keyword">return</span>;&#125;<span class="comment">//打印5次后结束</span></div><div class="line">                    <span class="keyword">try</span> &#123;</div><div class="line">                        alock.wait();  <span class="comment">//释放 A 的锁，进入等待阻塞</span></div><div class="line">                    &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</div><div class="line">                        e.printStackTrace();</div><div class="line">                    &#125;</div><div class="line">                &#125;</div><div class="line">            &#125;</div><div class="line">        &#125;).start();</div><div class="line"></div><div class="line">        <span class="keyword">new</span> Thread(() -&gt;&#123;</div><div class="line">            <span class="keyword">for</span> (<span class="built_in">int</span> i = <span class="number">0</span>; i &lt; <span class="number">5</span>; i++) &#123;</div><div class="line">                <span class="keyword">synchronized</span> (block) &#123;</div><div class="line">                    <span class="keyword">synchronized</span> (clock) &#123;</div><div class="line">                        System.out.<span class="built_in">println</span>(<span class="string">"线程2打印：B"</span>);</div><div class="line">                        clock.notifyAll();</div><div class="line">                    &#125;</div><div class="line">                    <span class="keyword">try</span> &#123;</div><div class="line">                        block.wait();</div><div class="line">                    &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</div><div class="line">                        e.printStackTrace();</div><div class="line">                    &#125;</div><div class="line">                &#125;</div><div class="line">            &#125;</div><div class="line">        &#125;).start();</div><div class="line"></div><div class="line">        <span class="keyword">new</span> Thread(() -&gt;&#123;</div><div class="line">            <span class="keyword">for</span> (<span class="built_in">int</span> i = <span class="number">0</span>; i &lt; <span class="number">5</span>; i++) &#123;</div><div class="line">                <span class="keyword">synchronized</span> (clock) &#123;</div><div class="line">                    <span class="keyword">synchronized</span> (alock) &#123;</div><div class="line">                        System.out.<span class="built_in">println</span>(<span class="string">"线程3打印：C"</span>);</div><div class="line">                        alock.notifyAll();</div><div class="line">                    &#125;</div><div class="line">                    <span class="keyword">try</span> &#123;</div><div class="line">                        clock.wait();</div><div class="line">                    &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</div><div class="line">                        e.printStackTrace();</div><div class="line">                    &#125;</div><div class="line">                &#125;</div><div class="line">            &#125;</div><div class="line">        &#125;).start();</div><div class="line"></div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h5 id="Lock-Condition实现-1"><a href="#Lock-Condition实现-1" class="headerlink" title="Lock/Condition实现"></a>Lock/Condition实现</h5><figure class="highlight livescript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div></pre></td><td class="code"><pre><div class="line">public <span class="class"><span class="keyword">class</span> <span class="title">TurnsPrintABCLock</span> &#123;</span></div><div class="line"></div><div class="line">    private static ReentrantLock lock = <span class="keyword">new</span> ReentrantLock();</div><div class="line">    private Condition a = lock.newCondition();</div><div class="line">    private Condition b = lock.newCondition();</div><div class="line">    private Condition c = lock.newCondition();</div><div class="line">    int i = <span class="number">1</span>;</div><div class="line"></div><div class="line">    private <span class="literal">void</span> <span class="built_in">print</span> () &#123;</div><div class="line">        <span class="keyword">new</span> Thread<span class="function"><span class="params">(() -&gt;&#123;</span></span></div><div class="line">            <span class="keyword">while</span> (i &lt; <span class="number">10</span>) &#123;</div><div class="line">                lock.lock();</div><div class="line">                System.out.println(<span class="string">"线程1打印： "</span> + <span class="string">"A"</span>);</div><div class="line">                i++;</div><div class="line">                <span class="keyword">if</span> (i &gt;= <span class="number">10</span>) &#123;</div><div class="line">                    System.out.println(<span class="string">"打印完毕！"</span>);</div><div class="line">                    <span class="keyword">return</span>;</div><div class="line">                &#125;</div><div class="line">                <span class="keyword">try</span> &#123;</div><div class="line">                    b.signal(); <span class="regexp">//唤醒线程2</span></div><div class="line">                    a.await(); //将线程<span class="number">1</span>从运行状态-&gt;阻塞等待</div><div class="line">                &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</div><div class="line">                    e.printStackTrace();</div><div class="line">                &#125; <span class="keyword">finally</span> &#123;</div><div class="line">                    lock.unlock();</div><div class="line">                &#125;</div><div class="line">            &#125;</div><div class="line">        &#125;).<span class="title">start</span><span class="params">()</span>;</div><div class="line"></div><div class="line">        <span class="title">try</span> &#123;</div><div class="line">            <span class="title">Thread</span>.<span class="title">sleep</span><span class="params">(<span class="number">100</span>)</span>;</div><div class="line">        &#125; <span class="title">catch</span> <span class="params">(InterruptedException e)</span> &#123;</div><div class="line">            <span class="title">e</span>.<span class="title">printStackTrace</span><span class="params">()</span>;</div><div class="line">        &#125;</div><div class="line">        <span class="title">new</span> <span class="title">Thread</span><span class="params">(() -&gt;&#123;</span></div><div class="line">            <span class="keyword">while</span> (i &lt; <span class="number">10</span>) &#123;</div><div class="line">                lock.lock();</div><div class="line">                System.out.println(<span class="string">"线程2打印： "</span> +  <span class="string">"B"</span>);</div><div class="line">                i++;</div><div class="line">                <span class="keyword">if</span> (i &gt;= <span class="number">10</span>) &#123;</div><div class="line">                    System.out.println(<span class="string">"打印完毕！"</span>);</div><div class="line">                    <span class="keyword">return</span>;</div><div class="line">                &#125;</div><div class="line">                <span class="keyword">try</span> &#123;</div><div class="line">                    c.signal();</div><div class="line">                    b.await();</div><div class="line">                &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</div><div class="line">                    e.printStackTrace();</div><div class="line">                &#125; <span class="keyword">finally</span> &#123;</div><div class="line">                    lock.unlock();</div><div class="line">                &#125;</div><div class="line">            &#125;</div><div class="line">        &#125;).<span class="title">start</span><span class="params">()</span>;</div><div class="line"></div><div class="line">        <span class="title">try</span> &#123;</div><div class="line">            <span class="title">Thread</span>.<span class="title">sleep</span><span class="params">(<span class="number">100</span>)</span>;</div><div class="line">        &#125; <span class="title">catch</span> <span class="params">(InterruptedException e)</span> &#123;</div><div class="line">            <span class="title">e</span>.<span class="title">printStackTrace</span><span class="params">()</span>;</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        <span class="title">new</span> <span class="title">Thread</span><span class="params">(() -&gt;&#123;</span></div><div class="line">            <span class="keyword">while</span> (i &lt; <span class="number">10</span>) &#123;</div><div class="line">                lock.lock();</div><div class="line">                System.out.println(<span class="string">"线程3打印： "</span> +  <span class="string">"C"</span>);</div><div class="line">                i++;</div><div class="line">                <span class="keyword">if</span> (i &gt;= <span class="number">10</span>) &#123;</div><div class="line">                    System.out.println(<span class="string">"打印完毕！"</span>);</div><div class="line">                    <span class="keyword">return</span>;</div><div class="line">                &#125;</div><div class="line">                <span class="keyword">try</span> &#123;</div><div class="line">                    a.signal();</div><div class="line">                    c.await();</div><div class="line">                &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</div><div class="line">                    e.printStackTrace();</div><div class="line">                &#125; <span class="keyword">finally</span> &#123;</div><div class="line">                    lock.unlock();</div><div class="line">                &#125;</div><div class="line">            &#125;</div><div class="line">        &#125;).<span class="title">start</span><span class="params">()</span>;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="title">public</span> <span class="title">static</span> <span class="title">void</span> <span class="title">main</span><span class="params">(String[] args)</span> &#123;</div><div class="line">        <span class="title">new</span> <span class="title">TurnsPrintABCLock</span><span class="params">()</span>.<span class="title">print</span><span class="params">()</span>;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h5 id="Semaphore信号量实现"><a href="#Semaphore信号量实现" class="headerlink" title="Semaphore信号量实现"></a>Semaphore信号量实现</h5><figure class="highlight scala"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div></pre></td><td class="code"><pre><div class="line">public <span class="class"><span class="keyword">class</span> <span class="title">TurnsPrintABCSemaphore</span> </span>&#123;</div><div class="line">    <span class="comment">// A初始信号量数量为1</span></div><div class="line">    <span class="keyword">private</span> static <span class="type">Semaphore</span> <span class="type">A</span> = <span class="keyword">new</span> <span class="type">Semaphore</span>(<span class="number">1</span>);</div><div class="line">    <span class="comment">// B、C初始信号数量为0</span></div><div class="line">    <span class="keyword">private</span> static <span class="type">Semaphore</span> <span class="type">B</span> = <span class="keyword">new</span> <span class="type">Semaphore</span>(<span class="number">0</span>);</div><div class="line">    <span class="keyword">private</span> static <span class="type">Semaphore</span> <span class="type">C</span> = <span class="keyword">new</span> <span class="type">Semaphore</span>(<span class="number">0</span>);</div><div class="line"></div><div class="line">    static <span class="class"><span class="keyword">class</span> <span class="title">ThreadA</span> <span class="keyword">extends</span> <span class="title">Thread</span> </span>&#123;</div><div class="line">        <span class="meta">@Override</span></div><div class="line">        public void run() &#123;</div><div class="line">            <span class="keyword">try</span> &#123;</div><div class="line">                <span class="keyword">for</span> (int i = <span class="number">0</span>; i &lt; <span class="number">10</span>; i++) &#123;</div><div class="line">                    <span class="type">A</span>.acquire();<span class="comment">// A获取信号执行,A信号量减1,当A为0时将无法继续获得该信号量</span></div><div class="line">                    <span class="type">System</span>.out.println(<span class="string">"线程1打印： "</span> + <span class="string">"A"</span>);</div><div class="line">                    <span class="type">B</span>.release();</div><div class="line">                    <span class="comment">//System.out.println(B.drainPermits());//B释放之后信号量加1（初始为0），可以查看到 B 的信号量为1</span></div><div class="line">                &#125;</div><div class="line">            &#125; <span class="keyword">catch</span> (<span class="type">InterruptedException</span> e) &#123;</div><div class="line">                e.printStackTrace();</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    static <span class="class"><span class="keyword">class</span> <span class="title">ThreadB</span> <span class="keyword">extends</span> <span class="title">Thread</span> </span>&#123;</div><div class="line">        <span class="meta">@Override</span></div><div class="line">        public void run() &#123;</div><div class="line">            <span class="keyword">try</span> &#123;</div><div class="line">                <span class="keyword">for</span> (int i = <span class="number">0</span>; i &lt; <span class="number">10</span>; i++) &#123;</div><div class="line">                    <span class="type">B</span>.acquire();</div><div class="line">                    <span class="type">System</span>.out.println(<span class="string">"线程2打印： "</span> + <span class="string">"B"</span>);</div><div class="line">                    <span class="type">C</span>.release();</div><div class="line">                &#125;</div><div class="line">            &#125; <span class="keyword">catch</span> (<span class="type">InterruptedException</span> e) &#123;</div><div class="line">                e.printStackTrace();</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    static <span class="class"><span class="keyword">class</span> <span class="title">ThreadC</span> <span class="keyword">extends</span> <span class="title">Thread</span> </span>&#123;</div><div class="line">        <span class="meta">@Override</span></div><div class="line">        public void run() &#123;</div><div class="line">            <span class="keyword">try</span> &#123;</div><div class="line">                <span class="keyword">for</span> (int i = <span class="number">0</span>; i &lt; <span class="number">10</span>; i++) &#123;</div><div class="line">                    <span class="type">C</span>.acquire();</div><div class="line">                    <span class="type">System</span>.out.println(<span class="string">"线程3打印： "</span> + <span class="string">"C"</span>);</div><div class="line">                    <span class="type">A</span>.release();</div><div class="line">                &#125;</div><div class="line">            &#125; <span class="keyword">catch</span> (<span class="type">InterruptedException</span> e) &#123;</div><div class="line">                e.printStackTrace();</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    public static void main(<span class="type">String</span>[] args) <span class="keyword">throws</span> <span class="type">InterruptedException</span> &#123;</div><div class="line">        <span class="keyword">new</span> <span class="type">ThreadA</span>().start();</div><div class="line">        <span class="keyword">new</span> <span class="type">ThreadB</span>().start();</div><div class="line">        <span class="keyword">new</span> <span class="type">ThreadC</span>().start();</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>以上就是有关多个线程交替执行的例子。</p>
+<h4 id="扩展"><a href="#扩展" class="headerlink" title="扩展"></a>扩展</h4><p>如何保证线程的顺序执行？比如有a，b，c三个线程，如何保证a执行完再执行b，b执行完再执行c？</p>
+<ol>
+<li>Join</li>
+<li>线程池（newSingleThreadExecutor）</li>
+<li>CountDownLatch/Semaphore</li>
+</ol>
+
+            <div class="clearfix"></div>
+            <hr class="nogutter">
+        </div>
+        <nav class="pagination" role="pagination">
+    
+    
+    <a class="pull-right" href="/2018/07/02/深入浅出ThreadLocal的实现原理/">
+        深入浅出ThreadLocal的实现原理 →
+    </a>
+    
+</nav>
+
+		<div>
+
+
+
+	
+<!--PC版-->
+<div id="SOHUCS" sid="多线程经典实例(一)"></div>
+<script charset="utf-8" type="text/javascript" src="/js/changyan.js" ></script>
+<script type="text/javascript">
+window.changyan.api.config({
+appid: 'cytDpF5Fb',
+conf: 'prod_b338aee7fcca1251a50551682391c6df'
+});
+</script>
+</div>
+    </div>
+</section>
+
+
+	  
+<!-- ============================ Footer =========================== -->
+
+<footer>
+    <div class="container">
+            <div class="copy">
+                <p>
+                    &copy; 2017<script>new Date().getFullYear()>2010&&document.write("-"+new Date().getFullYear());</script>, Content By Z Yong. All Rights Reserved.
+                </p>
+                <p>Theme By <a href="#" style="color: #767D84">Kieran</a></p>
+            </div>
+            <div class="social">
+                <ul>
+                    
+                    
+                    
+                    
+                    
+                </ul>
+            </div>
+            <div class="clearfix"> </div>
+        </div>
+</footer>
+
+<!-- ============================ END Footer =========================== -->
+      <!-- Load our scripts -->
+<!-- Resizable 'on-demand' full-height hero -->
+<script type="text/javascript">
+    var resizeHero = function () {
+        var hero = $(".cover,.heightblock"),
+            window1 = $(window);
+        hero.css({
+            "height": window1.height()
+        });
+    };
+
+    resizeHero();
+
+    $(window).resize(function () {
+        resizeHero();
+    });
+</script>
+<script src="/js/plugins.min.js"></script><!-- Bootstrap core and concatenated plugins always load here -->
+<script src="/js/jquery.flexslider-min.js"></script><!-- Flexslider plugin -->
+<script src="/js/scripts.js"></script><!-- Theme scripts -->
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+$('#intro').find('img').each(function(){
+  var alt = this.alt;
+
+  if (alt){
+    $(this).after('<span class="caption" style="display:none">' + alt + '</span>');
+  }
+
+  $(this).wrap('<a href="' + this.src + '" title="' + alt + '" class="fancybox" rel="gallery" />');
+});
+(function($){
+  $('.fancybox').fancybox();
+})(jQuery);
+</script>
+
+<!-- Initiate flexslider plugin -->
+<script type="text/javascript">
+    $(document).ready(function($) {
+      (function(){
+        console.log('font');
+        var getCss = function(path) {
+          var head = document.getElementsByTagName('head')[0];
+          link = document.createElement('link');
+          link.href = path;
+          link.rel = 'stylesheet';
+          link.type = 'text/css';
+          head.appendChild(link);
+        };
+        getCss('https://fonts.googleapis.com/css?family=Montserrat:400,700');
+        getCss('https://fonts.googleapis.com/css?family=Open+Sans:400,600');
+      })();
+      $('.flexslider').flexslider({
+        animation: "fade",
+        prevText: "",
+        nextText: "",
+        directionNav: true
+      });
+    });
+</script>
+	  
+            <style>
+.local-search-popup {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  background: rgba(255, 255, 255, .9);
+  color: #333;
+  z-index: 9999;
+  border-radius: 5px;
+  overflow: scroll;
+}
+#local-search-input {
+  width: 100%;
+  border: none;
+  outline: none;
+  border-bottom: 1px solid #151515;
+  background-color: initial;
+}
+.search-result-list {
+  list-style: none;
+  padding-left: 0;
+}
+.search-result-list > li {
+  margin-top: 15px;
+  border-bottom: 1px solid #ddd;
+  transition: all ease .3s;
+}
+.search-result-list > li:hover {
+  border-bottom: 1px solid gray;
+}
+.search-result-title {
+  font-size: 16px;
+}
+.search-result {
+  line-height: 20px;
+}
+.search-keyword {
+  font-weight: normal;
+  color: #c00;
+}
+
+@media (min-width: 890px) {
+  .popup-btn-close {
+    position: absolute;
+    top: 15px;
+    left: 35px;
+    border: 1px solid #151515;
+    padding: 0px 10px;
+    border-top-left-radius: 8px;
+    cursor: pointer;
+    transition: all ease .3s;
+  }
+  .popup-btn-close:hover {
+    background: #151515;
+    opacity: .9;
+    color: #fff;
+  }
+}
+@media (max-width: 890px) {
+  .popup-btn-close {
+    font-size: 0;
+    position: fixed;
+    right: 20px;
+    bottom: 50px;
+    width: 50px;
+    height: 50px;
+    background: #fff;
+    border-radius: 50%;
+    box-shadow: 1px 1px 5px #888;
+    cursor: pointer;
+  }
+  .popup-btn-close::after {
+    content: '←';
+    color: #151515;
+    position: absolute;
+    top: 0;
+    left: 0;
+    font-size: 20px;
+    width: 100%;
+    height: 100%;
+    line-height: 50px;
+    text-align: center;
+  }
+}
+</style>
+
+<div class="popup search-popup local-search-popup">
+  <span class="popup-btn-close">
+    ESC
+  </span>
+  <div class="container">
+    <div class="col-md-8 col-md-offset-2">
+      <div class="local-search-header clearfix">
+        <span class="search-icon">
+          <i class="fa fa-search"></i>
+        </span>
+        <div class="local-search-input-wrapper">
+          <input autocomplete="off" placeholder="Search..." type="text" id="local-search-input">
+        </div>
+      </div>
+      <div id="local-search-result"></div>
+    </div>
+  </div>
+</div>
+
+<script src="/js/ziploader.js"></script>
+
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.json";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').fadeOut(300);
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $('.popup').fadeIn(300);
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // get search zip version
+    $.get('/searchVersion.txt?t=' + (+new Date()), function(res) {
+      if (localStorage.getItem('searchVersion') !== res) {
+        localStorage.setItem('searchVersion', res);
+        initSearchJson();
+      }
+    });
+
+    function initSearchJson () {
+      initLoad(['/search.zip'], {
+        loadOptions: {
+          success: function(obj) {
+            localStorage.setItem('searchJson', obj['search.json'])
+          },
+          error: function(e) {
+            return console.log(e)
+          }
+        },
+        returnOptions: {
+          'json': TYPE_TEXT
+        },
+        mimeOptions:{
+          'json':'application/json'
+        }
+      })
+    }
+
+
+    // search function;
+    var searchFunc = function(search_id, content_id) {
+      'use strict';
+
+      isfetched = true;
+      var datas = JSON.parse(localStorage.getItem('searchJson'));
+      console.log(search_id)
+      var input = document.getElementById(search_id);
+      var resultContent = document.getElementById(content_id);
+      var inputEventFunction = function() {
+        var searchText = input.value.trim().toLowerCase();
+        var keywords = searchText.split(/[\s\-]+/);
+        if (keywords.length > 1) {
+          keywords.push(searchText);
+        }
+        var resultItems = [];
+        if (searchText.length > 0) {
+          // perform local searching
+          datas.forEach(function(data) {
+            var isMatch = false;
+            var hitCount = 0;
+            var searchTextCount = 0;
+            var title = data.title ? data.title.trim() : '';
+            var titleInLowerCase = title.toLowerCase();
+            var content = data.content ? data.content.trim().replace(/<[^>]+>/g,"") : '';
+            var contentInLowerCase = content.toLowerCase();
+            var articleUrl = decodeURIComponent(data.url);
+            var indexOfTitle = [];
+            var indexOfContent = [];
+            // only match articles with not empty titles
+            keywords.forEach(function(keyword) {
+              function getIndexByWord(word, text, caseSensitive) {
+                var wordLen = word.length;
+                if (wordLen === 0) {
+                  return [];
+                }
+                var startPosition = 0, position = [], index = [];
+                if (!caseSensitive) {
+                  text = text.toLowerCase();
+                  word = word.toLowerCase();
+                }
+                while ((position = text.indexOf(word, startPosition)) > -1) {
+                  index.push({position: position, word: word});
+                  startPosition = position + wordLen;
+                }
+                return index;
+              }
+
+              indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+              indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+            });
+            if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+              isMatch = true;
+              hitCount = indexOfTitle.length + indexOfContent.length;
+            }
+
+            // show search results
+
+            if (isMatch) {
+              // sort index by position of keyword
+
+              [indexOfTitle, indexOfContent].forEach(function (index) {
+                index.sort(function (itemLeft, itemRight) {
+                  if (itemRight.position !== itemLeft.position) {
+                    return itemRight.position - itemLeft.position;
+                  } else {
+                    return itemLeft.word.length - itemRight.word.length;
+                  }
+                });
+              });
+
+              // merge hits into slices
+
+              function mergeIntoSlice(text, start, end, index) {
+                var item = index[index.length - 1];
+                var position = item.position;
+                var word = item.word;
+                var hits = [];
+                var searchTextCountInSlice = 0;
+                while (position + word.length <= end && index.length != 0) {
+                  if (word === searchText) {
+                    searchTextCountInSlice++;
+                  }
+                  hits.push({position: position, length: word.length});
+                  var wordEnd = position + word.length;
+
+                  // move to next position of hit
+
+                  index.pop();
+                  while (index.length != 0) {
+                    item = index[index.length - 1];
+                    position = item.position;
+                    word = item.word;
+                    if (wordEnd > position) {
+                      index.pop();
+                    } else {
+                      break;
+                    }
+                  }
+                }
+                searchTextCount += searchTextCountInSlice;
+                return {
+                  hits: hits,
+                  start: start,
+                  end: end,
+                  searchTextCount: searchTextCountInSlice
+                };
+              }
+
+              var slicesOfTitle = [];
+              if (indexOfTitle.length != 0) {
+                slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+              }
+
+              var slicesOfContent = [];
+              while (indexOfContent.length != 0) {
+                var item = indexOfContent[indexOfContent.length - 1];
+                var position = item.position;
+                var word = item.word;
+                // cut out 100 characters
+                var start = position - 20;
+                var end = position + 80;
+                if(start < 0){
+                  start = 0;
+                }
+                if (end < position + word.length) {
+                  end = position + word.length;
+                }
+                if(end > content.length){
+                  end = content.length;
+                }
+                slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+              }
+
+              // sort slices in content by search text's count and hits' count
+
+              slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                  return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                  return sliceRight.hits.length - sliceLeft.hits.length;
+                } else {
+                  return sliceLeft.start - sliceRight.start;
+                }
+              });
+
+              // select top N slices in content
+
+              var upperBound = parseInt('2');
+              if (upperBound >= 0) {
+                slicesOfContent = slicesOfContent.slice(0, upperBound);
+              }
+
+              // highlight title and content
+
+              function highlightKeyword(text, slice) {
+                var result = '';
+                var prevEnd = slice.start;
+                slice.hits.forEach(function (hit) {
+                  result += text.substring(prevEnd, hit.position);
+                  var end = hit.position + hit.length;
+                  result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                  prevEnd = end;
+                });
+                result += text.substring(prevEnd, slice.end);
+                return result;
+              }
+
+              var resultItem = '';
+
+              if (slicesOfTitle.length != 0) {
+                resultItem += "<li><a target='_blank' href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+              } else {
+                resultItem += "<li><a target='_blank' href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+              }
+
+              slicesOfContent.forEach(function (slice) {
+                resultItem += "<a target='_blank' href='" + articleUrl + "'>" +
+                  "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                  "...</p>" + "</a>";
+              });
+
+              resultItem += "</li>";
+              resultItems.push({
+                item: resultItem,
+                searchTextCount: searchTextCount,
+                hitCount: hitCount,
+                id: resultItems.length
+              });
+            }
+          })
+        };
+        if (keywords.length === 1 && keywords[0] === "") {
+          resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+        } else if (resultItems.length === 0) {
+          resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+        } else {
+          resultItems.sort(function (resultLeft, resultRight) {
+            if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+              return resultRight.searchTextCount - resultLeft.searchTextCount;
+            } else if (resultLeft.hitCount !== resultRight.hitCount) {
+              return resultRight.hitCount - resultLeft.hitCount;
+            } else {
+              return resultRight.id - resultLeft.id;
+            }
+          });
+          var searchResultList = '<ul class=\"search-result-list\">';
+          resultItems.forEach(function (result) {
+            searchResultList += result.item;
+          })
+          searchResultList += "</ul>";
+          resultContent.innerHTML = searchResultList;
+        }
+      }
+
+      if ('auto' === 'auto') {
+        input.addEventListener('input', inputEventFunction);
+      } else {
+        $('.search-icon').click(inputEventFunction);
+        input.addEventListener('keypress', function (event) {
+          if (event.keyCode === 13) {
+            inputEventFunction();
+          }
+        });
+      }
+
+      // remove loading animation
+      $('body').css('overflow', '');
+
+      proceedsearch();
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        $('.sb-close').click();
+        searchFunc('local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+      
+</body>
+</html>
