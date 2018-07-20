@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yoursite.com/"/>
-  <updated>2018-07-20T13:13:38.936Z</updated>
+  <updated>2018-07-20T13:23:19.698Z</updated>
   <id>http://yoursite.com/</id>
   
   <author>
@@ -20,9 +20,9 @@
     <link href="http://yoursite.com/2018/07/20/%E5%A4%9A%E7%BA%BF%E7%A8%8B%E7%BB%8F%E5%85%B8%E5%AE%9E%E4%BE%8B(%E4%B8%80)/"/>
     <id>http://yoursite.com/2018/07/20/多线程经典实例(一)/</id>
     <published>2018-07-20T13:12:12.000Z</published>
-    <updated>2018-07-20T13:13:38.936Z</updated>
+    <updated>2018-07-20T13:23:19.698Z</updated>
     
-    <content type="html"><![CDATA[<h3 id="多线程经典实例-一"><a href="#多线程经典实例-一" class="headerlink" title="多线程经典实例(一)"></a>多线程经典实例(一)</h3><p>在多线程的学习当中，有许多经典的例子值得学习，比如售票窗口、线程交替执行、生产者消费者等。下面就来看两个有关线程交替执行的案例。</p>
+    <content type="html"><![CDATA[<p>在多线程的学习当中，有许多经典的例子值得学习，比如售票窗口、线程交替执行、生产者消费者等。下面就来看两个有关线程交替执行的案例。</p>
 <h4 id="两个线程轮流打印数字"><a href="#两个线程轮流打印数字" class="headerlink" title="两个线程轮流打印数字"></a>两个线程轮流打印数字</h4><p>这里采用 wait/notify 等待通知和 Lock/Condition 两种方式实现。</p>
 <h5 id="wait-notify-实现"><a href="#wait-notify-实现" class="headerlink" title="wait()/notify()实现"></a>wait()/notify()实现</h5><p>简单介绍一下wait/notify机制的几个方法。<br>以下4个方法都必须在<strong>获取了锁的情况下</strong>才能调用：  </p>
 <p><strong>wait()</strong>: 使当前线程进入阻塞等待状态，直到被唤醒或中断; 调用后立即释放已有的锁；<br><strong>wait(Long times)</strong>: 使当前线程进入阻塞等待状态一段时间，超过时间后自动唤醒；<br><strong>notify()</strong>： 唤醒在该对象上等待的一个线程；<br><strong>notifyAll()</strong>： 唤醒在该对象上等待的所有线程。  </p>
@@ -56,7 +56,8 @@
     
     <summary type="html">
     
-      &lt;h3 id=&quot;多线程经典实例-一&quot;&gt;&lt;a href=&quot;#多线程经典实例-一&quot; class=&quot;headerlink&quot; title=&quot;多线程经典实例(一)&quot;&gt;&lt;/a&gt;多线程经典实例(一)&lt;/h3&gt;&lt;p&gt;在多线程的学习当中，有许多经典的例子值得学习，比如售票窗口、线程交替执行、生产者
+      &lt;p&gt;在多线程的学习当中，有许多经典的例子值得学习，比如售票窗口、线程交替执行、生产者消费者等。下面就来看两个有关线程交替执行的案例。&lt;/p&gt;
+&lt;h4 id=&quot;两个线程轮流打印数字&quot;&gt;&lt;a href=&quot;#两个线程轮流打印数字&quot; class=&quot;headerlink&quot; title=&quot;
     
     </summary>
     
