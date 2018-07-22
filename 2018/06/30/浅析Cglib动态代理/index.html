@@ -17,7 +17,7 @@
 <!--<![endif]-->
 
 <head>
-  <title>深入理解volatile关键字 | ZY&#39;s Blog</title>
+  <title>浅析Cglib动态代理 | ZY&#39;s Blog</title>
   <!-- Meta data -->
     <meta http-equiv="Content-Type" content="text/html" charset="UTF-8" >
     <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
@@ -174,81 +174,73 @@
         <div class="row col-md-offset-2">
             <div class="col-md-8">
     			<span class="post-meta">
-      <time datetime="2017-10-12T07:12:12.000Z" itemprop="datePublished">
-          2017-10-12
+      <time datetime="2018-06-30T13:12:12.000Z" itemprop="datePublished">
+          2018-06-30
       </time>
     
     
     | 
-    <a href='/tags/并发/'>并发</a>,
+    <a href='/tags/代理模式/'>代理模式</a>,
     
-    <a href='/tags/volatile/'>volatile</a>
+    <a href='/tags/Cglib动态代理/'>Cglib动态代理</a>
     
     
 </span>
-                <h1>深入理解volatile关键字</h1>
+                <h1>浅析Cglib动态代理</h1>
             </div>
         </div>
         <div class="col-md-8 col-md-offset-2">
-      		<h2 id="一、volatile的特性"><a href="#一、volatile的特性" class="headerlink" title="一、volatile的特性"></a>一、volatile的特性</h2><h3 id="1-volatile的可见性"><a href="#1-volatile的可见性" class="headerlink" title="1. volatile的可见性"></a>1. volatile的可见性</h3><p> 可见性的意思是：当一个线程修改一个共享变量时，另一个线程能读到这个修改的值。<br> volatile在多线程的开发中，保证了共享变量的可见性（立即）。<br><figure class="highlight processing"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//全局变量</span></div><div class="line"><span class="built_in">boolean</span> <span class="built_in">open</span>=<span class="keyword">true</span>;</div><div class="line"></div><div class="line"><span class="comment">//线程A</span></div><div class="line">resource.close();</div><div class="line"><span class="built_in">open</span> = <span class="keyword">false</span>;</div><div class="line"></div><div class="line"><span class="comment">//线程B</span></div><div class="line"><span class="keyword">while</span>(<span class="built_in">open</span>) &#123;</div><div class="line">doSomething(resource);</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<p>open是一个全局变量，用来描述一个资源的打开关闭状态，当线程A把资源关闭后，open置为false，而这个改动对线程B<strong>不是立即可见</strong>的，因此线程B还会运行，从而造成错误。<br>当添加volatile关键字修饰之后，线程B就可以<strong>立即</strong>将改动后的open变量（主内存）同步到自己的工作内存中，从而正确的停止运行。</p>
-<h3 id="2-volatile的有序性（禁止指令重排序）"><a href="#2-volatile的有序性（禁止指令重排序）" class="headerlink" title="2. volatile的有序性（禁止指令重排序）"></a>2. volatile的有序性（禁止指令重排序）</h3><figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//线程A</span></div><div class="line">context = loadContext();<span class="comment">//初始化</span></div><div class="line"><span class="keyword">init</span> = <span class="literal">true</span>;</div><div class="line"><span class="comment">//线程B</span></div><div class="line"><span class="keyword">while</span>(!<span class="keyword">init</span>)&#123; <span class="comment">//根据init变量决定是否使用context（为false时等待，为true时顺序执行）</span></div><div class="line">   sleep(<span class="number">100</span>);</div><div class="line">&#125;</div><div class="line">doSomething(context);</div></pre></td></tr></table></figure>
-<p>以上程序运行没有问题，然而当线程A中发生了指令重排序：<br><figure class="highlight ini"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="attr">init</span> = <span class="literal">true</span>;</div><div class="line"><span class="attr">context</span> = loadContext();</div></pre></td></tr></table></figure></p>
-<p>那么B就可能跳过等待，拿到一个正在初始化或初始化未完成的context对象，从而发生程序错误。<br>当init变量用volatile修饰后，就会阻止JVM对其相关代码进行指令重排，这样就能够按照既定的顺序执行。<br> 在双重判断类型的单例模式中正是应用了volatile关键字的这个特性，才不会导致单例模式失效。</p>
-<h3 id="3-volatile不保证操作的原子性"><a href="#3-volatile不保证操作的原子性" class="headerlink" title="3. volatile不保证操作的原子性"></a>3. volatile不保证操作的原子性</h3><p>原子操作：不可中断的一个或一系列操作（多线程中借助于原子操作可以实现互斥锁）<br>原子性：一个操作或多个操作要么全部成功执行，要么就都失败。一个操作是原子操作，那么我们称它具有原子性。<br>先看示例代码<br><figure class="highlight axapta"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TestAtomic</span> </span>&#123;</div><div class="line"><span class="comment">//计数器</span></div><div class="line"><span class="keyword">private</span> <span class="keyword">static</span> volatile <span class="keyword">int</span> <span class="keyword">count</span>=<span class="number">0</span>;</div><div class="line">	</div><div class="line">	<span class="keyword">public</span> <span class="keyword">void</span> inc()&#123;</div><div class="line">		<span class="keyword">count</span>++;</div><div class="line">	&#125;</div><div class="line">	<span class="keyword">private</span> <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">Countone</span> <span class="keyword">implements</span>  <span class="title">Runnable</span> </span>&#123;</div><div class="line">		<span class="keyword">public</span> <span class="keyword">void</span> run() &#123;</div><div class="line">			<span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;<span class="number">100</span>;i++)&#123;</div><div class="line">				<span class="keyword">count</span>++;</div><div class="line">			&#125;</div><div class="line">		&#125;</div><div class="line">	&#125;</div><div class="line">	<span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> main(String[] args) &#123;</div><div class="line">		</div><div class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;<span class="number">10</span>;i++)&#123;</div><div class="line">			<span class="keyword">new</span> Thread(<span class="keyword">new</span> Countone()).start();</div><div class="line">		&#125;</div><div class="line">		<span class="comment">//保证10个线程都执行完毕</span></div><div class="line">		<span class="keyword">while</span>(Thread.activeCount()&gt;<span class="number">1</span>)</div><div class="line">			Thread.yield();</div><div class="line">		</div><div class="line">		System.out.println(<span class="string">"最终count的值为："</span>+TestAtomic.<span class="keyword">count</span>);</div><div class="line">	&#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<figure class="highlight applescript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">输出结果：</div><div class="line">最终<span class="built_in">count</span>的值为：<span class="number">863</span></div><div class="line">最终<span class="built_in">count</span>的值为：<span class="number">1000</span></div><div class="line">最终<span class="built_in">count</span>的值为：<span class="number">872</span></div><div class="line">最终<span class="built_in">count</span>的值为：<span class="number">835</span></div></pre></td></tr></table></figure>
-<p>将count变量声明为volatile int类型，保证了所有线程对变量count的可见性，上述定义了10个线程，每个线程对count执行100次自增的操作，按照理想的结果，最后的结果应该为10<em>100=1000，然而多次运行可以看到，并不是每次的结果都是1000，难道volatile修饰的变量的可见性特征失效了？<em>*并不是，而是volatile只能保证共享变量对所有线程的可见性，不能保证变量操作的原子性。</em></em> count++不是一个原子操作，因此volatile不能保证这个操作的原子性。</p>
-<p><strong>有以下三种方式可以保证对变量操作的原子性：</strong></p>
-<ol>
-<li>使用synchronized关键字</li>
-<li>使用Lock对象</li>
-<li>使用java.util.concurrent.atomic包下提供的原子操作类</li>
-</ol>
-<h2 id="二、volatile的实现原理"><a href="#二、volatile的实现原理" class="headerlink" title="二、volatile的实现原理"></a>二、volatile的实现原理</h2><h3 id="1-可见性"><a href="#1-可见性" class="headerlink" title="1.可见性"></a>1.可见性</h3><p>它的实现原理与java内存模型（JMM）相关，每个线程都有自己的工作内存，并共享主内存的数据。下面是普通变量与volatile变量的异同：</p>
+      		<h4 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h4><p>我们知道JDK动态代理只能代理实现了接口的类，没有实现接口的类是无法通过JDK来代理的。  </p>
+<p><strong>Cglib是针对类来实现代理的，它的原理是对指定的目标类生成一个子类，这个子类覆盖目标类的方法并在其中实现方法的增强。因为采用了继承和重写，因此不能对final的类、final方法进行代理。</strong></p>
+<p>Cglib底层其实是借助了ASM这个非常强大的Java字节码生成框架，它可以在运行时对字节码进行修改或动态生成。</p>
+<h4 id="实现"><a href="#实现" class="headerlink" title="实现"></a>实现</h4><h5 id="目标对象"><a href="#目标对象" class="headerlink" title="目标对象"></a>目标对象</h5><figure class="highlight haxe"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">CglibTest</span> </span>&#123;</div><div class="line">    <span class="keyword">public</span> <span class="keyword">String</span> say (<span class="keyword">String</span> s) &#123;</div><div class="line">        <span class="keyword">return</span> <span class="string">"你好："</span> + s;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h5 id="MethodInterceptor的实现类"><a href="#MethodInterceptor的实现类" class="headerlink" title="MethodInterceptor的实现类"></a>MethodInterceptor的实现类</h5><figure class="highlight oxygene"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> Object intercept(Object o, <span class="function"><span class="keyword">Method</span> <span class="title">method</span>, <span class="title">Object</span>[] <span class="title">objects</span>, <span class="title">MethodProxy</span> <span class="title">methodProxy</span>) <span class="title">throws</span> <span class="title">Throwable</span> <span class="comment">&#123;</span></span></div><div class="line">    </div><div class="line">    System.out.println("调用方法前.....");</div><div class="line">    methodProxy.invokeSuper(o, objects); //调用目标对象的方法</div><div class="line">    System.out.println("调用方法后.....");</div><div class="line">    return o;</div><div class="line">    </div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>intercept() 方法中有4个参数： </p>
 <ul>
-<li><p>普通变量：读操作会优先读取工作内存的数据，如果工作内存中不存在，则从主内存中拷贝一份数据到工作内存中；写操作只会修改工作内存的副本数据。这种情况下，其它线程就无法读取变量的最新值。</p>
-</li>
-<li><p>volatile变量：读操作时会把工作内存中对应的值设为无效，要求线程从主内存中读取数据；写操作时会把工作内存中对应的数据刷新到主内存中。这种情况下，其它线程就可以读取变量的最新值。</p>
-</li>
+<li>o：表示目标对象</li>
+<li>method：目标方法</li>
+<li>objects：参数列表</li>
+<li>methodProxy：表示方法的代理。invokeSuper()表示调用目标对象的方法。  </li>
 </ul>
-<p>那么它是如何是实现的呢？这就涉及到了CPU指令。<br>如果对声明了volatile变量进行写操作，<strong>JVM就会向处理器发送一条Lock前缀的指令，将这个变量所在缓存行的数据写回到系统内存。</strong> 但是就算写回到内存，如果其他处理器缓存的值还是旧的，再执行计算操作就会有问题，所以在多处理器下，为了保证各个处理器的缓存是一致的，就会实现缓存一致性协议，每个处理器通过嗅探在总线上传播的数据来检查自己缓存的值是不是过期了，当处理器发现自己缓存行对应的内存地址被修改，就会将当前处理器的缓存行设置成无效状态，当处理器要对这个数据进行修改操作的时候，会强制重新从系统内存里把数据读到处理器缓存里。</p>
-<h3 id="2-禁止重排序"><a href="#2-禁止重排序" class="headerlink" title="2.禁止重排序"></a>2.禁止重排序</h3><p>在执行程序时为了提高性能，编译器和处理器通常会对指令做重排序： </p>
-<ul>
-<li>编译器重排序。编译器在不改变单线程程序语义的前提下，可以重新安排语句的执行顺序； </li>
-<li>处理器重排序。如果不存在数据依赖性，处理器可以改变语句对应机器指令的执行顺序；<br>指令重排序对单线程没有影响，但是会影响多线程的正确性，因此需要对禁止指令重排序。</li>
-</ul>
-<p>在上面提到过lock指令，<strong>lock指令其实就相当于一个内存屏障。内存屏障是一组处理指令，用来实现对内存操作的顺序限制。</strong> volatile的底层就是通过内存屏障来实现的。</p>
-<h2 id="三、volatile与synchronized的比较"><a href="#三、volatile与synchronized的比较" class="headerlink" title="三、volatile与synchronized的比较"></a>三、volatile与synchronized的比较</h2><ol>
-<li><p>volatile本质是在告诉JVM当前变量在寄存器（工作内存）中的值是不确定的，需要从主存中读取； synchronized则是锁定当前变量，只有当前线程可以访问该变量，其他线程被阻塞。 </p>
-</li>
-<li><p>volatile只能修饰变量，synchronized可以修饰变量、方法和类；  </p>
-</li>
-<li><p>volatile保证变量的修改可见性，synchronized则可以保证变量的修改可见性和原子性。  </p>
-</li>
-<li>volatile不会造成线程的阻塞，synchronized可能会造成线程的阻塞。  </li>
-<li>volatile比synchronized的使用和执行成本更低，因为它不会引起上下文的切换和调度。</li>
+<p>实现intercept()方法有点类似于实现JDK动态代理中InvocationHandler接口中的invoke()方法，都是在该方法中添加需要被代理的逻辑。</p>
+<h5 id="生成代理对象"><a href="#生成代理对象" class="headerlink" title="生成代理对象"></a>生成代理对象</h5><figure class="highlight haxe"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="keyword">static</span> void main(<span class="keyword">String</span>[] args) &#123;</div><div class="line"></div><div class="line">        CglibProxy proxy = <span class="keyword">new</span> <span class="type">CglibProxy</span>(); <span class="comment">//MethodInterceptor的实现类</span></div><div class="line"></div><div class="line">        Enhancer enhancer = <span class="keyword">new</span> <span class="type">Enhancer</span>(); <span class="comment">//借助Enhancer对象</span></div><div class="line">        enhancer.setSuperclass(CglibTarget.class); <span class="comment">//目标对象字节码</span></div><div class="line">        enhancer.setCallback(proxy);  <span class="comment">//设置回调即MethodInterceptor的实现类</span></div><div class="line"></div><div class="line">        CglibTarget cglibTarget = (CglibTarget) enhancer.create(); <span class="comment">//生成代理对象</span></div><div class="line">        cglibTarget.say(<span class="string">"lebron"</span>); <span class="comment">//调用目标方法</span></div><div class="line"></div><div class="line">    &#125;</div></pre></td></tr></table></figure>
+<p>输出：<br><figure class="highlight clean"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">调用方法前.....</div><div class="line">你好：lebron</div><div class="line">调用方法后.....</div></pre></td></tr></table></figure></p>
+<p>简单描述Cglib代理过程：</p>
+<p><strong>通过Cglib的Enhancer来指定要代理的目标对象(传入的是目标对象class对象)、实际处理代理逻辑的对象(MethodInterceptor实现类)，最终通过调用create()方法得到代理对象。</strong></p>
+<p>当代理对象调用目标方法时，都会转发给MethodInterceptor.intercept()方法，在intercept()方法里我们可以加入任何代理逻辑，比如修改方法参数，加入日志功能、安全检查功能等；在intercept()方法中，通过调用MethodProxy.invokeSuper()方法，我们将调用转发给原始目标对象，在本例中也就是CglibTarget的具体方法。</p>
+<h5 id="问题：如何针对不同的方法使用不同的代理逻辑？"><a href="#问题：如何针对不同的方法使用不同的代理逻辑？" class="headerlink" title="问题：如何针对不同的方法使用不同的代理逻辑？"></a>问题：如何针对不同的方法使用不同的代理逻辑？</h5><p>这里只要增加相应方法的MethodInterceptor 的实现类以及实现一个回调过滤器CallbackFilter即可完成。</p>
+<p><strong>在目标对象中增加一个 record() 方法：</strong><br><figure class="highlight cs"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">CglibTarget</span> &#123;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">say</span> (<span class="params">String s</span>) </span>&#123;</div><div class="line">        System.<span class="keyword">out</span>.println( <span class="string">"你好："</span> + s);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">record</span> (<span class="params">String s</span>) </span>&#123;</div><div class="line">        System.<span class="keyword">out</span>.println( <span class="string">"功能："</span> + s);</div><div class="line">    &#125;</div><div class="line"></div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p><strong>MethodInterceptor实现类:针对调用 record() 方法的拦截，目的是记录方法调用前后的时间</strong><br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">CglibProxy2</span> <span class="keyword">implements</span> <span class="title">MethodInterceptor</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> Object <span class="title">intercept</span><span class="params">(Object o, Method method, Object[] objects, MethodProxy methodProxy)</span> <span class="keyword">throws</span> Throwable </span>&#123;</div><div class="line"></div><div class="line">        System.out.println(<span class="string">"当前时间： "</span> + System.currentTimeMillis());</div><div class="line">        methodProxy.invokeSuper(o, objects); <span class="comment">//调用目标对象的方法</span></div><div class="line">        System.out.println(<span class="string">"运行结束时间： "</span> + System.currentTimeMillis());</div><div class="line">        <span class="keyword">return</span> o;</div><div class="line"></div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p><strong>拦截过滤器CallbackFilter</strong>：CallbackFilter的accept()方法返回的数值表示的是Callback[]数组的索引，Callback[]数组中的元素就是定义好的MethodInterceptor实现类。</p>
+<figure class="highlight monkey"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ProxyFilter</span> <span class="keyword">implements</span> <span class="title">CallbackFilter</span> &#123;</span></div><div class="line"></div><div class="line">    @Override</div><div class="line">    <span class="keyword">public</span> int accept(<span class="function"><span class="keyword">Method</span> <span class="title">method</span>) &#123;</span></div><div class="line">    </div><div class="line">        <span class="keyword">if</span> (<span class="string">"say"</span>.equals(<span class="function"><span class="keyword">method</span>.<span class="title">getName</span>(</span>))) &#123;</div><div class="line">            <span class="keyword">return</span> <span class="number">0</span>;</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">return</span> <span class="number">1</span>;</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>如果调用的是 say()方法，那么返回0，表示采用Callback[0]也就是第一个MethodInterceptor实现类来拦截 say()方法；</p>
+<p><strong>main方法测试：</strong><br><figure class="highlight haxe"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="keyword">static</span> void main(<span class="keyword">String</span>[] args) &#123;</div><div class="line"></div><div class="line">       CglibProxy proxy = <span class="keyword">new</span> <span class="type">CglibProxy</span>(); <span class="comment">//MethodInterceptor的实现类1</span></div><div class="line">       CglibProxy2 proxy2 = <span class="keyword">new</span> <span class="type">CglibProxy2</span>(); <span class="comment">//MethodInterceptor的实现类2</span></div><div class="line"></div><div class="line">       Enhancer enhancer = <span class="keyword">new</span> <span class="type">Enhancer</span>();</div><div class="line">       enhancer.setSuperclass(CglibTarget.class); <span class="comment">//目标对象字节码</span></div><div class="line">       enhancer.setCallbacks(<span class="keyword">new</span> <span class="type">Callback</span>[]&#123;proxy, proxy2&#125;);  <span class="comment">//设置回调即MethodInterceptor的实现类</span></div><div class="line">       enhancer.setCallbackFilter(<span class="keyword">new</span> <span class="type">ProxyFilter</span>()); <span class="comment">//设置方法顺序？</span></div><div class="line"></div><div class="line">       CglibTarget cglibTarget = (CglibTarget) enhancer.create(); <span class="comment">//生成代理对象</span></div><div class="line">       cglibTarget.say(<span class="string">"lebron"</span>);</div><div class="line">       cglibTarget.record(<span class="string">"记录时间"</span>);</div><div class="line">   &#125;</div></pre></td></tr></table></figure></p>
+<p>输出：<br><figure class="highlight clean"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">调用方法前.....</div><div class="line">你好：lebron</div><div class="line">调用方法后.....</div><div class="line">当前时间： <span class="number">1532182370942</span></div><div class="line">功能：记录时间</div><div class="line">运行结束时间： <span class="number">1532182370942</span></div></pre></td></tr></table></figure></p>
+<p>可见，针对say() 和 record() 这两个不同的方法实现了不同的代理逻辑。</p>
+<p><strong>针对不同的方法，可以定义不同的MethodInterceptor，来实现不同的代理逻辑。</strong></p>
+<h4 id="Cglib动态代理的缺点"><a href="#Cglib动态代理的缺点" class="headerlink" title="Cglib动态代理的缺点"></a>Cglib动态代理的缺点</h4><ol>
+<li>对于final类、static、private、final方法，无法进行代理。</li>
+<li>由于Cglib的大部分类是直接对Java字节码进行操作，这样生成的类会在Java的永久代中。如果动态代理操作过多，容易造成永久代满，触发OOM异常。</li>
 </ol>
-<h2 id="四、volatile的扩展"><a href="#四、volatile的扩展" class="headerlink" title="四、volatile的扩展"></a>四、volatile的扩展</h2><h3 id="1-volatile的常用场景"><a href="#1-volatile的常用场景" class="headerlink" title="1.volatile的常用场景"></a>1.volatile的常用场景</h3><ul>
-<li><p>状态标记量（高并发的场景）</p>
-</li>
-<li><p>双重判断的单例模式</p>
-</li>
-</ul>
-<h3 id="2-volatile修饰数组"><a href="#2-volatile修饰数组" class="headerlink" title="2.volatile修饰数组"></a>2.volatile修饰数组</h3><p><strong>问题：volatile能否保证数组中元素的可见性？</strong> 如果用volatile修饰一个数组，那么当一个线程对数组中的元素进行设值时，对另一个线程是否<strong>立即</strong>可见？ </p>
-<p><strong>答案：</strong> 不能立即可见。因为volatile修饰的数组只针对数组的引用具有volatile的语义，而不是它的元素。</p>
+<h4 id="Cglib与JDK动态代理的区别"><a href="#Cglib与JDK动态代理的区别" class="headerlink" title="Cglib与JDK动态代理的区别"></a>Cglib与JDK动态代理的区别</h4><ol>
+<li><strong>JDK动态代理只能针对接口（接口中的方法）进行代理，不能对普通的类进行代理（因为生成的代理类的父类为Proxy，Java不允许多重继承）；Cglib能够代理普通类（除final类final方法），无论有没有实现接口（如果传入的是接口，那么就实现接口）；</strong></li>
+<li>JDK动态代理生成的代理类是<strong>实现目标接口的类</strong>；Cglib动态代理生成的代理类是<strong>目标类的子类</strong>。</li>
+<li>JDK动态代理采用<strong>反射机制</strong>调用目标类的方法；Cglib采用<strong>类似索引的方式</strong>直接调用目标类方法（<strong>Cglib的FastClass机制：FastClass对Class对象进行特别的处理，通过数组保存method的引用，每次调用方法的时候都是通过一个index下标来保持对方法的引用。</strong>），执行效率较高；</li>
+<li>Cglib代理需要引入额外的包；</li>
+</ol>
 
             <div class="clearfix"></div>
             <hr class="nogutter">
         </div>
         <nav class="pagination" role="pagination">
     
-    <a class="pull-left" href="/2017/10/14/深入理解synchronized/" style="float: left;">
-        ← 深入理解synchronized关键字
+    <a class="pull-left" href="/2018/07/02/深入浅出ThreadLocal的实现原理/" style="float: left;">
+        ← 深入浅出ThreadLocal的实现原理
     </a>
     
     
-    <a class="pull-right" href="/2017/10/10/hello-world/">
-        Hello World →
+    <a class="pull-right" href="/2018/06/27/jdk动态代理的实现原理浅析/">
+        JDK动态代理的实现原理浅析 →
     </a>
     
 </nav>
@@ -259,7 +251,7 @@
 
 	
 <!--PC版-->
-<div id="SOHUCS" sid="深入理解volatile关键字"></div>
+<div id="SOHUCS" sid="浅析Cglib动态代理"></div>
 <script charset="utf-8" type="text/javascript" src="/js/changyan.js" ></script>
 <script type="text/javascript">
 window.changyan.api.config({

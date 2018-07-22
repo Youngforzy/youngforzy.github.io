@@ -82,7 +82,7 @@
         		<a class="sb-toggle-submenu">Categories<span class="sb-caret"></span></a>
             	<ul class="sb-submenu">
 				  	
-				    <li><a href="/categories/技术/" class="animsition-link">技术<small>(40)</small></a></li>
+				    <li><a href="/categories/技术/" class="animsition-link">技术<small>(41)</small></a></li>
 				    
 				    <li><a href="/categories/芭乐/" class="animsition-link">芭乐<small>(1)</small></a></li>
 				    
@@ -322,6 +322,46 @@ ThreadLocal的用法12345678910111213141516171819202122232425262728public class 
         <div class="row">
             <div class="col-md-8 col-md-offset-2 opening-statement">
                 <div class="col-md-4">
+                    <h3><a href="/2018/06/30/浅析Cglib动态代理/">浅析Cglib动态代理</a></h3>
+                    <span>
+                        <span class="post-meta">
+      <time datetime="2018-06-30T13:12:12.000Z" itemprop="datePublished">
+          2018-06-30
+      </time>
+    
+    
+    | 
+    <a href='/tags/代理模式/'>代理模式</a>,
+    
+    <a href='/tags/Cglib动态代理/'>Cglib动态代理</a>
+    
+    
+</span>
+                    </span>
+                </div>
+                <div class="col-md-8">
+                    <p class="index-excerpt">
+                      
+                        介绍我们知道JDK动态代理只能代理实现了接口的类，没有实现接口的类是无法通过JDK来代理的。  
+Cglib是针对类来实现代理的，它的原理是对指定的目标类生成一个子类，这个子类覆盖目标类的方法并在其中实现方法的增强。因为采用了继承和重写，因此不能对final的类、final方法进行代理。
+Cglib底层其实是借助了ASM这个非常强大的Java字节码生成框架，它可以在运行时对字节码进行修改或动态生成。
+实现目标对象12345public 
+                      
+                    </p>
+                    
+                    <p class="pull-right readMore">
+                        <a href="/2018/06/30/浅析Cglib动态代理/">Read More...</a>
+                    </p>
+                    
+                </div>
+                <div class="clearfix"></div>
+                <hr class="nogutter">
+            </div>
+        </div>
+        
+        <div class="row">
+            <div class="col-md-8 col-md-offset-2 opening-statement">
+                <div class="col-md-4">
                     <h3><a href="/2018/06/27/jdk动态代理的实现原理浅析/">JDK动态代理的实现原理浅析</a></h3>
                     <span>
                         <span class="post-meta">
@@ -546,52 +586,6 @@ Maven 依赖结合Spring使用ActiveMQ的依赖如下：123456789101112131415161
                     
                     <p class="pull-right readMore">
                         <a href="/2018/01/07/Map 的4种遍历方式及比较/">Read More...</a>
-                    </p>
-                    
-                </div>
-                <div class="clearfix"></div>
-                <hr class="nogutter">
-            </div>
-        </div>
-        
-        <div class="row">
-            <div class="col-md-8 col-md-offset-2 opening-statement">
-                <div class="col-md-4">
-                    <h3><a href="/2017/12/25/Java(spring)实现Mysql的定时备份与还原/">Java(spring)实现Mysql的定时备份与还原</a></h3>
-                    <span>
-                        <span class="post-meta">
-      <time datetime="2017-12-25T11:23:12.000Z" itemprop="datePublished">
-          2017-12-25
-      </time>
-    
-    
-    | 
-    <a href='/tags/spring定时任务/'>spring定时任务</a>,
-    
-    <a href='/tags/Mysql备份还原/'>Mysql备份还原</a>
-    
-    
-</span>
-                    </span>
-                </div>
-                <div class="col-md-8">
-                    <p class="index-excerpt">
-                      
-                        一、数据库的定时备份备份命令Mysql的备份指令：
-
-指定数据库：1mysqldump -h localhost -uroot -proot  tuser&gt;d:\user_2017-12-25_15-42-10.sql
-
-
-tuser：数据库名user_2017-12-25_15-42-10.sql：文件名
-
-指定数据库中的多个表：
-
-1mysqldump -h localhost -uroot -proot --database
-                      
-                    </p>
-                    
-                    <p class="pull-right readMore">
-                        <a href="/2017/12/25/Java(spring)实现Mysql的定时备份与还原/">Read More...</a>
                     </p>
                     
                 </div>
