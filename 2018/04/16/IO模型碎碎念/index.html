@@ -198,8 +198,8 @@
 </strong>阻塞/非阻塞关注的是<strong>**程序在等待调用结果（消息，返回值）时的状态</strong>，程序执行状态。</p>
 <h5 id="同步IO和异步IO"><a href="#同步IO和异步IO" class="headerlink" title="同步IO和异步IO"></a>同步IO和异步IO</h5><p><strong>同步IO</strong>：用户进程触发IO操作后，等待或者轮询的去查看IO操作是否完成。</p>
 <p><strong>异步IO</strong>：用户进程触发IO操作以后,可以干别的事，IO操作完成以后自动通知当前线程。（类似回调）</p>
-<h5 id="阻塞IO与非阻塞IO"><a href="#阻塞IO与非阻塞IO" class="headerlink" title="阻塞IO与非阻塞IO"></a>阻塞IO与非阻塞IO</h5><p>阻塞IO：如果数据没有就绪，会一直等待，直到数据就绪。 </p>
-<p>非阻塞IO：如果数据没有就绪，则会返回一个标志信息告知用户线程当前要读的数据没有就绪。</p>
+<h5 id="阻塞IO与非阻塞IO"><a href="#阻塞IO与非阻塞IO" class="headerlink" title="阻塞IO与非阻塞IO"></a>阻塞IO与非阻塞IO</h5><p><strong>阻塞IO</strong>：如果数据没有就绪，会一直等待，直到数据就绪。 </p>
+<p><strong>非阻塞IO</strong>：如果数据没有就绪，则会返回一个标志信息告知用户线程当前要读的数据没有就绪。</p>
 <h4 id="Linux下的五种IO模型"><a href="#Linux下的五种IO模型" class="headerlink" title="Linux下的五种IO模型"></a>Linux下的五种IO模型</h4><h5 id="IO过程简介"><a href="#IO过程简介" class="headerlink" title="IO过程简介"></a>IO过程简介</h5><p><img src="http://osuskkx7k.bkt.clouddn.com/LinuxIO.png" alt="image"></p>
 <p><strong>网络IO的本质是Socket的读取，对于一次IO访问（以read为例），数据会先被拷贝到操作系统内核的缓冲区，然后才会从操作系统内核的缓冲区拷贝到应用程序的地址空间中。</strong> 所以说，当一个read操作发生时，它会经历两个阶段：</p>
 <p>第一阶段：等待数据准备好</p>
