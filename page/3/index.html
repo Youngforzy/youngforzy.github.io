@@ -82,7 +82,7 @@
         		<a class="sb-toggle-submenu">Categories<span class="sb-caret"></span></a>
             	<ul class="sb-submenu">
 				  	
-				    <li><a href="/categories/技术/" class="animsition-link">技术<small>(41)</small></a></li>
+				    <li><a href="/categories/技术/" class="animsition-link">技术<small>(42)</small></a></li>
 				    
 				    <li><a href="/categories/芭乐/" class="animsition-link">芭乐<small>(1)</small></a></li>
 				    
@@ -202,6 +202,44 @@
 
 <section id="intro">
     <div class="container">
+        
+        <div class="row">
+            <div class="col-md-8 col-md-offset-2 opening-statement">
+                <div class="col-md-4">
+                    <h3><a href="/2017/11/06/ConcurrentHashMap在JDK1.7中的实现分析/">ConcurrentHashMap在JDK1.7中的实现分析</a></h3>
+                    <span>
+                        <span class="post-meta">
+      <time datetime="2017-11-06T09:48:18.000Z" itemprop="datePublished">
+          2017-11-06
+      </time>
+    
+    
+    | 
+    <a href='/tags/ConcurrentHashMap/'>ConcurrentHashMap</a>,
+    
+    <a href='/tags/JDK1-7/'>JDK1.7</a>
+    
+    
+</span>
+                    </span>
+                </div>
+                <div class="col-md-8">
+                    <p class="index-excerpt">
+                      
+                        一、ConcurrentHashMap的介绍ConcurrentHashMap是线程安全且高效的HashMap，可以在多线程的环境下使用。ConcurrentHashMap允许多个线程并发访问，其关键在于使用了锁分段技术。锁分段：首先将数据分成一段一段地存储，然后给每一段数据配一把锁，当一个线程占用锁访问其中一个数据段的时候，其他数据段也能被其他线程访问。
+二、ConcurrentHashMap的实现原理ConcurrentHashMa
+                      
+                    </p>
+                    
+                    <p class="pull-right readMore">
+                        <a href="/2017/11/06/ConcurrentHashMap在JDK1.7中的实现分析/">Read More...</a>
+                    </p>
+                    
+                </div>
+                <div class="clearfix"></div>
+                <hr class="nogutter">
+            </div>
+        </div>
         
         <div class="row">
             <div class="col-md-8 col-md-offset-2 opening-statement">
@@ -562,50 +600,6 @@ Paral
                     
                     <p class="pull-right readMore">
                         <a href="/2017/10/20/ReentrantLock重入锁/">Read More...</a>
-                    </p>
-                    
-                </div>
-                <div class="clearfix"></div>
-                <hr class="nogutter">
-            </div>
-        </div>
-        
-        <div class="row">
-            <div class="col-md-8 col-md-offset-2 opening-statement">
-                <div class="col-md-4">
-                    <h3><a href="/2017/10/19/AQS共享锁的实现原理/">AQS共享锁的实现原理</a></h3>
-                    <span>
-                        <span class="post-meta">
-      <time datetime="2017-10-19T11:48:18.000Z" itemprop="datePublished">
-          2017-10-19
-      </time>
-    
-    
-    | 
-    <a href='/tags/并发/'>并发</a>,
-    
-    <a href='/tags/AQS/'>AQS</a>,
-    
-    <a href='/tags/共享锁/'>共享锁</a>
-    
-    
-</span>
-                    </span>
-                </div>
-                <div class="col-md-8">
-                    <p class="index-excerpt">
-                      
-                        一、AQS共享锁的实现原理前面的文章Lock的实现中分析了AQS独占锁的实现原理，那么接下来就分析下AQS是如何实现共享锁的。
-共享锁的介绍共享锁：同一时刻有多个线程能够获取到同步状态。
-那么它是如何做到让多个线程获取到同步状态呢？来看一下获取共享锁的过程：
-
-线程调用AQS的acquireShared()申请获取锁（可有多个线程获取到，根据重写的tryAcquireShared()方法决定），如果成功则进入临界区。
-如果失败，创建一个
-                      
-                    </p>
-                    
-                    <p class="pull-right readMore">
-                        <a href="/2017/10/19/AQS共享锁的实现原理/">Read More...</a>
                     </p>
                     
                 </div>
