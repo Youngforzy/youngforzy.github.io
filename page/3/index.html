@@ -82,7 +82,7 @@
         		<a class="sb-toggle-submenu">Categories<span class="sb-caret"></span></a>
             	<ul class="sb-submenu">
 				  	
-				    <li><a href="/categories/技术/" class="animsition-link">技术<small>(44)</small></a></li>
+				    <li><a href="/categories/技术/" class="animsition-link">技术<small>(46)</small></a></li>
 				    
 				    <li><a href="/categories/芭乐/" class="animsition-link">芭乐<small>(1)</small></a></li>
 				    
@@ -202,6 +202,87 @@
 
 <section id="intro">
     <div class="container">
+        
+        <div class="row">
+            <div class="col-md-8 col-md-offset-2 opening-statement">
+                <div class="col-md-4">
+                    <h3><a href="/2017/12/01/Java并发之Condition的实现分析/">Java并发之Condition的实现分析</a></h3>
+                    <span>
+                        <span class="post-meta">
+      <time datetime="2017-12-01T07:42:18.000Z" itemprop="datePublished">
+          2017-12-01
+      </time>
+    
+    
+    | 
+    <a href='/tags/并发/'>并发</a>,
+    
+    <a href='/tags/Condition/'>Condition</a>
+    
+    
+</span>
+                    </span>
+                </div>
+                <div class="col-md-8">
+                    <p class="index-excerpt">
+                      
+                        一、Condition的概念介绍回忆synchronized关键字，它配合Object的wait()、notify()系列方法可以实现等待/通知模式。
+对于Lock，通过Condition也可以实现等待/通知模式。
+Condition是一个接口。Condition接口的实现类是Lock（AQS）中的ConditionObject。Lock接口中有个 newCondition()方法，通过这个方法可以获得Condition对象（其实就是C
+                      
+                    </p>
+                    
+                    <p class="pull-right readMore">
+                        <a href="/2017/12/01/Java并发之Condition的实现分析/">Read More...</a>
+                    </p>
+                    
+                </div>
+                <div class="clearfix"></div>
+                <hr class="nogutter">
+            </div>
+        </div>
+        
+        <div class="row">
+            <div class="col-md-8 col-md-offset-2 opening-statement">
+                <div class="col-md-4">
+                    <h3><a href="/2017/11/22/Java并发之Executor框架/">Java并发之Executor框架</a></h3>
+                    <span>
+                        <span class="post-meta">
+      <time datetime="2017-11-22T08:42:18.000Z" itemprop="datePublished">
+          2017-11-22
+      </time>
+    
+    
+    | 
+    <a href='/tags/并发/'>并发</a>,
+    
+    <a href='/tags/Executor框架/'>Executor框架</a>
+    
+    
+</span>
+                    </span>
+                </div>
+                <div class="col-md-8">
+                    <p class="index-excerpt">
+                      
+                        一、Executor框架的介绍Java中的线程既是工作单元又是执行机制。JDK1.5开始，把工作单元与执行机制分离开来。工作单元为Runnable（Thread实现该接口）和Callable，执行机制就是Executor框架。 使用Executor框架时不用显式的创建线程Thread。
+Executor框架由三部分组成：  
+
+任务：Runnable或Callable  
+任务的执行：ExecutorService接口及其实现。  
+异
+                      
+                    </p>
+                    
+                    <p class="pull-right readMore">
+                        <a href="/2017/11/22/Java并发之Executor框架/">Read More...</a>
+                    </p>
+                    
+                </div>
+                <div class="clearfix"></div>
+                <hr class="nogutter">
+            </div>
+        </div>
         
         <div class="row">
             <div class="col-md-8 col-md-offset-2 opening-statement">
@@ -511,92 +592,6 @@ ReadWriteLock并不是继承自Lock接口，而是一个单独的接口。
                     
                     <p class="pull-right readMore">
                         <a href="/2017/10/26/JVM之对象创建过程/">Read More...</a>
-                    </p>
-                    
-                </div>
-                <div class="clearfix"></div>
-                <hr class="nogutter">
-            </div>
-        </div>
-        
-        <div class="row">
-            <div class="col-md-8 col-md-offset-2 opening-statement">
-                <div class="col-md-4">
-                    <h3><a href="/2017/10/24/JVM之类加载机制/">JVM之类加载机制</a></h3>
-                    <span>
-                        <span class="post-meta">
-      <time datetime="2017-10-24T11:34:18.000Z" itemprop="datePublished">
-          2017-10-24
-      </time>
-    
-    
-    | 
-    <a href='/tags/JVM/'>JVM</a>,
-    
-    <a href='/tags/类加载机制/'>类加载机制</a>
-    
-    
-</span>
-                    </span>
-                </div>
-                <div class="col-md-8">
-                    <p class="index-excerpt">
-                      
-                        一、类加载机制虚拟机把描述类的数据从Class文件加载到内存，并对数据进行校验、转换解析和初始化，最终形成可以被JVM直接使用的Java类型，这就是虚拟机的类加载机制。
-类加载的时机那么类到底什么时候会加载呢？（初始化）当对一个类进行主动引用的时候。
-主动引用主动引用有5种情况：
-
-new实例化对象、读取或设置一个类的静态字段时、调用一个类的静态方法时
-使用java.lang.reflect包的方法对类进行反射调用时
-初始化一个类时，父
-                      
-                    </p>
-                    
-                    <p class="pull-right readMore">
-                        <a href="/2017/10/24/JVM之类加载机制/">Read More...</a>
-                    </p>
-                    
-                </div>
-                <div class="clearfix"></div>
-                <hr class="nogutter">
-            </div>
-        </div>
-        
-        <div class="row">
-            <div class="col-md-8 col-md-offset-2 opening-statement">
-                <div class="col-md-4">
-                    <h3><a href="/2017/10/23/JVM之垃圾收集器/">JVM之垃圾收集器</a></h3>
-                    <span>
-                        <span class="post-meta">
-      <time datetime="2017-10-23T11:28:13.000Z" itemprop="datePublished">
-          2017-10-23
-      </time>
-    
-    
-    | 
-    <a href='/tags/JVM/'>JVM</a>,
-    
-    <a href='/tags/垃圾收集器/'>垃圾收集器</a>
-    
-    
-</span>
-                    </span>
-                </div>
-                <div class="col-md-8">
-                    <p class="index-excerpt">
-                      
-                        一、垃圾收集器概述垃圾收集器是内存垃圾回收算法的具体实现。Java虚拟机规范中对垃圾收集器应该如何实现并没有任何规定，因此出现了7种收集器：Serial、ParNew、Parallel Scavenge、Serial Old、Parallel Old、CMS、G1。它们以组合的形式配合工作来完成不同分代的垃圾收集工作。
-常用组合：
-
-Serial/Serial Old
-ParNew/Serial Old
-ParNew/CMS
-Paral
-                      
-                    </p>
-                    
-                    <p class="pull-right readMore">
-                        <a href="/2017/10/23/JVM之垃圾收集器/">Read More...</a>
                     </p>
                     
                 </div>

@@ -82,7 +82,7 @@
         		<a class="sb-toggle-submenu">Categories<span class="sb-caret"></span></a>
             	<ul class="sb-submenu">
 				  	
-				    <li><a href="/categories/技术/" class="animsition-link">技术<small>(44)</small></a></li>
+				    <li><a href="/categories/技术/" class="animsition-link">技术<small>(46)</small></a></li>
 				    
 				    <li><a href="/categories/芭乐/" class="animsition-link">芭乐<small>(1)</small></a></li>
 				    
@@ -202,6 +202,80 @@
 
 <section id="intro">
     <div class="container">
+        
+        <div class="row">
+            <div class="col-md-8 col-md-offset-2 opening-statement">
+                <div class="col-md-4">
+                    <h3><a href="/2018/04/05/设计模式之工厂模式（工厂三兄弟）/">设计模式之工厂模式（工厂三兄弟）</a></h3>
+                    <span>
+                        <span class="post-meta">
+      <time datetime="2018-04-05T06:12:12.000Z" itemprop="datePublished">
+          2018-04-05
+      </time>
+    
+    
+    | 
+    <a href='/tags/设计模式，工厂模式/'>设计模式，工厂模式</a>
+    
+    
+</span>
+                    </span>
+                </div>
+                <div class="col-md-8">
+                    <p class="index-excerpt">
+                      
+                        简单工厂模式定义简单工厂模式又叫静态工厂方法模式。通过定义一个工厂类，根据传入的不同参数，创建不同的实例对象。这些实例对象具有共同的父类或接口。
+实现123456789101112131415161718192021222324252627282930//抽象产品public interface Product &#123;    public void productName();&#125;//具体产品public class Pr
+                      
+                    </p>
+                    
+                    <p class="pull-right readMore">
+                        <a href="/2018/04/05/设计模式之工厂模式（工厂三兄弟）/">Read More...</a>
+                    </p>
+                    
+                </div>
+                <div class="clearfix"></div>
+                <hr class="nogutter">
+            </div>
+        </div>
+        
+        <div class="row">
+            <div class="col-md-8 col-md-offset-2 opening-statement">
+                <div class="col-md-4">
+                    <h3><a href="/2018/02/15/ActiveMQ结合Spring收发消息/">ActiveMQ结合Spring收发消息</a></h3>
+                    <span>
+                        <span class="post-meta">
+      <time datetime="2018-02-15T07:12:12.000Z" itemprop="datePublished">
+          2018-02-15
+      </time>
+    
+    
+    | 
+    <a href='/tags/ActiveMQ/'>ActiveMQ</a>,
+    
+    <a href='/tags/消息队列/'>消息队列</a>
+    
+    
+</span>
+                    </span>
+                </div>
+                <div class="col-md-8">
+                    <p class="index-excerpt">
+                      
+                        ActiveMQ结合Spring收发消息直接使用ActiveMQ的方式需要重复写很多代码，且不利于管理，Spring 提供了一种更加简便的方式————Spring JMS ，通过它可以更加方便地使用ActiveMQ。
+Maven 依赖结合Spring使用ActiveMQ的依赖如下：1234567891011121314151617181920212223&lt;!-- Spring JMS --&gt;&lt;dependency&gt
+                      
+                    </p>
+                    
+                    <p class="pull-right readMore">
+                        <a href="/2018/02/15/ActiveMQ结合Spring收发消息/">Read More...</a>
+                    </p>
+                    
+                </div>
+                <div class="clearfix"></div>
+                <hr class="nogutter">
+            </div>
+        </div>
         
         <div class="row">
             <div class="col-md-8 col-md-offset-2 opening-statement">
@@ -527,87 +601,6 @@ CountDownLa
                     
                     <p class="pull-right readMore">
                         <a href="/2017/12/03/Java并发工具类之CountDownLatch/">Read More...</a>
-                    </p>
-                    
-                </div>
-                <div class="clearfix"></div>
-                <hr class="nogutter">
-            </div>
-        </div>
-        
-        <div class="row">
-            <div class="col-md-8 col-md-offset-2 opening-statement">
-                <div class="col-md-4">
-                    <h3><a href="/2017/12/01/Java并发之Condition的实现分析/">Java并发之Condition的实现分析</a></h3>
-                    <span>
-                        <span class="post-meta">
-      <time datetime="2017-12-01T07:42:18.000Z" itemprop="datePublished">
-          2017-12-01
-      </time>
-    
-    
-    | 
-    <a href='/tags/并发/'>并发</a>,
-    
-    <a href='/tags/Condition/'>Condition</a>
-    
-    
-</span>
-                    </span>
-                </div>
-                <div class="col-md-8">
-                    <p class="index-excerpt">
-                      
-                        一、Condition的概念介绍回忆synchronized关键字，它配合Object的wait()、notify()系列方法可以实现等待/通知模式。
-对于Lock，通过Condition也可以实现等待/通知模式。
-Condition是一个接口。Condition接口的实现类是Lock（AQS）中的ConditionObject。Lock接口中有个 newCondition()方法，通过这个方法可以获得Condition对象（其实就是C
-                      
-                    </p>
-                    
-                    <p class="pull-right readMore">
-                        <a href="/2017/12/01/Java并发之Condition的实现分析/">Read More...</a>
-                    </p>
-                    
-                </div>
-                <div class="clearfix"></div>
-                <hr class="nogutter">
-            </div>
-        </div>
-        
-        <div class="row">
-            <div class="col-md-8 col-md-offset-2 opening-statement">
-                <div class="col-md-4">
-                    <h3><a href="/2017/11/22/Java并发之Executor框架/">Java并发之Executor框架</a></h3>
-                    <span>
-                        <span class="post-meta">
-      <time datetime="2017-11-22T08:42:18.000Z" itemprop="datePublished">
-          2017-11-22
-      </time>
-    
-    
-    | 
-    <a href='/tags/并发/'>并发</a>,
-    
-    <a href='/tags/Executor框架/'>Executor框架</a>
-    
-    
-</span>
-                    </span>
-                </div>
-                <div class="col-md-8">
-                    <p class="index-excerpt">
-                      
-                        一、Executor框架的介绍Java中的线程既是工作单元又是执行机制。JDK1.5开始，把工作单元与执行机制分离开来。工作单元为Runnable（Thread实现该接口）和Callable，执行机制就是Executor框架。 使用Executor框架时不用显式的创建线程Thread。
-Executor框架由三部分组成：  
-
-任务：Runnable或Callable  
-任务的执行：ExecutorService接口及其实现。  
-异
-                      
-                    </p>
-                    
-                    <p class="pull-right readMore">
-                        <a href="/2017/11/22/Java并发之Executor框架/">Read More...</a>
                     </p>
                     
                 </div>

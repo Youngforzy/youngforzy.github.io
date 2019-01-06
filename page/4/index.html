@@ -82,7 +82,7 @@
         		<a class="sb-toggle-submenu">Categories<span class="sb-caret"></span></a>
             	<ul class="sb-submenu">
 				  	
-				    <li><a href="/categories/技术/" class="animsition-link">技术<small>(44)</small></a></li>
+				    <li><a href="/categories/技术/" class="animsition-link">技术<small>(46)</small></a></li>
 				    
 				    <li><a href="/categories/芭乐/" class="animsition-link">芭乐<small>(1)</small></a></li>
 				    
@@ -202,6 +202,92 @@
 
 <section id="intro">
     <div class="container">
+        
+        <div class="row">
+            <div class="col-md-8 col-md-offset-2 opening-statement">
+                <div class="col-md-4">
+                    <h3><a href="/2017/10/24/JVM之类加载机制/">JVM之类加载机制</a></h3>
+                    <span>
+                        <span class="post-meta">
+      <time datetime="2017-10-24T11:34:18.000Z" itemprop="datePublished">
+          2017-10-24
+      </time>
+    
+    
+    | 
+    <a href='/tags/JVM/'>JVM</a>,
+    
+    <a href='/tags/类加载机制/'>类加载机制</a>
+    
+    
+</span>
+                    </span>
+                </div>
+                <div class="col-md-8">
+                    <p class="index-excerpt">
+                      
+                        一、类加载机制虚拟机把描述类的数据从Class文件加载到内存，并对数据进行校验、转换解析和初始化，最终形成可以被JVM直接使用的Java类型，这就是虚拟机的类加载机制。
+类加载的时机那么类到底什么时候会加载呢？（初始化）当对一个类进行主动引用的时候。
+主动引用主动引用有5种情况：
+
+new实例化对象、读取或设置一个类的静态字段时、调用一个类的静态方法时
+使用java.lang.reflect包的方法对类进行反射调用时
+初始化一个类时，父
+                      
+                    </p>
+                    
+                    <p class="pull-right readMore">
+                        <a href="/2017/10/24/JVM之类加载机制/">Read More...</a>
+                    </p>
+                    
+                </div>
+                <div class="clearfix"></div>
+                <hr class="nogutter">
+            </div>
+        </div>
+        
+        <div class="row">
+            <div class="col-md-8 col-md-offset-2 opening-statement">
+                <div class="col-md-4">
+                    <h3><a href="/2017/10/23/JVM之垃圾收集器/">JVM之垃圾收集器</a></h3>
+                    <span>
+                        <span class="post-meta">
+      <time datetime="2017-10-23T11:28:13.000Z" itemprop="datePublished">
+          2017-10-23
+      </time>
+    
+    
+    | 
+    <a href='/tags/JVM/'>JVM</a>,
+    
+    <a href='/tags/垃圾收集器/'>垃圾收集器</a>
+    
+    
+</span>
+                    </span>
+                </div>
+                <div class="col-md-8">
+                    <p class="index-excerpt">
+                      
+                        一、垃圾收集器概述垃圾收集器是内存垃圾回收算法的具体实现。Java虚拟机规范中对垃圾收集器应该如何实现并没有任何规定，因此出现了7种收集器：Serial、ParNew、Parallel Scavenge、Serial Old、Parallel Old、CMS、G1。它们以组合的形式配合工作来完成不同分代的垃圾收集工作。
+常用组合：
+
+Serial/Serial Old
+ParNew/Serial Old
+ParNew/CMS
+Paral
+                      
+                    </p>
+                    
+                    <p class="pull-right readMore">
+                        <a href="/2017/10/23/JVM之垃圾收集器/">Read More...</a>
+                    </p>
+                    
+                </div>
+                <div class="clearfix"></div>
+                <hr class="nogutter">
+            </div>
+        </div>
         
         <div class="row">
             <div class="col-md-8 col-md-offset-2 opening-statement">
@@ -517,86 +603,6 @@ Quick StartCreate a new p
                     
                     <p class="pull-right readMore">
                         <a href="/2017/10/10/hello-world/">Read More...</a>
-                    </p>
-                    
-                </div>
-                <div class="clearfix"></div>
-                <hr class="nogutter">
-            </div>
-        </div>
-        
-        <div class="row">
-            <div class="col-md-8 col-md-offset-2 opening-statement">
-                <div class="col-md-4">
-                    <h3><a href="/2017/08/09/Mysql中查询某个数据库中所有表的字段信息/">Mysql中查询某个数据库中所有表的字段信息</a></h3>
-                    <span>
-                        <span class="post-meta">
-      <time datetime="2017-08-09T09:55:55.000Z" itemprop="datePublished">
-          2017-08-09
-      </time>
-    
-    
-    | 
-    <a href='/tags/Mysql/'>Mysql</a>,
-    
-    <a href='/tags/数据库/'>数据库</a>
-    
-    
-</span>
-                    </span>
-                </div>
-                <div class="col-md-8">
-                    <p class="index-excerpt">
-                      
-                        前言有时候，需要在数据库中查询一些字段的具体信息，而这些字段又存在于不同的表中，那么我们如何来查询呢？
-在每一个数据库链接的information_schema数据库中，存在这样一张表——COLUMNS，它记录了这个数据库中所有表的字段信息。
-查询某个特定类型的字段信息如下：查询字段类型为decimal的字段信息Sql语句：
-12345678910SELECT	TABLE_NAME,	column_name,	DATA_TYPE,	co
-                      
-                    </p>
-                    
-                    <p class="pull-right readMore">
-                        <a href="/2017/08/09/Mysql中查询某个数据库中所有表的字段信息/">Read More...</a>
-                    </p>
-                    
-                </div>
-                <div class="clearfix"></div>
-                <hr class="nogutter">
-            </div>
-        </div>
-        
-        <div class="row">
-            <div class="col-md-8 col-md-offset-2 opening-statement">
-                <div class="col-md-4">
-                    <h3><a href="/2017/08/07/Hexo发布博客的MarkDown文件中引入JS代码/">在Hexo发布博客的MarkDown文件中引入JS代码</a></h3>
-                    <span>
-                        <span class="post-meta">
-      <time datetime="2017-08-07T07:05:05.000Z" itemprop="datePublished">
-          2017-08-07
-      </time>
-    
-    
-    | 
-    <a href='/tags/Hexo/'>Hexo</a>,
-    
-    <a href='/tags/MarkDown/'>MarkDown</a>
-    
-    
-</span>
-                    </span>
-                </div>
-                <div class="col-md-8">
-                    <p class="index-excerpt">
-                      
-                        前言上周困扰了两天的问题终于得到解决，于是就打算写点东西，也当作一次记录。
-从题目可以看出，问题就是——如何在Hexo发布博客的Md文件中引入JS代码，来实现你想要的特效。之所以会提出这个问题，是源于一个简单的想法，单纯地想在某一篇博客中引入echarts（一个纯 Javascript 的图表库）特效，实质上就是引入它的JS代码。
-那么就详细讲解一下引入echarts来实现特效的过程。
-下载首先，在echarts下载页面 中下载相应的版
-                      
-                    </p>
-                    
-                    <p class="pull-right readMore">
-                        <a href="/2017/08/07/Hexo发布博客的MarkDown文件中引入JS代码/">Read More...</a>
                     </p>
                     
                 </div>

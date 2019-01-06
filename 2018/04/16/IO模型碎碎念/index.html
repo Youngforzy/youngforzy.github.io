@@ -82,7 +82,7 @@
         		<a class="sb-toggle-submenu">Categories<span class="sb-caret"></span></a>
             	<ul class="sb-submenu">
 				  	
-				    <li><a href="/categories/技术/" class="animsition-link">技术<small>(44)</small></a></li>
+				    <li><a href="/categories/技术/" class="animsition-link">技术<small>(46)</small></a></li>
 				    
 				    <li><a href="/categories/芭乐/" class="animsition-link">芭乐<small>(1)</small></a></li>
 				    
@@ -198,9 +198,9 @@
 </strong>阻塞/非阻塞关注的是<strong>**程序在等待调用结果（消息，返回值）时的状态</strong>，程序执行状态。</p>
 <h5 id="同步IO和异步IO"><a href="#同步IO和异步IO" class="headerlink" title="同步IO和异步IO"></a>同步IO和异步IO</h5><p><strong>同步IO</strong>：用户进程触发IO操作后，等待或者轮询的去查看IO操作是否完成。</p>
 <p><strong>异步IO</strong>：用户进程触发IO操作以后,可以干别的事，IO操作完成以后自动通知当前线程。（类似回调）</p>
-<h5 id="阻塞IO与非阻塞IO"><a href="#阻塞IO与非阻塞IO" class="headerlink" title="阻塞IO与非阻塞IO"></a>阻塞IO与非阻塞IO</h5><p><strong>阻塞IO</strong>：如果数据没有就绪，会一直等待，直到数据就绪。 </p>
-<p><strong>非阻塞IO</strong>：如果数据没有就绪，则会返回一个标志信息告知用户线程当前要读的数据没有就绪。</p>
-<h4 id="Linux下的五种IO模型"><a href="#Linux下的五种IO模型" class="headerlink" title="Linux下的五种IO模型"></a>Linux下的五种IO模型</h4><h5 id="IO过程简介"><a href="#IO过程简介" class="headerlink" title="IO过程简介"></a>IO过程简介</h5><p><img src="http://osuskkx7k.bkt.clouddn.com/LinuxIO.png" alt="image"></p>
+<h5 id="阻塞IO与非阻塞IO"><a href="#阻塞IO与非阻塞IO" class="headerlink" title="阻塞IO与非阻塞IO"></a>阻塞IO与非阻塞IO</h5><p>阻塞IO：如果数据没有就绪，会一直等待，直到数据就绪。 </p>
+<p>非阻塞IO：如果数据没有就绪，则会返回一个标志信息告知用户线程当前要读的数据没有就绪。</p>
+<h4 id="Linux下的五种IO模型"><a href="#Linux下的五种IO模型" class="headerlink" title="Linux下的五种IO模型"></a>Linux下的五种IO模型</h4><h5 id="IO过程简介"><a href="#IO过程简介" class="headerlink" title="IO过程简介"></a>IO过程简介</h5><p><a href="https://imgchr.com/i/F7YX28" target="_blank" rel="external"><img src="https://s2.ax1x.com/2019/01/05/F7YX28.md.png" alt="F7YX28.md.png"></a></p>
 <p><strong>网络IO的本质是Socket的读取，对于一次IO访问（以read为例），数据会先被拷贝到操作系统内核的缓冲区，然后才会从操作系统内核的缓冲区拷贝到应用程序的地址空间中。</strong> 所以说，当一个read操作发生时，它会经历两个阶段：</p>
 <p>第一阶段：等待数据准备好</p>
 <p>第二阶段：将数据从内核拷贝到用户进程中</p>
@@ -219,28 +219,28 @@
 </ol>
 <p><strong>前四种都属于同步IO，最后一种是异步IO。</strong></p>
 <h4 id="阻塞IO"><a href="#阻塞IO" class="headerlink" title="阻塞IO"></a>阻塞IO</h4><p>应用程序调用一个IO函数，如下图中的recvfrom()函数，此时内核数据没有准备好，导致应用程序阻塞，等待数据准备好。 如果数据准备好了，会将数据从内核拷贝到用户空间，IO函数返回成功指示。应用程序解除阻塞，处理数据。</p>
-<p><img src="http://osuskkx7k.bkt.clouddn.com/1.png" alt="image"></p>
+<p><img src="https://s2.ax1x.com/2019/01/05/F7ter4.png" alt="image"></p>
 <p><strong>场景描述</strong>：好比在餐厅吃饭，但今天是情人节人太多，需要排队叫号才能吃饭，吃完才能去逛商场，中间排队叫号等待的时间浪费掉了。这就是阻塞。</p>
 <h4 id="非阻塞IO"><a href="#非阻塞IO" class="headerlink" title="非阻塞IO"></a>非阻塞IO</h4><p>进程反复调用IO函数，每次调用都会立即返回（如图中前三次调用都立即返回EWOULDBLOCK，表示数据还没有准备好），这个时候不会阻塞用户进程（可以做其他的事情）；直到某一次调用时，数据准备好了，于是进行数据拷贝，在这个过程中用户进程是阻塞状态。</p>
 <p><strong>对于应用程序而言，虽然这个IO操作很快就返回了，但是它并不知道这个IO操作是否真的成功了。</strong> 为了知道IO操作是否成功，一般有两种策略：  </p>
 <p>一是需要应用程序主动地循环地去问，直到数据准备好为止，在这个不断问的过程中 <strong>（轮询）</strong>，会大量的占用CPU的时间；</p>
 <p>二是采用<strong>IO通知机制</strong>，比如：IO多路复用或信号驱动IO。</p>
-<p><img src="http://osuskkx7k.bkt.clouddn.com/2.png" alt="image"></p>
+<p><a href="https://imgchr.com/i/F7YGHs" target="_blank" rel="external"><img src="https://s2.ax1x.com/2019/01/05/F7YGHs.md.png" alt="F7YGHs.md.png"></a></p>
 <p><strong>场景描述</strong> ：还是刚刚的例子，觉得等待太漫长了，于是决定去逛商场，但是逛一会就回来问问服务员有没有被叫号，来来回回好几次。这就是非阻塞。</p>
 <h4 id="IO多路复用"><a href="#IO多路复用" class="headerlink" title="IO多路复用"></a>IO多路复用</h4><p>当用户进程调用了select，那么整个进程会阻塞，而同时select负责监听Socket，当任何一个Socket中的数据准备好了，select就会返回。这个时候用户进程再调用recvfrom()，将数据从内核拷贝到用户进程。如图。</p>
 <h5 id="优势"><a href="#优势" class="headerlink" title="优势"></a>优势</h5><p>IO多路复用模型会用到select、poll、epoll函数，这几个函数也会使进程阻塞，但是和阻塞IO所不同的的，<strong>这两个函数可以同时阻塞多个IO操作。 而且可以同时对多个读写操作的IO函数进行检测，直到有数据可读或可写时（注意不是全部数据可读或可写），才真正调用IO操作函数。</strong></p>
 <p><strong>IO多路复用是阻塞在select，epoll这样的系统调用之上，而没有阻塞在真正的IO系统调用如recvfrom()之上。</strong></p>
-<p><img src="http://osuskkx7k.bkt.clouddn.com/3.png" alt="image"></p>
+<p><a href="https://imgchr.com/i/F7Y8Bj" target="_blank" rel="external"><img src="https://s2.ax1x.com/2019/01/05/F7Y8Bj.md.png" alt="F7Y8Bj.md.png"></a></p>
 <p><strong>场景描述</strong>：发现关注微信号可以看到叫号的状态，所以在逛商场的时候，就不用经常回去问服务员了，而是看下微信就可以了。（不仅仅是我们不用问服务员，其他所有人都可以不用问服务员）。这就是IO多路复用。</p>
 <h4 id="信号驱动IO（SIGIO）"><a href="#信号驱动IO（SIGIO）" class="headerlink" title="信号驱动IO（SIGIO）"></a>信号驱动IO（SIGIO）</h4><p>首先我们允许Socket进行信号驱动IO，并安装一个信号处理函数，进程继续运行不会阻塞。当数据准备好时，进程会收到一个SIGIO信号，随后就可以在信号处理函数中调用IO操作(recvfrom()函数)处理数据。</p>
 <p><strong>这种IO模型的优点是当进程调用recvfrom()时，数据必定已经可以读取了，因为当内核发送SIGIO信号时,数据已经准备就绪了。</strong></p>
-<p><img src="http://osuskkx7k.bkt.clouddn.com/4.png" alt="image"></p>
+<p><img src="https://s2.ax1x.com/2019/01/05/F7Y3uQ.png" alt="F7Y3uQ.png"></p>
 <p><strong>场景描述</strong>：如果这个商家没有微信公众号可以查看状态，那么我们可以留一个电话号码，告诉服务员如果叫到号了就打电话通知我们，没打我们就继续逛商场，打了我们就可以直接过去吃饭了。这就是信号驱动IO，打电话就相当于收到信号。</p>
 <h4 id="异步IO"><a href="#异步IO" class="headerlink" title="异步IO"></a>异步IO</h4><p>用户进程告知内核启动某个操作（图中aio_read操作，立即返回），并让内核在整个IO操作完成后通知我们，用户进程不阻塞；在数据拷贝的时候用户进程也不会阻塞。</p>
 <p>前面的IO模型都是需要我们在 <strong>读写事件就绪后（数据准备好以后）</strong> 自己负责进行读写，而异步IO则不需要，是内核替我们做了这些事，最后只需要当IO完成时才通知我们。<strong>注意它和信号驱动IO不同，信号驱动IO是通知我们何时可以进行IO，而异步IO是通知我们何时完成了IO。</strong></p>
-<p><img src="http://osuskkx7k.bkt.clouddn.com/5.png" alt="image"></p>
+<p><img src="https://s2.ax1x.com/2019/01/05/F7Yljg.png" alt="F7Yljg.png"></p>
 <p><strong>场景描述</strong>：突然我们不想在饭店吃饭了，打算回家休息。于是我们叫了饭店的外卖，等饭好了会自动送到家里。这就是异步。</p>
-<h4 id="5个IO模型的比较"><a href="#5个IO模型的比较" class="headerlink" title="5个IO模型的比较"></a>5个IO模型的比较</h4><p><img src="http://osuskkx7k.bkt.clouddn.com/6.png" alt="image"></p>
+<h4 id="5个IO模型的比较"><a href="#5个IO模型的比较" class="headerlink" title="5个IO模型的比较"></a>5个IO模型的比较</h4><p><img src="https://s2.ax1x.com/2019/01/05/F7YQgS.png" alt="F7YQgS.png"></p>
 
             <div class="clearfix"></div>
             <hr class="nogutter">
